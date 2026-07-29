@@ -1,0 +1,32 @@
+version: 1
+id: cloudflare-network-role-pack
+scope: secondary_reference_only
+use_for: [network_topology, security_platform, developer_infrastructure, control_plane, technical_beliefs]
+do_not_use_for: [global_deck_identity, consumer_story, brand_recreation]
+
+narrative_job: Explain a distributed platform from developer intent through control plane to global execution.
+visual_grammar:
+  - one bold claim per technical section
+  - orange-to-warm gradient only as a locally scoped emphasis cue
+  - topology grouped into primitives, control, and execution
+  - diagrams expose causality and operational ownership
+
+preferred_patterns:
+  - developer-vision
+  - primitive-comparison
+  - control-plane-map
+  - global-network-topology
+  - technical-beliefs
+  - agent-workflow
+
+motion_cues: [edge-trace, region-pulse, layer-build, request-response-state]
+anti_patterns: [glowing_world_map_wallpaper, unlabeled_network_mesh, copying_cloudflare_orange_globally, security_padlock_icons]
+
+local_reference_examples:
+  - cloudflare-developer-vision
+  - cloudflare-agent-workflow
+  - cloudflare-agentic-primitives
+  - cloudflare-control-plane
+  - cloudflare-technical-beliefs
+
+source_ids: [cloudflare-investor-day-2026]

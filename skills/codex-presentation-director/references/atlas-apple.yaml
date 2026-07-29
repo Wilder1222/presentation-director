@@ -1,0 +1,140 @@
+version: 2
+id: apple-keynote-inspired
+label: Apple keynote-inspired product narrative
+status: derived_internal_reference
+official_template: false
+usage:
+  allowed: abstract_design_principles
+  prohibited:
+    - redistribute_source_frames
+    - copy_official_product_renders
+    - copy_exact_layouts_or_marketing_copy
+    - use_apple_logos_without_authorization
+    - bundle_unlicensed_apple_fonts
+
+best_for:
+  - product_reveal
+  - feature_closeup
+  - giant_claim
+  - comparison
+  - closing_resolution
+
+communication:
+  default_job: Make one product idea feel inevitable and easy to grasp.
+  pacing: one conclusion per slide with deliberate visual pauses
+  density: low
+  evidence_style: isolate one proof, then expand to detail
+
+observed_design_dna:
+  composition:
+    - one dominant object or sentence
+    - centered or optically centered hero frame
+    - extreme negative space around the focal object
+    - alternate dark reveal scenes with bright explanatory scenes
+    - move from full product view to detail instead of showing everything at once
+    - corporate communication pages favor a left-aligned editorial grid over keynote-style centering
+    - alternate isolated product pages with disciplined text-and-documentary-photo splits
+  hierarchy:
+    headline_share: very_high
+    body_share: very_low
+    focal_objects: 1
+    supporting_elements_max: 3
+  surface:
+    geometry: clean and continuous
+    decoration: minimal
+    image_treatment: high-fidelity isolated subject with controlled lighting
+    functional_color: restrained blue is used for navigation or links, not as ambient decoration
+
+safe_adaptation:
+  palette:
+    dark_canvas: "#000000"
+    light_canvas: "#F5F5F7"
+    dark_text: "#1D1D1F"
+    light_text: "#F5F5F7"
+    accent: use_user_brand_accent
+    accent_usage_max_percent: 8
+  typography:
+    strategy: use_user_licensed_display_sans_or_system_humanist_sans
+    display_weight: 600
+    body_weight: 400
+    fallback_windows: Aptos Display
+    fallback_cross_platform: Arial
+  spacing:
+    safe_margin_percent: 6
+    whitespace: extreme
+    max_text_width_percent: 58
+  image_direction:
+    - single subject
+    - no embedded text or logos
+    - preserve negative space for native slide copy
+    - use lighting and material contrast instead of decorative overlays
+
+preferred_layout_patterns:
+  - minimal-title
+  - centered-product-reveal
+  - giant-claim
+  - feature-close-up
+  - decisive-comparison
+  - closing-resolution
+
+motion_language:
+  tempo: restrained
+  preferred:
+    - dissolve-reveal
+    - masked-product-reveal
+    - camera-push
+    - compare-morph
+  choreography:
+    - reveal the product before explaining details
+    - preserve spatial continuity between overview and close-up
+    - use slow acceleration and decisive holds
+  avoid:
+    - bounce
+    - random_fly_in
+    - perpetual_particles
+    - unrelated_rotation
+    - motion_on_every_slide
+
+anti_patterns:
+  - dense_feature_grids
+  - multiple_equal_hero_objects
+  - gradients_used_as_default_decoration
+  - small_centered_body_copy
+  - fake_apple_logos_or_trade_dress
+
+compatible_secondary_roles:
+  architecture:
+    recommendation: use a technical secondary reference while preserving this palette and spacing
+  metrics:
+    recommendation: use native charts with minimal labels and one highlighted conclusion
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  downloaded_sources:
+    - employee_choice_communications_kit_19_pages_16x9
+    - mac_employee_experience_guide_17_pages_16x9
+  web_captures:
+    - wwdc26_event_page
+    - apple_creator_studio_viewport
+  refinements:
+    - treat keynote spectacle and enterprise communication as two modes of one system
+    - use 45_55 or 50_50 editorial splits only when copy genuinely needs support
+    - keep logos and marks largely on opening and closing frames
+    - use thin rules and short phase labels for timelines instead of cards
+
+local_reference_examples:
+  cover: apple-comms-cover
+  isolated_product: apple-comms-product-intro
+  editorial_photo_split: apple-comms-photo-narrative
+  phased_timeline: apple-comms-phased-timeline
+  slide_family: apple-comms-template-overview
+  quiet_closing: apple-comms-closing
+  event_hero: apple-wwdc26-web-hero
+  dark_product_reveal: apple-creator-studio-web-hero
+
+source_ids:
+  - apple-employee-choice-communications-kit
+  - apple-mac-employee-experience-guide
+  - apple-wwdc26-web
+  - apple-creator-studio-web

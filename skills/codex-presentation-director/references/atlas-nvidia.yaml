@@ -1,0 +1,156 @@
+version: 2
+id: nvidia-platform-inspired
+label: NVIDIA-inspired technical platform narrative
+status: mixed_official_and_derived_internal_reference
+official_template: false
+usage:
+  allowed: internal_analysis_and_abstract_technical_patterns
+  prohibited:
+    - imitate_nvidia_trade_dress_without_authorization
+    - redistribute_investor_or_keynote_slides
+    - use_nvidia_logo_without_authorization
+    - copy_official_product_renders_or_architecture_art
+    - imply_partnership_or_endorsement
+
+best_for:
+  - platform_architecture
+  - ecosystem_map
+  - performance_metrics
+  - technology_stack
+  - roadmap
+  - market_and_investor_evidence
+
+communication:
+  default_job: Show how technical layers combine into a platform and why the system matters at scale.
+  pacing: claim_then_stack_then_evidence_then_ecosystem
+  density: medium
+  evidence_style: large metric plus precise technical structure
+
+official_brand_observations:
+  palette:
+    nvidia_green: "#76B900"
+    dark_gray: "#1E1E1E"
+    white: "#FFFFFF"
+  logo:
+    contrast_requirement: 1_to_10
+    clear_space: at_least_height_of_n_in_wordmark
+  critical_rule: official_guidance_prohibits_unauthorized_imitation_or_appropriation
+
+derived_design_dna:
+  composition:
+    - dark technical canvas with one high-salience accent
+    - layered stack from infrastructure to applications
+    - large quantitative proof paired with a system explanation
+    - ecosystem views group participants by role
+    - product or hardware renders support rather than replace the claim
+    - keynote chapters alternate dense system maps with cinematic single-object reveals
+    - final-state diagrams are often preceded by progressive build frames during live narration
+  hierarchy:
+    headline_share: medium_to_high
+    body_share: medium
+    focal_objects: 1_to_3
+    supporting_elements_max: 7
+  diagram_language:
+    - clear horizontal or vertical layers
+    - consistent connectors and group boundaries
+    - accent reserved for active path or conclusion
+    - short labels and explicit legends
+    - use a central causal path and place examples or partner context in secondary zones
+    - anchor software layers to a physical compute or product base when possible
+
+safe_adaptation:
+  palette:
+    canvas: "#171918"
+    panel_or_layer: "#242724"
+    text: "#F4F5F2"
+    secondary: "#A7ADA3"
+    accent: use_user_brand_accent
+    keynote_depth_cue: restrained_blue_violet_floor_glow
+    note: use_official_nvidia_green_only_for_authorized_nvidia_related_material
+  typography:
+    strategy: use_user_brand_sans_with_tabular_numerals
+    display_weight: 650
+    body_weight: 400
+    fallback_windows: Aptos
+    fallback_cross_platform: Arial
+  spacing:
+    safe_margin_percent: 5
+    whitespace: medium
+    max_primary_nodes: 7
+  image_direction:
+    - exact product imagery must be user-supplied or properly sourced
+    - use generated imagery only for generic infrastructure concepts
+    - do not generate fake branded hardware
+
+preferred_layout_patterns:
+  - giant-claim
+  - evidence-and-meaning
+  - layered-architecture
+  - data-flow
+  - ecosystem-map
+  - decisive-comparison
+  - roadmap-with-gates
+
+motion_language:
+  tempo: deliberate_technical_build
+  preferred:
+    - architecture-build
+    - data-flow
+    - progressive-build
+    - compare-morph
+  choreography:
+    - establish system boundaries first
+    - reveal layers in dependency order
+    - animate one active data or control path
+    - end on the platform-level implication
+  avoid:
+    - all_nodes_pulsing
+    - decorative_binary_rain
+    - ambiguous_glowing_connections
+    - excessive_3d_rotation
+    - unlabelled_ecosystem_logos
+
+anti_patterns:
+  - logo_garden_without_a_claim
+  - full_slide_architecture_with_tiny_labels
+  - green_used_on_every_element
+  - generated_fake_hardware
+  - copied_nvidia_trade_dress
+
+compatible_secondary_roles:
+  primary_use: architecture_and_metrics_only_when_another_style_owns_the_deck
+  palette_rule: retain_primary_deck_palette_and_use_only_the_structural_grammar
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  downloaded_sources:
+    - july_2026_company_overview_25_pages_16x9
+    - gtc_taipei_2026_keynote_73_pages_16x9
+    - trademark_and_logo_usage_guidelines_9_pages
+  refinements:
+    - choose one of three page modes per slide: system_map, quantitative_proof, or cinematic_product_reveal
+    - group partner logos by explicit role; a logo garden without structure is not a diagram
+    - keep the NVIDIA-style green or the user accent for active paths, key curves, and conclusions
+    - use a shared baseline and physical scale for product roadmaps
+    - resolve a complex chapter with one panoramic platform view rather than a dense recap
+
+local_reference_examples:
+  platform_layer: nvidia-overview-platform-layer
+  product_family: nvidia-overview-codesign-stack
+  economic_metaphor: nvidia-overview-ai-factory-wave
+  paired_evidence: nvidia-overview-performance-economics
+  ecosystem_flywheel: nvidia-overview-flywheel
+  minimal_architecture: nvidia-gtc-agent-architecture
+  layered_factory: nvidia-gtc-factory-platform
+  complex_agent_system: nvidia-gtc-agent-toolkit
+  workflow: nvidia-gtc-pc-system
+  product_roadmap: nvidia-gtc-product-roadmap
+  radial_ecosystem: nvidia-gtc-ai-economy-orbit
+  panoramic_resolution: nvidia-gtc-portfolio-resolution
+
+source_ids:
+  - nvidia-company-overview-july-2026
+  - nvidia-gtc-taipei-2026-keynote
+  - nvidia-trademark-guidelines
+  - nvidia-presentations-web

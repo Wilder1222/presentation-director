@@ -1,0 +1,89 @@
+# Review and Acceptance
+
+## 1. Workspace validation
+
+Run:
+
+```text
+node <skill-dir>/scripts/validate-workspace.mjs <project-dir>
+```
+
+Do not use `--allow-draft` for delivery. Fix every error. Inspect warnings rather than suppressing them automatically.
+
+## 2. Narrative review
+
+- The communication job is clear and the closing resolves it.
+- Every slide has one narrative job and one primary claim.
+- Titles state takeaways rather than topics.
+- Evidence is followed by meaning or consequence.
+- Adjacent slides form a coherent sequence without repeated beats.
+- Visible copy is audience-facing and contains no production language.
+
+## 3. Visual review
+
+- The deck uses one visual identity and one global palette.
+- Secondary reference styles are restricted to their declared slide roles.
+- Adjacent slide silhouettes vary without breaking the grid.
+- Titles intended for one line do not wrap.
+- Text meets the template size or default minimums.
+- Crops, focal positions, image resolution, and color grading are consistent.
+- The same image is not reused without a deliberate system reason.
+- Architecture labels, charts, tables, and exact UI copy are not raster hallucinations.
+
+## 4. PPTX checks
+
+Follow the active `Presentations` skill. At minimum:
+
+1. Render every slide.
+2. Inspect each slide individually at full size.
+3. Use a montage only for deck-level rhythm and consistency.
+4. Run the presentation overflow test.
+5. Fix unintended overlaps, clipping, wrapping, broken connectors, unresolved placeholders, chart/data mismatches, and inconsistent footers.
+6. Confirm `[Sources]` blocks exist in speaker notes where required.
+7. Open representative slides that use media and verify their poster frames and crop behavior.
+
+## 5. HyperFrames checks
+
+Run the commands required by the installed HyperFrames skills:
+
+```text
+npx hyperframes lint
+npx hyperframes validate
+npx hyperframes inspect
+```
+
+For new or materially changed choreography, generate and inspect the animation map. Resolve contrast warnings, accidental overflow, collisions, invisible final states, dead zones, and pacing flags. Confirm every multi-scene transition follows the HyperFrames scene-transition contract.
+
+Render final media with an explicit output path and final quality, for example:
+
+```text
+npx hyperframes render --quality high --output <project-relative-output.mp4>
+```
+
+## 6. Remotion checks
+
+- Render representative stills at the opening, each scene midpoint, each transition, and the final frame.
+- Verify safe margins, text fit, asset loading, and captions before a full render.
+- Confirm all animation is derived from frames and deterministic data.
+- Confirm no CSS transition or CSS animation is used.
+- Verify audio duration, captions, and final composition duration when present.
+
+## 7. Rights and provenance
+
+- User-supplied assets are tracked as local sources.
+- External claims and assets have direct source URLs or files.
+- Named-company references remain link-only unless the user provides licensed files.
+- Outputs use `*-inspired` descriptions and do not imply endorsement.
+- Logos, proprietary imagery, exact layouts, and proprietary fonts are not copied without authorization.
+
+## 8. Delivery disclosure
+
+State concisely:
+
+- delivered formats;
+- which slides contain replaceable images or video;
+- which slides are flattened, if any;
+- whether animation is native, embedded video, or a separate HTML/video deliverable;
+- any verified compatibility limitation.
+
+Do not call a deck fully editable if it contains flattened or replaceable-media slides without explaining the distinction.

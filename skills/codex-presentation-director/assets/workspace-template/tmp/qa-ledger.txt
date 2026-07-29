@@ -1,0 +1,4 @@
+Record QA findings and resolutions here.
+
+Format:
+severity | slide_or_composition | finding | resolution | status

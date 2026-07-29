@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Presentation Director"
+  short_description: "Direct polished decks across PPTX, images, and motion"
+  default_prompt: "Use $codex-presentation-director to turn my brief and references into a coherent, validated presentation."

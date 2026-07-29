@@ -1,0 +1,1775 @@
+{
+  "version": "2.0",
+  "snapshotDate": "2026-07-29",
+  "rightsDefault": "Internal design reference only. Reuse abstract principles, not logos, source artwork, marketing copy, or exact layouts.",
+  "entries": [
+    {
+      "id": "apple-comms-cover",
+      "company": "apple",
+      "sourceId": "apple-employee-choice-communications-kit",
+      "page": 1,
+      "file": "selected/apple/apple-comms-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "minimal-left-title",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "title-and-small-brand-mark",
+      "learning": [
+        "Use a quiet field and a compact title block instead of filling the canvas."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/apple/apple-comms-cover.webp"
+    },
+    {
+      "id": "apple-comms-product-intro",
+      "company": "apple",
+      "sourceId": "apple-employee-choice-communications-kit",
+      "page": 2,
+      "file": "selected/apple/apple-comms-p02-product-intro.png",
+      "slideRole": "product_intro",
+      "layout": "copy-plus-isolated-product",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "isolated-device-render",
+      "learning": [
+        "Pair a short editorial paragraph with one clean product object and generous empty space."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/apple/apple-comms-product-intro.webp"
+    },
+    {
+      "id": "apple-comms-photo-narrative",
+      "company": "apple",
+      "sourceId": "apple-employee-choice-communications-kit",
+      "page": 4,
+      "file": "selected/apple/apple-comms-p04-photo-narrative.png",
+      "slideRole": "narrative",
+      "layout": "text-photo-split",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "documentary-photo",
+      "learning": [
+        "A disciplined text/photo split can carry more information without becoming a card grid."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/apple/apple-comms-photo-narrative.webp"
+    },
+    {
+      "id": "apple-comms-phased-timeline",
+      "company": "apple",
+      "sourceId": "apple-employee-choice-communications-kit",
+      "page": 9,
+      "file": "selected/apple/apple-comms-p09-phased-timeline.png",
+      "slideRole": "roadmap",
+      "layout": "hairline-phased-timeline",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "three-phase-sequence",
+      "learning": [
+        "Use thin rules, short phase labels, and restrained blue links rather than heavy boxes."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/apple/apple-comms-phased-timeline.webp"
+    },
+    {
+      "id": "apple-comms-template-overview",
+      "company": "apple",
+      "sourceId": "apple-employee-choice-communications-kit",
+      "page": 11,
+      "file": "selected/apple/apple-comms-p11-template-overview.png",
+      "slideRole": "layout_system",
+      "layout": "thumbnail-pattern-board",
+      "theme": "light",
+      "density": "high",
+      "visualFocus": "coherent-slide-family",
+      "learning": [
+        "Judge a theme as a family of page roles, not as a single attractive cover."
+      ],
+      "motionSuggestion": "none",
+      "previewFile": "previews/apple/apple-comms-template-overview.webp"
+    },
+    {
+      "id": "apple-comms-closing",
+      "company": "apple",
+      "sourceId": "apple-employee-choice-communications-kit",
+      "page": 19,
+      "file": "selected/apple/apple-comms-p19-closing.png",
+      "slideRole": "closing",
+      "layout": "minimal-resolution",
+      "theme": "light",
+      "density": "very_low",
+      "visualFocus": "small-centered-mark",
+      "learning": [
+        "End with visual silence; do not turn the closing frame into another summary page."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/apple/apple-comms-closing.webp"
+    },
+    {
+      "id": "apple-experience-planning-spread",
+      "company": "apple",
+      "sourceId": "apple-mac-employee-experience-guide",
+      "page": 4,
+      "file": "selected/apple/apple-experience-p04-planning-spread.png",
+      "slideRole": "section_content",
+      "layout": "editorial-split",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "headline-copy-image-balance",
+      "learning": [
+        "Keep a stable editorial grid while alternating the dominant side across a sequence."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/apple/apple-experience-planning-spread.webp"
+    },
+    {
+      "id": "apple-experience-content-context",
+      "company": "apple",
+      "sourceId": "apple-mac-employee-experience-guide",
+      "page": 8,
+      "file": "selected/apple/apple-experience-p08-content-context.png",
+      "slideRole": "product_proof",
+      "layout": "artifact-plus-guidance",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "communication-artifacts",
+      "learning": [
+        "Show real deliverables at readable scale and explain their purpose with concise adjacent copy."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/apple/apple-experience-content-context.webp"
+    },
+    {
+      "id": "apple-wwdc26-web-hero",
+      "company": "apple",
+      "sourceId": "apple-wwdc26-web",
+      "page": null,
+      "file": "captures/apple/wwdc26.png",
+      "slideRole": "event_hero",
+      "layout": "full-bleed-visual-hero",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "event-key-art",
+      "learning": [
+        "Let one distinctive visual system own the event frame while copy stays secondary."
+      ],
+      "motionSuggestion": "camera-push",
+      "previewFile": "previews/apple/apple-wwdc26-web-hero.webp"
+    },
+    {
+      "id": "apple-creator-studio-web-hero",
+      "company": "apple",
+      "sourceId": "apple-creator-studio-web",
+      "page": null,
+      "file": "captures/apple/apple-creator-studio.png",
+      "slideRole": "product_reveal",
+      "layout": "centered-product-constellation",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "product-and-creative-assets",
+      "learning": [
+        "Cluster supporting objects around one product proposition without giving them equal hierarchy."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/apple/apple-creator-studio-web-hero.webp"
+    },
+    {
+      "id": "openai-enterprise-cover",
+      "company": "openai",
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "page": 1,
+      "file": "selected/openai/openai-enterprise-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "editorial-cover-with-art-strip",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "spectral-raster-art",
+      "learning": [
+        "Use a single generative-art field as an editorial anchor, not as a decorative background."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/openai/openai-enterprise-cover.webp"
+    },
+    {
+      "id": "openai-enterprise-introduction",
+      "company": "openai",
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "page": 4,
+      "file": "selected/openai/openai-enterprise-p04-introduction.png",
+      "slideRole": "introduction",
+      "layout": "prose-plus-color-callout",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "blue-callout-panel",
+      "learning": [
+        "Separate the main argument from a contextual callout through one broad color field."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/openai/openai-enterprise-introduction.webp"
+    },
+    {
+      "id": "openai-enterprise-metric-sidebar",
+      "company": "openai",
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "page": 5,
+      "file": "selected/openai/openai-enterprise-p05-metric-sidebar.png",
+      "slideRole": "metrics",
+      "layout": "narrative-with-metric-rail",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "large-numeral-sidebar",
+      "learning": [
+        "Use a narrow rail for proof points while the main column carries the interpretation."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/openai/openai-enterprise-metric-sidebar.webp"
+    },
+    {
+      "id": "openai-enterprise-evidence-chart",
+      "company": "openai",
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "page": 8,
+      "file": "selected/openai/openai-enterprise-p08-evidence-chart.png",
+      "slideRole": "evidence",
+      "layout": "metrics-plus-chart",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "chart-and-big-numbers",
+      "learning": [
+        "Pair only the metrics needed to interpret the chart; avoid a dashboard of unrelated KPIs."
+      ],
+      "motionSuggestion": "data-reveal",
+      "previewFile": "previews/openai/openai-enterprise-evidence-chart.webp"
+    },
+    {
+      "id": "openai-enterprise-framework",
+      "company": "openai",
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "page": 11,
+      "file": "selected/openai/openai-enterprise-p11-framework.png",
+      "slideRole": "framework",
+      "layout": "three-column-editorial-framework",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "three-part-model",
+      "learning": [
+        "A strict three-column structure can explain a framework without icons or cards."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/openai/openai-enterprise-framework.webp"
+    },
+    {
+      "id": "openai-enterprise-map",
+      "company": "openai",
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "page": 12,
+      "file": "selected/openai/openai-enterprise-p12-map.png",
+      "slideRole": "geographic_evidence",
+      "layout": "map-with-editorial-caption",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "single-map",
+      "learning": [
+        "Keep geographic evidence visually quiet and reserve annotation for the decision-relevant pattern."
+      ],
+      "motionSuggestion": "data-reveal",
+      "previewFile": "previews/openai/openai-enterprise-map.webp"
+    },
+    {
+      "id": "openai-enterprise-case-study",
+      "company": "openai",
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "page": 17,
+      "file": "selected/openai/openai-enterprise-p17-case-study.png",
+      "slideRole": "case_study",
+      "layout": "case-study-with-color-proof",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "colored-proof-block",
+      "learning": [
+        "Give the customer evidence its own field so the proof reads as a conclusion, not a footnote."
+      ],
+      "motionSuggestion": "product-state-change",
+      "previewFile": "previews/openai/openai-enterprise-case-study.webp"
+    },
+    {
+      "id": "openai-signals-cover",
+      "company": "openai",
+      "sourceId": "openai-signals-global-report",
+      "page": 1,
+      "file": "selected/openai/openai-signals-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "editorial-cover-with-image-panel",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "spectral-image-panel",
+      "learning": [
+        "Repeat a recognizable visual motif across reports while changing its crop and placement."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/openai/openai-signals-cover.webp"
+    },
+    {
+      "id": "openai-signals-giant-claim",
+      "company": "openai",
+      "sourceId": "openai-signals-global-report",
+      "page": 3,
+      "file": "selected/openai/openai-signals-p03-giant-claim.png",
+      "slideRole": "statement",
+      "layout": "giant-editorial-sentence",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "oversized-sentence",
+      "learning": [
+        "Let a full sentence become the visual object; line breaks carry the hierarchy."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/openai/openai-signals-giant-claim.webp"
+    },
+    {
+      "id": "openai-signals-executive-summary",
+      "company": "openai",
+      "sourceId": "openai-signals-global-report",
+      "page": 4,
+      "file": "selected/openai/openai-signals-p04-executive-summary.png",
+      "slideRole": "summary",
+      "layout": "icon-led-editorial-list",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "ordered-findings",
+      "learning": [
+        "Use small symbols as navigation cues while typography carries the content."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/openai/openai-signals-executive-summary.webp"
+    },
+    {
+      "id": "openai-signals-map",
+      "company": "openai",
+      "sourceId": "openai-signals-global-report",
+      "page": 9,
+      "file": "selected/openai/openai-signals-p09-map.png",
+      "slideRole": "geographic_evidence",
+      "layout": "full-field-map",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "global-map",
+      "learning": [
+        "Allow the data surface to dominate and keep explanatory copy outside the map."
+      ],
+      "motionSuggestion": "data-reveal",
+      "previewFile": "previews/openai/openai-signals-map.webp"
+    },
+    {
+      "id": "openai-signals-color-statement",
+      "company": "openai",
+      "sourceId": "openai-signals-global-report",
+      "page": 12,
+      "file": "selected/openai/openai-signals-p12-color-statement.png",
+      "slideRole": "section_statement",
+      "layout": "full-color-giant-statement",
+      "theme": "pale-blue",
+      "density": "low",
+      "visualFocus": "statement-on-color-field",
+      "learning": [
+        "Use one quiet full-page color shift to mark a narrative turn."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/openai/openai-signals-color-statement.webp"
+    },
+    {
+      "id": "openai-signals-privacy",
+      "company": "openai",
+      "sourceId": "openai-signals-global-report",
+      "page": 13,
+      "file": "selected/openai/openai-signals-p13-privacy.png",
+      "slideRole": "principles",
+      "layout": "two-column-principles",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "structured-principles",
+      "learning": [
+        "For governance content, rely on explicit hierarchy and whitespace rather than symbolic imagery."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/openai/openai-signals-privacy.webp"
+    },
+    {
+      "id": "nvidia-overview-cover",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 1,
+      "file": "selected/nvidia/nvidia-overview-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "brand-object-cover",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "large-brand-object",
+      "learning": [
+        "A dark geometric field can frame one strong identity object and a compact title."
+      ],
+      "motionSuggestion": "camera-push",
+      "previewFile": "previews/nvidia/nvidia-overview-cover.webp"
+    },
+    {
+      "id": "nvidia-overview-platform-layer",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 4,
+      "file": "selected/nvidia/nvidia-overview-p04-platform-layer.png",
+      "slideRole": "platform_architecture",
+      "layout": "diagonal-platform-stack",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "stacked-platform-chain",
+      "learning": [
+        "Use scale and diagonal progression to show dependency from compute primitives to end markets."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-overview-platform-layer.webp"
+    },
+    {
+      "id": "nvidia-overview-codesign-stack",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 6,
+      "file": "selected/nvidia/nvidia-overview-p06-codesign-stack.png",
+      "slideRole": "product_portfolio",
+      "layout": "stacked-product-family",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "hardware-family",
+      "learning": [
+        "Arrange a product family as a coherent system with a clear center of gravity, not as equal cards."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/nvidia/nvidia-overview-codesign-stack.webp"
+    },
+    {
+      "id": "nvidia-overview-ai-factory-wave",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 9,
+      "file": "selected/nvidia/nvidia-overview-p09-ai-factory-wave.png",
+      "slideRole": "concept_chart",
+      "layout": "layered-area-metaphor",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "layered-demand-wave",
+      "learning": [
+        "Turn a complex economic argument into one memorable layered silhouette with sparse labels."
+      ],
+      "motionSuggestion": "data-reveal",
+      "previewFile": "previews/nvidia/nvidia-overview-ai-factory-wave.webp"
+    },
+    {
+      "id": "nvidia-overview-performance-economics",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 12,
+      "file": "selected/nvidia/nvidia-overview-p12-performance-economics.png",
+      "slideRole": "comparison",
+      "layout": "paired-performance-charts",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "two-conclusion-charts",
+      "learning": [
+        "Pair two charts only when they support the same economic conclusion and share visual grammar."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/nvidia/nvidia-overview-performance-economics.webp"
+    },
+    {
+      "id": "nvidia-overview-flywheel",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 14,
+      "file": "selected/nvidia/nvidia-overview-p14-flywheel.png",
+      "slideRole": "ecosystem",
+      "layout": "dual-loop-flywheel",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "linked-value-loops",
+      "learning": [
+        "Use broad loops for causality and keep detailed proof outside the loop geometry."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-overview-flywheel.webp"
+    },
+    {
+      "id": "nvidia-overview-ai-economy",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 17,
+      "file": "selected/nvidia/nvidia-overview-p17-ai-economy.png",
+      "slideRole": "ecosystem_map",
+      "layout": "centered-platform-ecosystem",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "platform-and-industries",
+      "learning": [
+        "Place the platform at the center and group applications by category before adding examples."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-overview-ai-economy.webp"
+    },
+    {
+      "id": "nvidia-overview-customer-diversity",
+      "company": "nvidia",
+      "sourceId": "nvidia-company-overview-july-2026",
+      "page": 19,
+      "file": "selected/nvidia/nvidia-overview-p19-customer-diversity.png",
+      "slideRole": "portfolio_mix",
+      "layout": "paired-donut-comparison",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "two-segmented-distributions",
+      "learning": [
+        "Compare portfolio mix with two aligned summaries and place interpretation in the center."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/nvidia/nvidia-overview-customer-diversity.webp"
+    },
+    {
+      "id": "nvidia-gtc-ai-arrived",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 5,
+      "file": "selected/nvidia/nvidia-gtc-p05-ai-arrived.png",
+      "slideRole": "evidence",
+      "layout": "three-chart-proof-panel",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "synchronized-growth-curves",
+      "learning": [
+        "Use a repeated chart motif to make a cross-domain trend feel immediate."
+      ],
+      "motionSuggestion": "data-reveal",
+      "previewFile": "previews/nvidia/nvidia-gtc-ai-arrived.webp"
+    },
+    {
+      "id": "nvidia-gtc-agent-architecture",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 6,
+      "file": "selected/nvidia/nvidia-gtc-p06-agent-architecture.png",
+      "slideRole": "architecture",
+      "layout": "simple-system-boundaries",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "agent-llm-harness",
+      "learning": [
+        "Begin an architecture sequence with the smallest complete model before adding implementation detail."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-agent-architecture.webp"
+    },
+    {
+      "id": "nvidia-gtc-visual-montage",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 10,
+      "file": "selected/nvidia/nvidia-gtc-p10-visual-montage.png",
+      "slideRole": "section_reveal",
+      "layout": "cinematic-card-montage",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "layered-visual-cards",
+      "learning": [
+        "Use a visual montage as a chapter transition, then return to structured evidence."
+      ],
+      "motionSuggestion": "camera-push",
+      "previewFile": "previews/nvidia/nvidia-gtc-visual-montage.webp"
+    },
+    {
+      "id": "nvidia-gtc-factory-platform",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 13,
+      "file": "selected/nvidia/nvidia-gtc-p13-factory-platform.png",
+      "slideRole": "platform_architecture",
+      "layout": "layered-platform-with-hardware-base",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "software-to-hardware-stack",
+      "learning": [
+        "Anchor abstract layers to a concrete physical base so the architecture feels operational."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-factory-platform.webp"
+    },
+    {
+      "id": "nvidia-gtc-factory-ecosystem",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 15,
+      "file": "selected/nvidia/nvidia-gtc-p15-factory-ecosystem.png",
+      "slideRole": "ecosystem_map",
+      "layout": "logo-roles-over-platform",
+      "theme": "dark",
+      "density": "high",
+      "visualFocus": "role-grouped-ecosystem",
+      "learning": [
+        "When logos are necessary, group them by explicit system role and preserve the platform hierarchy."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-factory-ecosystem.webp"
+    },
+    {
+      "id": "nvidia-gtc-compute-wave-final",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 29,
+      "file": "selected/nvidia/nvidia-gtc-p29-compute-wave.png",
+      "slideRole": "concept_chart",
+      "layout": "final-state-layered-wave",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "three-revenue-waves",
+      "learning": [
+        "Design the final state first; use preceding build frames only when presenting live."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-compute-wave-final.webp"
+    },
+    {
+      "id": "nvidia-gtc-vera-spec",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 33,
+      "file": "selected/nvidia/nvidia-gtc-p33-vera-spec.png",
+      "slideRole": "product_spec",
+      "layout": "product-detail-plus-specs",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "chip-render",
+      "learning": [
+        "Let the product render own one side and align specifications in a short, highly scannable column."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/nvidia/nvidia-gtc-vera-spec.webp"
+    },
+    {
+      "id": "nvidia-gtc-agent-toolkit",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 42,
+      "file": "selected/nvidia/nvidia-gtc-p42-agent-toolkit.png",
+      "slideRole": "architecture",
+      "layout": "core-flow-with-context-orbits",
+      "theme": "dark",
+      "density": "high",
+      "visualFocus": "agent-toolkit-system",
+      "learning": [
+        "Keep the causal path central; place examples and ecosystem context in secondary circular callouts."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-agent-toolkit.webp"
+    },
+    {
+      "id": "nvidia-gtc-enterprise-platform-grid",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 48,
+      "file": "selected/nvidia/nvidia-gtc-p48-enterprise-platform-grid.png",
+      "slideRole": "solution_matrix",
+      "layout": "two-row-product-matrix",
+      "theme": "dark",
+      "density": "high",
+      "visualFocus": "enterprise-agent-platforms",
+      "learning": [
+        "A dense solution matrix needs identical mini-panel grammar and a clear row-level claim."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-enterprise-platform-grid.webp"
+    },
+    {
+      "id": "nvidia-gtc-pc-system",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 50,
+      "file": "selected/nvidia/nvidia-gtc-p50-pc-system.png",
+      "slideRole": "workflow_architecture",
+      "layout": "input-agent-application-flow",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "agent-to-local-apps",
+      "learning": [
+        "Show the interaction path across layers and keep application examples in a stable baseline row."
+      ],
+      "motionSuggestion": "data-flow",
+      "previewFile": "previews/nvidia/nvidia-gtc-pc-system.webp"
+    },
+    {
+      "id": "nvidia-gtc-product-roadmap",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 58,
+      "file": "selected/nvidia/nvidia-gtc-p58-product-roadmap.png",
+      "slideRole": "roadmap",
+      "layout": "three-generation-product-line",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "product-generations",
+      "learning": [
+        "Use physical scale, grouping, and a shared baseline to make a roadmap concrete."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/nvidia/nvidia-gtc-product-roadmap.webp"
+    },
+    {
+      "id": "nvidia-gtc-ai-economy-orbit",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 59,
+      "file": "selected/nvidia/nvidia-gtc-p59-ai-economy-orbit.png",
+      "slideRole": "ecosystem_map",
+      "layout": "radial-industry-ecosystem",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "central-platform-with-industries",
+      "learning": [
+        "A radial ecosystem works when every spoke maps to a distinct category and the center remains dominant."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-ai-economy-orbit.webp"
+    },
+    {
+      "id": "nvidia-gtc-drive-platform",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 64,
+      "file": "selected/nvidia/nvidia-gtc-p64-drive-platform.png",
+      "slideRole": "platform_architecture",
+      "layout": "product-plus-three-system-pillars",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "vehicle-platform",
+      "learning": [
+        "Explain a platform with one real-world object and three compact capability pillars."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/nvidia/nvidia-gtc-drive-platform.webp"
+    },
+    {
+      "id": "nvidia-gtc-robot-platform",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 67,
+      "file": "selected/nvidia/nvidia-gtc-p67-robot-platform.png",
+      "slideRole": "product_platform",
+      "layout": "hero-product-plus-system-modules",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "humanoid-and-platform-modules",
+      "learning": [
+        "Use the physical product for emotional scale and keep system modules as secondary evidence."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/nvidia/nvidia-gtc-robot-platform.webp"
+    },
+    {
+      "id": "nvidia-gtc-portfolio-resolution",
+      "company": "nvidia",
+      "sourceId": "nvidia-gtc-taipei-2026-keynote",
+      "page": 71,
+      "file": "selected/nvidia/nvidia-gtc-p71-portfolio-resolution.png",
+      "slideRole": "closing_system",
+      "layout": "panoramic-platform-lineup",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "end-to-end-portfolio",
+      "learning": [
+        "Resolve a long technical story with a single panoramic system view rather than another bullet summary."
+      ],
+      "motionSuggestion": "camera-push",
+      "previewFile": "previews/nvidia/nvidia-gtc-portfolio-resolution.webp"
+    },
+    {
+      "id": "github-brand-system",
+      "company": "github",
+      "sourceId": "github-brand-web",
+      "page": null,
+      "file": "captures/github/brand.png",
+      "slideRole": "brand_system",
+      "layout": "modular-developer-editorial",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "developer-brand-system",
+      "learning": [
+        "Combine precise developer utility with a warm editorial rhythm and reusable visual modules."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/github/github-brand-system.webp"
+    },
+    {
+      "id": "github-motion-principles",
+      "company": "github",
+      "sourceId": "github-motion-principles-web",
+      "page": null,
+      "file": "captures/github/motion-principles.png",
+      "slideRole": "motion_language",
+      "layout": "principles-with-live-examples",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "motion-principles",
+      "learning": [
+        "Use motion to clarify hierarchy and state while preserving developer-tool precision."
+      ],
+      "motionSuggestion": "product-state-change",
+      "previewFile": "previews/github/github-motion-principles.webp"
+    },
+    {
+      "id": "github-experiential-system",
+      "company": "github",
+      "sourceId": "github-experiential-web",
+      "page": null,
+      "file": "captures/github/experiential.png",
+      "slideRole": "event_system",
+      "layout": "large-scale-modular-brand",
+      "theme": "mixed",
+      "density": "low",
+      "visualFocus": "event-environment",
+      "learning": [
+        "Scale one coherent visual grammar across stage, signage, and digital surfaces."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/github/github-experiential-system.webp"
+    },
+    {
+      "id": "ibm-engineered-grid",
+      "company": "ibm",
+      "sourceId": "ibm-layout-web",
+      "page": null,
+      "file": "captures/ibm/layout.png",
+      "slideRole": "layout_system",
+      "layout": "engineered-grid",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "grid-and-alignment",
+      "learning": [
+        "Use a visible underlying grid, flush alignment, and controlled scale changes to make complexity feel engineered."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/ibm/ibm-engineered-grid.webp"
+    },
+    {
+      "id": "ibm-data-visualization",
+      "company": "ibm",
+      "sourceId": "ibm-data-visualization-web",
+      "page": null,
+      "file": "captures/ibm/data-visualization.png",
+      "slideRole": "data_evidence",
+      "layout": "message-led-data-visualization",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "data-story",
+      "learning": [
+        "Make the conclusion legible at a glance, label data directly, and remove nonessential decoration."
+      ],
+      "motionSuggestion": "data-trace",
+      "previewFile": "previews/ibm/ibm-data-visualization.webp"
+    },
+    {
+      "id": "ibm-motion-structure",
+      "company": "ibm",
+      "sourceId": "ibm-animation-web",
+      "page": null,
+      "file": "captures/ibm/animation.png",
+      "slideRole": "motion_language",
+      "layout": "technical-motion-examples",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "structured-motion",
+      "learning": [
+        "Use consistent direction, physicality, and attention transfer; simplify motion as information complexity increases."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/ibm/ibm-motion-structure.webp"
+    },
+    {
+      "id": "google-material-evolution",
+      "company": "google",
+      "sourceId": "google-material-eras-web",
+      "page": null,
+      "file": "captures/google/material-design-eras.png",
+      "slideRole": "design_evolution",
+      "layout": "era-based-editorial-story",
+      "theme": "colorful",
+      "density": "medium",
+      "visualFocus": "design-system-evolution",
+      "learning": [
+        "Use shape, variable type, color, and scale as a coherent expressive system rather than isolated decoration."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/google/google-material-evolution.webp"
+    },
+    {
+      "id": "google-expressive-research",
+      "company": "google",
+      "sourceId": "google-expressive-web",
+      "page": null,
+      "file": "captures/google/expressive-material-design.png",
+      "slideRole": "research_story",
+      "layout": "evidence-led-expressive-editorial",
+      "theme": "colorful",
+      "density": "medium",
+      "visualFocus": "expressive-design-evidence",
+      "learning": [
+        "Use expressive shape and color to focus attention, then support the choice with measurable usability evidence."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/google/google-expressive-research.webp"
+    },
+    {
+      "id": "google-io-multi-product-story",
+      "company": "google",
+      "sourceId": "google-io-2026-ai-web",
+      "page": null,
+      "file": "captures/google/io-2026-ai.png",
+      "slideRole": "multi_product_keynote",
+      "layout": "interlocking-product-constellation",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "multi-product-ai-system",
+      "learning": [
+        "Connect multiple products through one shared visual identity and a sequence of clear hero moments."
+      ],
+      "motionSuggestion": "object-morph",
+      "previewFile": "previews/google/google-io-multi-product-story.webp"
+    },
+    {
+      "id": "figma-brand-boundaries",
+      "company": "figma",
+      "sourceId": "figma-brand-guidelines-web",
+      "page": null,
+      "file": "captures/figma/brand-guidelines.png",
+      "slideRole": "brand_guideline",
+      "layout": "brand-rules-and-examples",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "brand-boundaries",
+      "learning": [
+        "Keep the reference at the principle level and ensure the user's own identity remains more prominent."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/figma/figma-brand-boundaries.webp"
+    },
+    {
+      "id": "figma-config-modular-system",
+      "company": "figma",
+      "sourceId": "figma-config-2024-branding-web",
+      "page": null,
+      "file": "captures/figma/config-2024-branding.png",
+      "slideRole": "event_identity",
+      "layout": "primitive-to-supergraphic",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "modular-supergraphics",
+      "learning": [
+        "Build many varied compositions from a small primitive library and a controlled palette system."
+      ],
+      "motionSuggestion": "object-morph",
+      "previewFile": "previews/figma/figma-config-modular-system.webp"
+    },
+    {
+      "id": "human-marketplace-rights-boundary",
+      "company": "human-marketplace",
+      "sourceId": "airbnb-trademark-guidelines-web",
+      "page": null,
+      "file": "captures/human-marketplace/airbnb-trademark-guidelines.png",
+      "slideRole": "rights_boundary",
+      "layout": "rules-and-safe-adaptation",
+      "theme": "light",
+      "density": "high",
+      "visualFocus": "trademark-boundaries",
+      "learning": [
+        "Abstract the human marketplace narrative while avoiding protected marks, signature color, and confusingly similar trade dress."
+      ],
+      "motionSuggestion": "none",
+      "previewFile": "previews/human-marketplace/human-marketplace-rights-boundary.webp"
+    },
+    {
+      "id": "human-marketplace-investor-archive",
+      "company": "human-marketplace",
+      "sourceId": "airbnb-investor-events-web",
+      "page": null,
+      "file": "captures/human-marketplace/airbnb-investor-events.png",
+      "slideRole": "marketplace_story",
+      "layout": "human-story-plus-marketplace-evidence",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "host-guest-marketplace",
+      "learning": [
+        "Pair a recognizable human journey with marketplace mechanics and trust evidence."
+      ],
+      "motionSuggestion": "journey-build",
+      "previewFile": "previews/human-marketplace/human-marketplace-investor-archive.webp"
+    },
+    {
+      "id": "stripe-sessions-event-system",
+      "company": "stripe-developer-finance",
+      "sourceId": "stripe-sessions-2026-web",
+      "page": null,
+      "file": "captures/stripe-developer-finance/sessions-2026.png",
+      "slideRole": "developer_event",
+      "layout": "developer-finance-event-hero",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "economic-infrastructure-event",
+      "learning": [
+        "Make financial infrastructure feel like a developer product through polished abstract systems and concise claims."
+      ],
+      "motionSuggestion": "camera-push",
+      "previewFile": "previews/stripe-developer-finance/stripe-sessions-event-system.webp"
+    },
+    {
+      "id": "stripe-economic-update",
+      "company": "stripe-developer-finance",
+      "sourceId": "stripe-2025-update-web",
+      "page": null,
+      "file": "captures/stripe-developer-finance/2025-update.png",
+      "slideRole": "company_update",
+      "layout": "editorial-metrics-and-economy",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "economic-network",
+      "learning": [
+        "Frame product progress through the economic activity it enables, then support it with restrained metrics."
+      ],
+      "motionSuggestion": "data-trace",
+      "previewFile": "previews/stripe-developer-finance/stripe-economic-update.webp"
+    },
+    {
+      "id": "vercel-design-precision",
+      "company": "vercel-product-demo",
+      "sourceId": "vercel-design-web",
+      "page": null,
+      "file": "captures/vercel-product-demo/design.png",
+      "slideRole": "product_demo_style",
+      "layout": "dark-precision-product-hero",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "design-engineering-craft",
+      "learning": [
+        "Use precise monochrome structure and let one product state or crafted visual carry the frame."
+      ],
+      "motionSuggestion": "product-state-change",
+      "previewFile": "previews/vercel-product-demo/vercel-design-precision.webp"
+    },
+    {
+      "id": "vercel-ship-fluid-system",
+      "company": "vercel-product-demo",
+      "sourceId": "vercel-ship-2025-design-web",
+      "page": null,
+      "file": "captures/vercel-product-demo/ship-2025-design.png",
+      "slideRole": "motion_case_study",
+      "layout": "concept-to-code-motion-story",
+      "theme": "dark",
+      "density": "medium",
+      "visualFocus": "fluid-motion-system",
+      "learning": [
+        "Prototype the visual identity in code, keep a stable material and lighting system, and simplify when effects overpower usability."
+      ],
+      "motionSuggestion": "fluid-state-change",
+      "previewFile": "previews/vercel-product-demo/vercel-ship-fluid-system.webp"
+    },
+    {
+      "id": "cloudflare-investor-cover",
+      "company": "cloudflare-network",
+      "sourceId": "cloudflare-investor-day-2026",
+      "page": 1,
+      "file": "selected/cloudflare-network/cloudflare-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "minimal-infrastructure-cover",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "event-title",
+      "learning": [
+        "Open a long technical narrative with a quiet event frame and no premature architecture."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/cloudflare-network/cloudflare-investor-cover.webp"
+    },
+    {
+      "id": "cloudflare-developer-vision",
+      "company": "cloudflare-network",
+      "sourceId": "cloudflare-investor-day-2026",
+      "page": 8,
+      "file": "selected/cloudflare-network/cloudflare-p08-developer-vision.png",
+      "slideRole": "vision",
+      "layout": "four-part-developer-vision",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "developer-platform-principles",
+      "learning": [
+        "State a developer platform vision as a small set of explicit operating principles."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/cloudflare-network/cloudflare-developer-vision.webp"
+    },
+    {
+      "id": "cloudflare-agent-workflow",
+      "company": "cloudflare-network",
+      "sourceId": "cloudflare-investor-day-2026",
+      "page": 21,
+      "file": "selected/cloudflare-network/cloudflare-p21-agent-workflow.png",
+      "slideRole": "workflow_architecture",
+      "layout": "manager-agent-feedback-loop",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "agent-feedback-loop",
+      "learning": [
+        "Show the causal path first and place user feedback as an explicit loop rather than a decorative arrow."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/cloudflare-network/cloudflare-agent-workflow.webp"
+    },
+    {
+      "id": "cloudflare-agentic-primitives",
+      "company": "cloudflare-network",
+      "sourceId": "cloudflare-investor-day-2026",
+      "page": 46,
+      "file": "selected/cloudflare-network/cloudflare-p46-agentic-primitives.png",
+      "slideRole": "platform_comparison",
+      "layout": "old-new-cloud-primitives",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "agentic-cloud-primitives",
+      "learning": [
+        "Translate an infrastructure shift by comparing familiar primitives with the new system equivalents."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/cloudflare-network/cloudflare-agentic-primitives.webp"
+    },
+    {
+      "id": "cloudflare-control-plane",
+      "company": "cloudflare-network",
+      "sourceId": "cloudflare-investor-day-2026",
+      "page": 87,
+      "file": "selected/cloudflare-network/cloudflare-p87-control-plane.png",
+      "slideRole": "platform_architecture",
+      "layout": "supply-demand-control-plane",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "agentic-internet-control-plane",
+      "learning": [
+        "Place the platform as a control plane between supply, demand, and technical capabilities."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/cloudflare-network/cloudflare-control-plane.webp"
+    },
+    {
+      "id": "cloudflare-technical-beliefs",
+      "company": "cloudflare-network",
+      "sourceId": "cloudflare-investor-day-2026",
+      "page": 95,
+      "file": "selected/cloudflare-network/cloudflare-p95-technical-beliefs.png",
+      "slideRole": "principles",
+      "layout": "four-technical-beliefs",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "platform-beliefs",
+      "learning": [
+        "Explain infrastructure differentiation as a concise belief system before showing implementation detail."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/cloudflare-network/cloudflare-technical-beliefs.webp"
+    },
+    {
+      "id": "snowflake-investor-cover",
+      "company": "snowflake-saas-investor",
+      "sourceId": "snowflake-investor-day-2026",
+      "page": 1,
+      "file": "selected/snowflake-saas-investor/snowflake-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "minimal-brand-cover",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "event-title",
+      "learning": [
+        "Use a clean brand field and a concise event title to establish confidence."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/snowflake-saas-investor/snowflake-investor-cover.webp"
+    },
+    {
+      "id": "snowflake-old-new-work",
+      "company": "snowflake-saas-investor",
+      "sourceId": "snowflake-investor-day-2026",
+      "page": 6,
+      "file": "selected/snowflake-saas-investor/snowflake-p06-agentic-leverage.png",
+      "slideRole": "before_after",
+      "layout": "old-new-work-model",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "agentic-leverage",
+      "learning": [
+        "Use a matched before-and-after composition to make a workflow transformation immediately legible."
+      ],
+      "motionSuggestion": "compare-morph",
+      "previewFile": "previews/snowflake-saas-investor/snowflake-old-new-work.webp"
+    },
+    {
+      "id": "snowflake-agentic-control-plane",
+      "company": "snowflake-saas-investor",
+      "sourceId": "snowflake-investor-day-2026",
+      "page": 8,
+      "file": "selected/snowflake-saas-investor/snowflake-p08-control-plane.png",
+      "slideRole": "architecture",
+      "layout": "three-domain-control-plane",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "agentic-control-plane",
+      "learning": [
+        "Bridge models, enterprise context, and applications through one named control layer."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/snowflake-saas-investor/snowflake-agentic-control-plane.webp"
+    },
+    {
+      "id": "snowflake-enterprise-context",
+      "company": "snowflake-saas-investor",
+      "sourceId": "snowflake-investor-day-2026",
+      "page": 15,
+      "file": "selected/snowflake-saas-investor/snowflake-p15-enterprise-context.png",
+      "slideRole": "platform_architecture",
+      "layout": "claim-plus-platform-stack",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "enterprise-context-and-governance",
+      "learning": [
+        "Lead with the platform-level promise, then show the layers that make it credible."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/snowflake-saas-investor/snowflake-enterprise-context.webp"
+    },
+    {
+      "id": "snowflake-product-narrative",
+      "company": "snowflake-saas-investor",
+      "sourceId": "snowflake-investor-day-2026",
+      "page": 18,
+      "file": "selected/snowflake-saas-investor/snowflake-p18-product-narrative.png",
+      "slideRole": "product_value",
+      "layout": "promise-plus-three-reasons",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "coding-agent-value",
+      "learning": [
+        "Translate a technical product into one user outcome and three proof points."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/snowflake-saas-investor/snowflake-product-narrative.webp"
+    },
+    {
+      "id": "snowflake-accuracy-evidence",
+      "company": "snowflake-saas-investor",
+      "sourceId": "snowflake-investor-day-2026",
+      "page": 24,
+      "file": "selected/snowflake-saas-investor/snowflake-p24-accuracy-evidence.png",
+      "slideRole": "evidence",
+      "layout": "benchmark-plus-economics",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "accuracy-and-cost",
+      "learning": [
+        "Pair quality evidence with cost evidence to make an AI product case decision-ready."
+      ],
+      "motionSuggestion": "data-trace",
+      "previewFile": "previews/snowflake-saas-investor/snowflake-accuracy-evidence.webp"
+    },
+    {
+      "id": "snowflake-active-context-stack",
+      "company": "snowflake-saas-investor",
+      "sourceId": "snowflake-investor-day-2026",
+      "page": 34,
+      "file": "selected/snowflake-saas-investor/snowflake-p34-active-context-stack.png",
+      "slideRole": "technology_stack",
+      "layout": "active-context-layered-stack",
+      "theme": "light",
+      "density": "high",
+      "visualFocus": "catalog-data-tools-stack",
+      "learning": [
+        "Use explicit layer names and boundary lines so a dense data stack remains scannable."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/snowflake-saas-investor/snowflake-active-context-stack.webp"
+    },
+    {
+      "id": "adobe-investor-cover",
+      "company": "adobe-creative-workflow",
+      "sourceId": "adobe-investor-summit-2026",
+      "page": 1,
+      "file": "selected/adobe-creative-workflow/adobe-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "minimal-creative-cover",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "event-title",
+      "learning": [
+        "Use a minimal cover before moving into a more expressive product portfolio."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/adobe-creative-workflow/adobe-investor-cover.webp"
+    },
+    {
+      "id": "adobe-mission",
+      "company": "adobe-creative-workflow",
+      "sourceId": "adobe-investor-summit-2026",
+      "page": 3,
+      "file": "selected/adobe-creative-workflow/adobe-p03-mission.png",
+      "slideRole": "mission",
+      "layout": "giant-mission-statement",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "mission-statement",
+      "learning": [
+        "Let one mission sentence fill the frame and use brand color as a controlled emotional cue."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/adobe-creative-workflow/adobe-mission.webp"
+    },
+    {
+      "id": "adobe-customer-strategy",
+      "company": "adobe-creative-workflow",
+      "sourceId": "adobe-investor-summit-2026",
+      "page": 4,
+      "file": "selected/adobe-creative-workflow/adobe-p04-customer-strategy.png",
+      "slideRole": "portfolio_strategy",
+      "layout": "three-domain-customer-strategy",
+      "theme": "colorful",
+      "density": "medium",
+      "visualFocus": "creativity-productivity-experience",
+      "learning": [
+        "Organize a broad portfolio into three customer jobs and one unifying AI-era claim."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/adobe-creative-workflow/adobe-customer-strategy.webp"
+    },
+    {
+      "id": "adobe-innovation-matrix",
+      "company": "adobe-creative-workflow",
+      "sourceId": "adobe-investor-summit-2026",
+      "page": 6,
+      "file": "selected/adobe-creative-workflow/adobe-p06-innovation-matrix.png",
+      "slideRole": "product_matrix",
+      "layout": "capability-by-surface-matrix",
+      "theme": "light",
+      "density": "high",
+      "visualFocus": "creative-ai-innovation",
+      "learning": [
+        "Use a disciplined matrix only when both dimensions have decision value and every cell shares one grammar."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/adobe-creative-workflow/adobe-innovation-matrix.webp"
+    },
+    {
+      "id": "adobe-execution-evidence",
+      "company": "adobe-creative-workflow",
+      "sourceId": "adobe-investor-summit-2026",
+      "page": 10,
+      "file": "selected/adobe-creative-workflow/adobe-p10-execution-evidence.png",
+      "slideRole": "metrics",
+      "layout": "strategy-to-momentum-metrics",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "business-momentum",
+      "learning": [
+        "Connect execution metrics directly back to the strategy named earlier in the deck."
+      ],
+      "motionSuggestion": "data-trace",
+      "previewFile": "previews/adobe-creative-workflow/adobe-execution-evidence.webp"
+    },
+    {
+      "id": "salesforce-investor-cover",
+      "company": "salesforce-customer-success",
+      "sourceId": "salesforce-q4-fy26-investor-deck",
+      "page": 1,
+      "file": "selected/salesforce-customer-success/salesforce-p01-cover.png",
+      "slideRole": "cover",
+      "layout": "branded-earnings-cover",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "earnings-event",
+      "learning": [
+        "Use an approachable branded cover to soften a data-heavy enterprise narrative."
+      ],
+      "motionSuggestion": "dissolve-reveal",
+      "previewFile": "previews/salesforce-customer-success/salesforce-investor-cover.webp"
+    },
+    {
+      "id": "salesforce-product-story-a",
+      "company": "salesforce-customer-success",
+      "sourceId": "salesforce-q4-fy26-investor-deck",
+      "page": 5,
+      "file": "selected/salesforce-customer-success/salesforce-p05-product-story.png",
+      "slideRole": "customer_story",
+      "layout": "product-story-visual",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "enterprise-ai-story",
+      "learning": [
+        "Use a friendly visual bridge between executive claims and financial evidence."
+      ],
+      "motionSuggestion": "masked-product-reveal",
+      "previewFile": "previews/salesforce-customer-success/salesforce-product-story-a.webp"
+    },
+    {
+      "id": "salesforce-product-story-b",
+      "company": "salesforce-customer-success",
+      "sourceId": "salesforce-q4-fy26-investor-deck",
+      "page": 7,
+      "file": "selected/salesforce-customer-success/salesforce-p07-product-story.png",
+      "slideRole": "ecosystem_story",
+      "layout": "customer-ecosystem-visual",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "customer-success-ecosystem",
+      "learning": [
+        "Alternate financial density with a clear customer or ecosystem frame to maintain narrative rhythm."
+      ],
+      "motionSuggestion": "journey-build",
+      "previewFile": "previews/salesforce-customer-success/salesforce-product-story-b.webp"
+    },
+    {
+      "id": "salesforce-financial-results",
+      "company": "salesforce-customer-success",
+      "sourceId": "salesforce-q4-fy26-investor-deck",
+      "page": 11,
+      "file": "selected/salesforce-customer-success/salesforce-p11-financial-results.png",
+      "slideRole": "financial_metrics",
+      "layout": "top-line-profit-cash-scorecard",
+      "theme": "light",
+      "density": "high",
+      "visualFocus": "financial-scorecard",
+      "learning": [
+        "Group recurring revenue, profit, cash, and capital return into a single executive scorecard with obvious hierarchy."
+      ],
+      "motionSuggestion": "data-trace",
+      "previewFile": "previews/salesforce-customer-success/salesforce-financial-results.webp"
+    },
+    {
+      "id": "salesforce-region-growth",
+      "company": "salesforce-customer-success",
+      "sourceId": "salesforce-q4-fy26-investor-deck",
+      "page": 20,
+      "file": "selected/salesforce-customer-success/salesforce-p20-region-growth.png",
+      "slideRole": "regional_metrics",
+      "layout": "map-plus-growth-trends",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "regional-growth",
+      "learning": [
+        "Combine a geographic summary with only the trend detail needed to explain regional performance."
+      ],
+      "motionSuggestion": "data-trace",
+      "previewFile": "previews/salesforce-customer-success/salesforce-region-growth.webp"
+    },
+    {
+      "id": "bcg-value-framework",
+      "company": "bcg-consulting-evidence",
+      "sourceId": "bcg-future-marketing-genai-2025",
+      "page": 3,
+      "file": "selected/bcg-consulting-evidence/bcg-p03-value-framework.png",
+      "slideRole": "framework",
+      "layout": "three-value-levers",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "ai-marketing-value",
+      "learning": [
+        "State the value logic as three mutually distinct levers before entering examples."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/bcg-consulting-evidence/bcg-value-framework.webp"
+    },
+    {
+      "id": "bcg-executive-summary",
+      "company": "bcg-consulting-evidence",
+      "sourceId": "bcg-future-marketing-genai-2025",
+      "page": 4,
+      "file": "selected/bcg-consulting-evidence/bcg-p04-executive-summary.png",
+      "slideRole": "executive_summary",
+      "layout": "conclusion-first-summary",
+      "theme": "light",
+      "density": "high",
+      "visualFocus": "executive-takeaways",
+      "learning": [
+        "Make every section a conclusion and give each conclusion a short proof line."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/bcg-consulting-evidence/bcg-executive-summary.webp"
+    },
+    {
+      "id": "bcg-art-science-model",
+      "company": "bcg-consulting-evidence",
+      "sourceId": "bcg-future-marketing-genai-2025",
+      "page": 6,
+      "file": "selected/bcg-consulting-evidence/bcg-p06-art-science-model.png",
+      "slideRole": "operating_model",
+      "layout": "art-science-orchestration",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "marketing-operating-model",
+      "learning": [
+        "Use a memorable conceptual triad to organize a complex operating model."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/bcg-consulting-evidence/bcg-art-science-model.webp"
+    },
+    {
+      "id": "bcg-impact-evidence",
+      "company": "bcg-consulting-evidence",
+      "sourceId": "bcg-future-marketing-genai-2025",
+      "page": 8,
+      "file": "selected/bcg-consulting-evidence/bcg-p08-impact-evidence.png",
+      "slideRole": "impact_case",
+      "layout": "value-equation-and-proof",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "marketing-value-uplift",
+      "learning": [
+        "Express the impact as one equation or range and reveal the assumptions beside it."
+      ],
+      "motionSuggestion": "data-trace",
+      "previewFile": "previews/bcg-consulting-evidence/bcg-impact-evidence.webp"
+    },
+    {
+      "id": "bcg-audience-engine",
+      "company": "bcg-consulting-evidence",
+      "sourceId": "bcg-future-marketing-genai-2025",
+      "page": 13,
+      "file": "selected/bcg-consulting-evidence/bcg-p13-audience-engine.png",
+      "slideRole": "process_architecture",
+      "layout": "audience-to-activation-engine",
+      "theme": "light",
+      "density": "high",
+      "visualFocus": "segmentation-and-activation",
+      "learning": [
+        "Keep a complex consulting process readable by naming stages as outcomes, not internal workstreams."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/bcg-consulting-evidence/bcg-audience-engine.webp"
+    },
+    {
+      "id": "bcg-transformation-path",
+      "company": "bcg-consulting-evidence",
+      "sourceId": "bcg-future-marketing-genai-2025",
+      "page": 25,
+      "file": "selected/bcg-consulting-evidence/bcg-p25-transformation-path.png",
+      "slideRole": "roadmap",
+      "layout": "three-entry-paths",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "transformation-entry-options",
+      "learning": [
+        "Offer a small number of explicit starting paths and tie each to a different ambition level."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/bcg-consulting-evidence/bcg-transformation-path.webp"
+    },
+    {
+      "id": "spotify-brand-system",
+      "company": "spotify",
+      "sourceId": "spotify-brand-redesign-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/brand/01-brand-system.png",
+      "slideRole": "brand_system",
+      "layout": "artifact-stack-and-guideline-cover",
+      "theme": "light",
+      "density": "low",
+      "visualFocus": "brand-guideline-system",
+      "learning": [
+        "Present a brand system as a small set of tangible artifacts with one high-energy accent plane."
+      ],
+      "motionSuggestion": "layered-card-reveal",
+      "previewFile": "previews/spotify/spotify-brand-system.webp"
+    },
+    {
+      "id": "spotify-brand-expression",
+      "company": "spotify",
+      "sourceId": "spotify-brand-redesign-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/brand/02-brand-expression.png",
+      "slideRole": "design_rationale",
+      "layout": "insight-board-with-annotations",
+      "theme": "light",
+      "density": "medium",
+      "visualFocus": "research-to-expression",
+      "learning": [
+        "Use a curated research wall to show how observations become an expressive visual direction."
+      ],
+      "motionSuggestion": "progressive-build",
+      "previewFile": "previews/spotify/spotify-brand-expression.webp"
+    },
+    {
+      "id": "spotify-type-and-color",
+      "company": "spotify",
+      "sourceId": "spotify-brand-redesign-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/brand/04-type-and-color.png",
+      "slideRole": "event_poster_system",
+      "layout": "three-poster-rhythm",
+      "theme": "colorful",
+      "density": "medium",
+      "visualFocus": "typography-color-and-portrait",
+      "learning": [
+        "Create variation through strong type scale, cropped portraiture, and a controlled set of saturated fields."
+      ],
+      "motionSuggestion": "poster-sequence",
+      "previewFile": "previews/spotify/spotify-type-and-color.webp"
+    },
+    {
+      "id": "spotify-expression-range",
+      "company": "spotify",
+      "sourceId": "spotify-brand-redesign-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/brand/05-expression-range.png",
+      "slideRole": "visual_system_range",
+      "layout": "modular-poster-mosaic",
+      "theme": "colorful",
+      "density": "medium",
+      "visualFocus": "coherent-variation",
+      "learning": [
+        "Show that a coherent identity can support wide variation when typography, marks, and compositional rhythm stay controlled."
+      ],
+      "motionSuggestion": "rhythmic-grid-build",
+      "previewFile": "previews/spotify/spotify-expression-range.webp"
+    },
+    {
+      "id": "spotify-principles-hero",
+      "company": "spotify",
+      "sourceId": "spotify-design-principles-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/principles/00-hero.png",
+      "slideRole": "principles_overview",
+      "layout": "three-principle-card-fan",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "relevant-human-unified",
+      "learning": [
+        "Name a small principle set with plain-language adjectives and give each principle one memorable visual signature."
+      ],
+      "motionSuggestion": "card-fan-reveal",
+      "previewFile": "previews/spotify/spotify-principles-hero.webp"
+    },
+    {
+      "id": "spotify-principle-human",
+      "company": "spotify",
+      "sourceId": "spotify-design-principles-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/principles/03-human.png",
+      "slideRole": "principle_example",
+      "layout": "principle-plus-product-evidence",
+      "theme": "blue",
+      "density": "medium",
+      "visualFocus": "humanity-through-product-detail",
+      "learning": [
+        "Explain an abstract design principle through two concrete product moments and short annotations."
+      ],
+      "motionSuggestion": "evidence-pair-reveal",
+      "previewFile": "previews/spotify/spotify-principle-human.webp"
+    },
+    {
+      "id": "spotify-principle-unified",
+      "company": "spotify",
+      "sourceId": "spotify-design-principles-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/principles/04-unified.png",
+      "slideRole": "principle_example",
+      "layout": "principle-plus-cultural-examples",
+      "theme": "pink",
+      "density": "medium",
+      "visualFocus": "global-relevance-with-local-expression",
+      "learning": [
+        "Pair a universal principle with culturally specific examples to prevent the message from becoming generic."
+      ],
+      "motionSuggestion": "annotated-example-build",
+      "previewFile": "previews/spotify/spotify-principle-unified.webp"
+    },
+    {
+      "id": "spotify-principles-summary",
+      "company": "spotify",
+      "sourceId": "spotify-design-principles-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/principles/09-principles-in-use.png",
+      "slideRole": "section_summary",
+      "layout": "three-word-manifesto",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "principle-names-and-symbols",
+      "learning": [
+        "Close a principles section with only the memorable names and symbols, removing all explanatory scaffolding."
+      ],
+      "motionSuggestion": "staggered-word-reveal",
+      "previewFile": "previews/spotify/spotify-principles-summary.webp"
+    },
+    {
+      "id": "spotify-encore-identity",
+      "company": "spotify",
+      "sourceId": "spotify-design-systems-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/systems/07-design-ops.png",
+      "slideRole": "system_reveal",
+      "layout": "wordmark-with-component-confetti",
+      "theme": "dark",
+      "density": "low",
+      "visualFocus": "design-system-identity",
+      "learning": [
+        "Give an internal design system a distinct identity while deriving its motifs from real component primitives."
+      ],
+      "motionSuggestion": "component-confetti-build",
+      "previewFile": "previews/spotify/spotify-encore-identity.webp"
+    },
+    {
+      "id": "spotify-encore-foundation",
+      "company": "spotify",
+      "sourceId": "spotify-design-systems-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/systems/08-component-process.png",
+      "slideRole": "system_layer",
+      "layout": "concentric-layer-explainer",
+      "theme": "blue",
+      "density": "low",
+      "visualFocus": "foundation-layer",
+      "learning": [
+        "Explain a design-system layer with one geometric model, one label, and one sentence."
+      ],
+      "motionSuggestion": "concentric-layer-build",
+      "previewFile": "previews/spotify/spotify-encore-foundation.webp"
+    },
+    {
+      "id": "spotify-encore-governance",
+      "company": "spotify",
+      "sourceId": "spotify-design-systems-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/systems/12-governance.png",
+      "slideRole": "system_architecture",
+      "layout": "global-and-local-system-map",
+      "theme": "blue",
+      "density": "medium",
+      "visualFocus": "shared-core-and-local-systems",
+      "learning": [
+        "Show governance as a relationship between a shared core and audience-specific local systems, not as a policy list."
+      ],
+      "motionSuggestion": "architecture-build",
+      "previewFile": "previews/spotify/spotify-encore-governance.webp"
+    },
+    {
+      "id": "spotify-encore-impact",
+      "company": "spotify",
+      "sourceId": "spotify-design-systems-web",
+      "page": null,
+      "file": "captures/spotify/source-assets/systems/13-system-impact.png",
+      "slideRole": "system_outcome",
+      "layout": "two-product-proof-frames",
+      "theme": "colorful",
+      "density": "low",
+      "visualFocus": "system-documentation-and-product-proof",
+      "learning": [
+        "End a design-system story with paired proof: the documentation environment and the resulting product surface."
+      ],
+      "motionSuggestion": "paired-proof-reveal",
+      "previewFile": "previews/spotify/spotify-encore-impact.webp"
+    }
+  ]
+}

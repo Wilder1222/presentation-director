@@ -1,0 +1,27 @@
+version: 1
+id: bcg-consulting-evidence-role-pack
+scope: secondary_reference_only
+use_for: [executive_summary, consulting_framework, value_case, operating_model, transformation_roadmap]
+do_not_use_for: [global_brand_identity, emotional_keynote, decorative_frameworks]
+
+narrative_job: Make every executive slide a conclusion supported by a visible proof structure.
+visual_grammar:
+  - conclusion-first titles
+  - mutually distinct levers or stages
+  - evidence annotated next to the claim it supports
+  - dense pages retain a single reading order
+  - roadmaps offer explicit starting paths and ambition levels
+
+preferred_patterns: [three-value-levers, conclusion-first-summary, art-science-model, value-equation, audience-engine, transformation-path]
+motion_cues: [progressive-build, data-trace, stage-highlight]
+anti_patterns: [framework-for-decoration, unlabeled-arrows, tiny-source-text, overfilled-executive-summary, generic-pyramid]
+
+local_reference_examples:
+  - bcg-value-framework
+  - bcg-executive-summary
+  - bcg-art-science-model
+  - bcg-impact-evidence
+  - bcg-audience-engine
+  - bcg-transformation-path
+
+source_ids: [bcg-future-marketing-genai-2025]

@@ -1,0 +1,105 @@
+version: 2
+id: spotify-cultural-rhythm-inspired
+label: Spotify-inspired cultural rhythm and modular design systems
+status: derived_internal_reference_from_official_author_material
+official_template: false
+usage:
+  allowed: abstract_design_principles
+  prohibited:
+    - redistribute_source_assets
+    - copy_spotify_marks_or_product_ui
+    - reuse_campaign_artwork
+    - imply_spotify_endorsement
+    - adopt_spotify_green_as_a_default_brand_identity
+
+best_for:
+  - cultural_product_story
+  - personalization
+  - community_or_creator_narrative
+  - design_principles
+  - design_system_explainer
+
+communication:
+  default_job: Make a product system feel culturally alive without losing structural coherence.
+  pacing: observation_to_principle_to_expression_to_system_proof
+  density: low_to_medium
+  evidence_style: cultural_examples_plus_real_product_or_system_artifacts
+
+official_observations:
+  - The published principles are Relevant, Human, and Unified.
+  - Expressive variation is held together by typography, recurring symbols, and compositional rhythm.
+  - Encore explains a global core and audience-specific local systems through concentric models.
+
+derived_design_dna:
+  composition:
+    - saturated fields alternate with quiet editorial boards
+    - oversized typography and portrait or product fragments create rhythm
+    - hand-drawn marks humanize otherwise strict grids
+    - system diagrams use a small repeatable geometry across many layers
+    - summaries reduce back to memorable words and symbols
+  hierarchy:
+    headline_share: high
+    body_share: low_to_medium
+    focal_objects: 1_to_3
+    supporting_elements_max: 5
+  surface:
+    geometry: bold_blocks_plus_loose_gesture_marks
+    decoration: expressive_but_recurring
+    image_treatment: cultural_specific_and_candid
+
+safe_adaptation:
+  palette:
+    ink: "#101010"
+    paper: "#F7F1EE"
+    accent_strategy: choose_two_or_three_user_brand_saturated_fields
+    accent_usage_max_percent: 45
+  typography:
+    strategy: bold_user_display_sans_plus_neutral_body_sans
+    display_weight: 700
+    body_weight: 400
+  spacing:
+    safe_margin_percent: 5
+    whitespace: alternate_quiet_and_dense
+  image_direction:
+    - culturally specific people, objects, and product moments
+    - visible authorship and imperfection
+    - no generic festival stock photography
+
+preferred_layout_patterns:
+  - cultural-poster-sequence
+  - insight-board
+  - three-principle-manifesto
+  - principle-plus-evidence
+  - modular-expression-mosaic
+  - concentric-system-map
+  - paired-system-proof
+
+motion_language:
+  tempo: rhythmic_with_clear_holds
+  preferred: [poster-sequence, card-fan-reveal, drawn-mark-trace, concentric-layer-build, rhythmic-grid-build]
+  choreography:
+    - let one saturated frame land before introducing another
+    - reveal principle_name_then_specific_evidence
+    - reuse one motion motif across the whole section
+  avoid: [music_equalizer_cliches, endless_marquee, beat_synced_motion_without_meaning]
+
+anti_patterns: [spotify_green_everywhere, copied_wrapped_visuals, generic_music_icons, decorative_squiggle_overload, mixed_uncontrolled_palettes]
+
+compatible_secondary_roles:
+  culture_or_creator: use_for_named_story_slides_only
+  design_system: borrow_concentric_architecture_without_borrowing_the_palette
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  acquisition_note: spotify.design timed out; source images were retrieved from the official Spotify Design author publication mirrors on Medium
+  local_reference_examples:
+    - spotify-brand-system
+    - spotify-expression-range
+    - spotify-principles-hero
+    - spotify-principle-human
+    - spotify-principles-summary
+    - spotify-encore-governance
+    - spotify-encore-impact
+
+source_ids: [spotify-brand-redesign-web, spotify-design-principles-web, spotify-design-systems-web]

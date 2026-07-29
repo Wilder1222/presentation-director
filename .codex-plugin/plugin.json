@@ -1,0 +1,18 @@
+{
+  "name": "codex-presentation-director",
+  "version": "0.1.0",
+  "description": "Direct coherent, design-led presentations across editable PowerPoint, generated visuals, diagrams, and motion.",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Presentation Director",
+    "shortDescription": "Direct polished PPTX, visuals, diagrams, and motion",
+    "longDescription": "A lightweight presentation director that plans narrative and design, selects traceable reference DNA, routes work to presentation, image, HyperFrames, and Remotion capabilities, and validates the final result.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Write"],
+    "defaultPrompt": "Turn my brief and references into a coherent, validated presentation."
+  }
+}

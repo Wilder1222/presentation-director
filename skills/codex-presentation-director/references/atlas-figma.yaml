@@ -1,0 +1,84 @@
+version: 2
+id: modular-collaboration-inspired
+label: Modular collaboration and event recomposition
+status: derived_internal_reference_with_strict_identity_boundary
+official_template: false
+usage:
+  allowed: abstract_modular_and_collaborative_principles
+  prohibited:
+    - imitate_figma_visual_identity
+    - copy_figma_marks_or_product_ui
+    - reuse_config_campaign_assets
+    - imply_figma_endorsement
+
+best_for:
+  - collaborative_workflow
+  - design_tool_story
+  - creative_event
+  - modular_product_ecosystem
+  - co_creation_narrative
+
+communication:
+  default_job: Show how simple shared primitives unlock many collaborative outcomes.
+  pacing: primitive_to_combination_to_participation_to_system
+  density: low_to_medium
+  evidence_style: visible_components_and_recomposition
+
+official_observations:
+  - Brand guidance establishes strict boundaries around official identity use.
+  - Config case material demonstrates variation from a constrained primitive set.
+  - Motion and recomposition help communicate co-creation rather than a fixed artifact.
+
+derived_design_dna:
+  composition:
+    - a small primitive set recombined across page roles
+    - visible construction logic instead of decorative complexity
+    - asymmetrical modular clusters balanced by strong negative space
+    - collaboration shown through transformations and shared states
+  hierarchy:
+    headline_share: high
+    body_share: low
+    focal_objects: 1_to_3
+    supporting_elements_max: 5
+  surface:
+    geometry: modular_primitives
+    decoration: system_generated
+    image_treatment: process_artifact_or_collaborative_scene
+
+safe_adaptation:
+  palette:
+    rule: use_the_users_own_palette_only
+    accent_count: 3_to_5
+  typography:
+    strategy: user_brand_type
+    display_weight: 600
+    body_weight: 400
+  spacing:
+    safe_margin_percent: 5
+    whitespace: high
+
+preferred_layout_patterns:
+  - primitive-to-system
+  - collaborative-canvas
+  - modular-supergraphic
+  - component-remix
+  - event-identity-sequence
+  - before-after-co-creation
+
+motion_language:
+  tempo: playful_and_controlled
+  preferred: [object-morph, snap-to-grid, shared-state-transition, modular-recomposition]
+  avoid: [random_shape_clouds, cursor_cliches, copied_figma_motion]
+
+anti_patterns: [figma_color_order, figma_logo_shapes, exact_config_identity, fake_figma_ui, uncontrolled_sticker_collage]
+
+compatible_secondary_roles:
+  workshop_or_collaboration: borrow_recomposition_logic_only
+  event_identity: require_a_distinct_user_owned_primitive_set
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  local_reference_examples: [figma-brand-boundaries, figma-config-modular-system]
+
+source_ids: [figma-brand-guidelines-web, figma-config-2024-branding-web, figma-evolving-visual-language-web]

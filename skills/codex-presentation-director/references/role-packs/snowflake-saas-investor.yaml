@@ -1,0 +1,25 @@
+version: 1
+id: snowflake-saas-investor-role-pack
+scope: secondary_reference_only
+use_for: [saas_investor_story, agentic_platform, control_plane, product_velocity, accuracy_cost_evidence]
+do_not_use_for: [global_brand_identity, emotional_consumer_story, decorative_architecture]
+
+narrative_job: Connect product architecture and adoption evidence to a defensible SaaS growth thesis.
+visual_grammar:
+  - move from leverage claim to platform control to measurable proof
+  - architecture uses explicit layers and ownership boundaries
+  - metric pages explain the driver beside the number
+  - product vocabulary stays consistent across business and technical sections
+
+preferred_patterns: [agentic-leverage, control-plane-stack, context-architecture, product-velocity, accuracy-cost-proof, active-context-stack]
+motion_cues: [layer-build, context-flow, metric-then-driver, proof-highlight]
+anti_patterns: [snowflake-blue-as-global-default, metric-wall, architecture-without-business-link, unsupported-ai-leverage]
+
+local_reference_examples:
+  - snowflake-old-new-work
+  - snowflake-agentic-control-plane
+  - snowflake-enterprise-context
+  - snowflake-accuracy-evidence
+  - snowflake-active-context-stack
+
+source_ids: [snowflake-investor-day-2026]

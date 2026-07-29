@@ -1,0 +1,81 @@
+version: 2
+id: google-expressive-product-inspired
+label: Google-inspired expressive multi-product narrative
+status: derived_internal_reference_from_official_design_research
+official_template: false
+usage:
+  allowed: abstract_design_principles
+  prohibited: [redistribute_captured_assets, copy_google_marks, imitate_product_trade_dress, imply_google_endorsement]
+
+best_for:
+  - multi_product_launch
+  - consumer_ai
+  - feature_story
+  - product_ecosystem
+  - research_to_product_narrative
+
+communication:
+  default_job: Make a broad product ecosystem feel approachable, expressive, and coherent.
+  pacing: human_need_to_feature_to_ecosystem_to_everyday_value
+  density: low_to_medium
+  evidence_style: research_insight_plus_clear_product_moment
+
+official_observations:
+  - Expressive systems use shape, scale, and color to improve salience and emotional clarity.
+  - Variable shapes and motion preserve continuity while signaling changing state.
+  - Product stories combine simple language with concrete interface or use-case proof.
+
+derived_design_dna:
+  composition:
+    - one dominant claim with a friendly visual counterweight
+    - modular product moments connected through shape or color continuity
+    - generous curves balanced by a disciplined content grid
+    - color marks semantic groups rather than filling every surface
+  hierarchy:
+    headline_share: high
+    body_share: low_to_medium
+    focal_objects: 1_to_3
+    supporting_elements_max: 4
+  surface:
+    geometry: variable_rounded_shapes
+    decoration: expressive_but_semantic
+    image_treatment: bright_human_and_product_specific
+
+safe_adaptation:
+  palette:
+    base: "#F8F7F3"
+    ink: "#202124"
+    accent: use_user_palette_as_a_small_semantic_family
+  typography:
+    strategy: friendly_user_sans
+    display_weight: 550
+    body_weight: 400
+  spacing:
+    safe_margin_percent: 5
+    whitespace: high
+
+preferred_layout_patterns:
+  - expressive-hero
+  - research-insight
+  - feature-orbit
+  - product-ecosystem
+  - use-case-sequence
+  - friendly-metric
+
+motion_language:
+  tempo: lively_but_legible
+  preferred: [shape-morph, container-transform, focus-scale, coordinated-stagger]
+  avoid: [random_confetti, constant_bobbing, motion_without_state_change]
+
+anti_patterns: [copying_google_four_color_identity, childish_shape_overload, pill_everything, feature_card_wall]
+
+compatible_secondary_roles:
+  consumer_feature: borrow_expressive_shape_and_state_change_only
+  ecosystem: retain_primary_typography_and_palette
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  local_reference_examples: [google-material-evolution, google-expressive-research, google-io-multi-product-story]
+
+source_ids: [google-material-eras-web, google-expressive-web, google-io-2026-ai-web]

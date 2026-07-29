@@ -1,0 +1,155 @@
+version: 2
+id: openai-editorial-inspired
+label: OpenAI-inspired editorial technology narrative
+status: mixed_official_and_derived_internal_reference
+official_template: false
+usage:
+  allowed: abstract_design_principles
+  prohibited:
+    - redistribute_gallery_assets
+    - alter_or_recreate_openai_logos
+    - imply_openai_endorsement
+    - bundle_openai_sans_without_a_valid_license
+    - copy_exact_launch_page_layouts_or_copy
+
+best_for:
+  - ai_product_story
+  - concept_explanation
+  - research_summary
+  - product_workflow
+  - governance_and_safety
+
+communication:
+  default_job: Make a complex AI idea feel precise, humane, and actionable.
+  pacing: editorial progression from concept to evidence to implication
+  density: low_to_medium
+  evidence_style: combine concise prose, examples, and simple diagrams
+
+official_brand_observations:
+  typography:
+    official_family: OpenAI Sans
+    character: geometric_precision_plus_humanistic_warmth
+    use_rule: only_when_user_has_access_and_license
+  logo:
+    treatment: monochrome_with_prescribed_clear_space
+    avoid:
+      - color_effects
+      - texture
+      - cropping
+      - busy_background
+      - using_blossom_as_primary_brand
+
+derived_design_dna:
+  composition:
+    - editorial headline and body relationship
+    - quiet neutral fields with one conceptual focus
+    - asymmetry controlled by a clear grid
+    - diagrams that explain systems without ornamental complexity
+    - product proof appears as a real interface or grounded example
+    - a narrow metric rail may coexist with a wider interpretation column
+    - a single full-field pale color marks a major narrative transition
+  hierarchy:
+    headline_share: high
+    body_share: medium
+    focal_objects: 1_to_2
+    supporting_elements_max: 4
+  surface:
+    geometry: mix_of_soft_curves_and_precise_right_angles
+    decoration: sparse
+    image_treatment: conceptual_or_documentary_not_stock_corporate
+    recurring_art_motif: spectral_or_rasterized_fields_are_used_as_editorial_anchors_not_wallpaper
+
+safe_adaptation:
+  palette:
+    ink: "#111111"
+    paper: "#F7F6F2"
+    secondary: "#6B6B66"
+    hairline: "#D8D6CF"
+    accent: use_user_brand_accent_or_one_soft_contextual_tone
+    accent_usage_max_percent: 10
+  typography:
+    strategy: use_user_font_or_accessible_geometric_humanist_sans
+    display_weight: 500
+    body_weight: 400
+    fallback_windows: Aptos
+    fallback_cross_platform: Arial
+  spacing:
+    safe_margin_percent: 5.5
+    whitespace: high
+    max_text_width_percent: 64
+  image_direction:
+    - conceptual but specific
+    - human and technical cues may coexist
+    - avoid humanoid_robot_and_neon_brain_cliches
+    - reserve clean space for native copy
+
+preferred_layout_patterns:
+  - minimal-title
+  - giant-claim
+  - evidence-and-meaning
+  - product-interface-frame
+  - feature-close-up
+  - layered-architecture
+  - closing-resolution
+
+motion_language:
+  tempo: quiet_and_precise
+  preferred:
+    - dissolve-reveal
+    - progressive-build
+    - masked-product-reveal
+    - product-state-change
+  choreography:
+    - reveal structure before detail
+    - use masks and opacity for conceptual transitions
+    - hold long enough for technical reading
+  avoid:
+    - noisy_particles
+    - robot_iconography
+    - neon_circuit_backgrounds
+    - bouncy_microinteractions
+    - constant_ambient_motion
+
+anti_patterns:
+  - generic_ai_glow
+  - chatbot_bubble_grids
+  - tiny_dashboard_cards
+  - fake_openai_wordmarks
+  - using_brand_green_as_a_default_assumption
+
+compatible_secondary_roles:
+  architecture:
+    recommendation: borrow layered technical structure while keeping the neutral global palette
+  product_reveal:
+    recommendation: borrow extreme whitespace and a single-object reveal without changing typography
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  downloaded_sources:
+    - state_of_enterprise_ai_2025_24_page_report
+    - openai_signals_global_report_14_pages
+  adaptation_note: source reports are portrait editorial documents; reuse hierarchy and data grammar, then recompose for 16x9 rather than cropping pages
+  refinements:
+    - use line breaks to turn a complete sentence into the main visual object
+    - pair charts with only the numbers required to explain their meaning
+    - use broad color callouts for evidence or narrative turns, not decorative cards
+    - organize governance content with explicit columns and typographic hierarchy
+    - keep maps and charts quiet, with minimal annotation and strong outer margins
+
+local_reference_examples:
+  report_cover: openai-enterprise-cover
+  narrative_callout: openai-enterprise-introduction
+  metric_rail: openai-enterprise-metric-sidebar
+  chart_and_metrics: openai-enterprise-evidence-chart
+  framework: openai-enterprise-framework
+  case_study: openai-enterprise-case-study
+  giant_sentence: openai-signals-giant-claim
+  narrative_color_shift: openai-signals-color-statement
+  governance_principles: openai-signals-privacy
+
+source_ids:
+  - openai-enterprise-ai-2025-report
+  - openai-signals-global-report
+  - openai-brand-web
+  - openai-devday-2024-web

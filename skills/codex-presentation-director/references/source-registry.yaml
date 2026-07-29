@@ -1,0 +1,268 @@
+version: 1
+snapshot_date: "2026-07-29"
+maintenance: manual_only
+collection_policy:
+  store_mode: canonical_links_plus_bundled_previews_and_external_cache
+  use: internal_reference
+  redistribution: prohibited_unless_source_license_explicitly_allows
+  derivative_rule: extract_abstract_design_principles_only
+  refresh: user_initiated
+  raw_loading: one_source_at_a_time
+
+sources:
+  - id: apple-wwdc26
+    company: Apple
+    title: WWDC26
+    url: https://developer.apple.com/wwdc26/
+    source_type: official_event_hub
+    design_uses:
+      - keynote_pacing
+      - product_reveal
+      - event_art_direction
+    rights: link_only_internal_reference
+    notes: Public event hub with keynote and session video links.
+
+  - id: apple-events-newsroom
+    company: Apple
+    title: Apple Newsroom Events
+    url: https://www.apple.com/newsroom/topics/events/
+    source_type: official_newsroom_index
+    design_uses:
+      - product_storytelling
+      - launch_imagery
+      - event_sequence
+    rights: link_only_internal_reference
+    notes: Use to locate official event stories; do not redistribute images.
+
+  - id: apple-keynote-guide
+    company: Apple
+    title: Keynote User Guide for Mac
+    url: https://support.apple.com/guide/keynote/welcome/mac
+    source_type: official_product_documentation
+    design_uses:
+      - themes
+      - media
+      - transitions
+      - presentation_runtime
+    rights: link_only_reference
+
+  - id: apple-keynote-animation-guide
+    company: Apple
+    title: Animate objects on a slide in Keynote
+    url: https://support.apple.com/en-sg/guide/keynote/tanf96d92cb6/mac
+    source_type: official_product_documentation
+    design_uses:
+      - build_in
+      - action
+      - build_out
+      - motion_path
+      - magic_move
+    rights: link_only_reference
+
+  - id: openai-brand
+    company: OpenAI
+    title: OpenAI Design Guidelines
+    url: https://openai.com/brand/
+    source_type: official_brand_guidelines
+    design_uses:
+      - wordmark_rules
+      - blossom_rules
+      - typography_character
+      - clear_space
+      - trademark_boundaries
+    rights: follow_official_usage_terms
+    notes: Do not imply endorsement or alter official marks.
+
+  - id: openai-devday-2024
+    company: OpenAI
+    title: OpenAI DevDay 2024
+    url: https://openai.com/devday/2024/
+    source_type: official_event_hub
+    design_uses:
+      - developer_storytelling
+      - product_announcement_structure
+      - technical_editorial_layout
+    rights: link_only_internal_reference
+
+  - id: openai-devday-2026
+    company: OpenAI
+    title: OpenAI DevDay 2026
+    url: https://devday.openai.com/
+    source_type: official_event_site
+    design_uses:
+      - event_identity
+      - technical_audience_positioning
+      - keynote_structure
+    rights: link_only_internal_reference
+
+  - id: openai-image-generation-launch
+    company: OpenAI
+    title: Introducing 4o Image Generation
+    url: https://openai.com/index/introducing-4o-image-generation/
+    source_type: official_product_launch
+    design_uses:
+      - editorial_product_story
+      - example_gallery_sequence
+      - image_and_copy_relationship
+    rights: link_only_internal_reference
+
+  - id: nvidia-brand-guidelines
+    company: NVIDIA
+    title: NVIDIA Logo and Brand Guidelines
+    url: https://www.nvidia.com/en-us/about-nvidia/legal-info/logo-brand-usage/
+    source_type: official_brand_guidelines
+    design_uses:
+      - logo_rules
+      - contrast
+      - clear_space
+      - anti_imitation_boundary
+    rights: follow_official_usage_terms
+    notes: Official page explicitly restricts unauthorized imitation and endorsement.
+
+  - id: nvidia-trademark-pdf
+    company: NVIDIA
+    title: NVIDIA Trademark and Logo Usage Guidelines
+    url: https://www.nvidia.com/content/dam/en-zz/Solutions/about-us/documents/NVIDIA-Trademark-and-Logo-Usage-Guidelines.pdf
+    source_type: official_brand_pdf
+    design_uses:
+      - official_palette
+      - logo_color
+      - minimum_size
+      - clear_space
+    rights: link_only_follow_official_usage_terms
+
+  - id: nvidia-presentations-archive
+    company: NVIDIA
+    title: NVIDIA Events and Presentations Archive
+    url: https://investor.nvidia.com/events-and-presentations/presentations/default.aspx
+    source_type: official_investor_archive
+    design_uses:
+      - metric_hierarchy
+      - platform_narrative
+      - investor_evidence
+    rights: link_only_internal_reference
+
+  - id: nvidia-gtc-taipei-2026
+    company: NVIDIA
+    title: GTC Taipei 2026 Keynote
+    url: https://investor.nvidia.com/events-and-presentations/events-and-presentations/event-details/2026/GTC-Taipei-2026-2026-Hj3BIdi1C3/default.aspx
+    source_type: official_event_and_presentation
+    design_uses:
+      - keynote_pacing
+      - technical_stack
+      - ecosystem_story
+      - architecture_build
+    rights: link_only_internal_reference
+    notes: Event page links an official presentation PDF; do not bundle it.
+
+  - id: github-brand-system
+    company: GitHub
+    title: GitHub Brand Toolkit, Motion Principles, and Experiential Guidance
+    url: https://brand.github.com/
+    source_type: official_brand_guidelines
+    design_uses: [developer_storytelling, collaboration_diagrams, motion_principles, event_systems]
+    rights: internal_reference_follow_official_terms
+    notes: Public guidance is reference material; downloadable working files may be limited to staff and partners.
+
+  - id: ibm-design-language
+    company: IBM
+    title: IBM Design Language
+    url: https://www.ibm.com/design/language/
+    source_type: official_design_system
+    design_uses: [engineered_grid, evidence_layout, data_visualization, technical_motion]
+    rights: internal_reference_follow_official_terms
+
+  - id: google-design-library
+    company: Google
+    title: Google Design Library and Material Expressive Research
+    url: https://design.google/library/
+    source_type: official_design_library
+    design_uses: [expressive_color, variable_shape, morphing_motion, multi_product_narrative]
+    rights: internal_reference_follow_official_terms
+
+  - id: spotify-design
+    company: Spotify
+    title: Spotify Design
+    url: https://spotify.design/
+    source_type: official_design_publication
+    design_uses: [cultural_data, rhythmic_composition, personalization, modular_brand_system]
+    rights: internal_reference_follow_official_terms
+    captured_assets: external-cache/captures/spotify/source-assets
+    official_author_mirrors:
+      - https://medium.com/spotify-design/making-the-brand-redesigning-spotify-design-6889927ecd67
+      - https://medium.com/spotify-design/introducing-spotifys-new-design-principles-c99c58ed7558
+      - https://medium.com/spotify-design/reimagining-design-systems-at-spotify-2fe20fbb3552
+    notes: Direct spotify.design access timed out during the snapshot; the official-author Medium publications preserved the original article visuals and canonical provenance.
+
+  - id: figma-brand-and-config
+    company: Figma
+    title: Figma Brand Guidance and Config Visual Identity
+    url: https://www.figma.com/using-the-figma-brand/
+    source_type: official_brand_guidelines_and_case_studies
+    design_uses: [modular_primitives, collaborative_recomposition, motion_library, variable_palette]
+    rights: internal_reference_no_visual_identity_imitation
+
+  - id: human-marketplace-story
+    company: Airbnb
+    title: Airbnb Investor Presentations and Trademark Guidelines
+    url: https://investors.airbnb.com/events-and-presentations/default.aspx
+    source_type: official_investor_archive_and_trademark_guidance
+    design_uses: [human_marketplace_story, host_guest_journey, community_evidence]
+    rights: abstract_principles_only_avoid_airbnb_trade_dress
+    notes: Do not use Airbnb marks, Belo, Rausch, or a confusingly similar identity.
+
+  - id: cloudflare-investor-day-2026
+    company: Cloudflare
+    title: Cloudflare Investor Day 2026
+    url: https://www.cloudflare.net/files/doc_downloads/Presentations/2026/06/15/New/Master-Deck-2026-Investor-Day-FINAL.pdf
+    source_type: official_presentation_pdf
+    design_uses: [network_topology, security_platform, global_map, developer_infrastructure]
+    rights: internal_reference_do_not_redistribute_as_template
+
+  - id: stripe-sessions-2026
+    company: Stripe
+    title: Stripe Sessions 2026
+    url: https://stripe.com/en-sg/sessions/2026
+    source_type: official_event_site
+    design_uses: [developer_finance, economic_narrative, API_product_story]
+    rights: internal_reference_follow_official_terms
+
+  - id: vercel-ship-design
+    company: Vercel
+    title: Designing and Building the Vercel Ship Conference Platform
+    url: https://vercel.com/blog/designing-and-building-the-vercel-ship-conference-platform
+    source_type: official_design_case_study
+    design_uses: [product_demo, fluid_motion, design_engineering, dark_visual_system]
+    rights: internal_reference_follow_official_terms
+
+  - id: snowflake-investor-day-2026
+    company: Snowflake
+    title: Snowflake Investor Day 2026
+    url: https://s26.q4cdn.com/463892824/files/doc_presentations/2026/Jun/02/Snowflake-Investor_Day_2026_vF.pdf
+    source_type: official_presentation_pdf
+    design_uses: [saas_investor_story, agent_architecture, product_velocity, platform_metrics]
+    rights: internal_reference_do_not_redistribute_as_template
+
+  - id: adobe-investor-summit-2026
+    company: Adobe
+    title: Adobe Investor Summit 2026
+    url: https://www.adobe.com/cc-shared/assets/investor-relations/pdfs/adbe-investor-session-summit-2026.pdf
+    source_type: official_presentation_pdf
+    design_uses: [creative_workflow, product_portfolio, adoption_story]
+    rights: internal_reference_do_not_redistribute_as_template
+
+  - id: salesforce-q4-fy26-investor-deck
+    company: Salesforce
+    title: Salesforce Q4 FY26 Quarterly Investor Deck
+    url: https://s205.q4cdn.com/626266368/files/doc_financials/2026/q4/CRM-Q4-FY26-Quarterly-Investor-Deck.pdf
+    source_type: official_presentation_pdf
+    design_uses: [customer_success, ecosystem, recurring_revenue, enterprise_ai]
+    rights: internal_reference_do_not_redistribute_as_template
+
+  - id: bcg-future-marketing-genai-2025
+    company: BCG
+    title: The Future of Marketing with GenAI
+    url: https://media-publications.bcg.com/BCG-Executive-Perspectives-The-Future-of-Marketing-with-GenAI-EP16-13June2025.pdf
+    source_type: official_report_pdf
+    design_uses: [consulting_evidence, conclusion_first, executive_frameworks, dense_charts]
+    rights: internal_reference_do_not_redistribute_as_template

@@ -1,0 +1,19 @@
+version: 1
+id: stripe-developer-finance-role-pack
+scope: secondary_reference_only
+use_for: [api_product_story, payment_flow, economic_network, developer_finance, event_system]
+do_not_use_for: [global_deck_identity, brand_recreation, unrelated_consumer_story]
+
+narrative_job: Make financial infrastructure feel programmable, global, and economically consequential.
+visual_grammar:
+  - pair developer mechanism with business outcome
+  - use gradients as spatial depth, not as generic decoration
+  - show payment or money movement as an explicit stateful flow
+  - alternate product detail with large economic claims
+
+preferred_patterns: [api-to-outcome, payment-state-flow, network-metric, platform-expansion, event-hero]
+motion_cues: [transaction-trace, state-change, masked-gradient-reveal, product-zoom]
+anti_patterns: [purple-gradient-everywhere, fake-stripe-ui, floating-credit-cards, unlabeled-money-arrows]
+
+local_reference_examples: [stripe-sessions-event-system, stripe-economic-update]
+source_ids: [stripe-sessions-2026-web, stripe-2025-update-web]

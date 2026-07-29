@@ -1,0 +1,84 @@
+version: 2
+id: human-marketplace-story
+label: Human-centered marketplace narrative
+status: derived_internal_reference_with_strict_trade_dress_boundary
+official_template: false
+usage:
+  allowed: abstract_storytelling_and_marketplace_principles
+  prohibited:
+    - use_airbnb_marks_belo_or_rausch
+    - copy_airbnb_trade_dress
+    - reuse_official_photography
+    - imply_airbnb_endorsement
+
+best_for:
+  - marketplace
+  - travel_or_local_experience
+  - host_guest_or_provider_customer_journey
+  - trust_and_safety
+  - community_impact
+
+communication:
+  default_job: Make a two-sided marketplace feel personal, trustworthy, and operationally credible.
+  pacing: individual_story_to_shared_journey_to_marketplace_evidence
+  density: low_to_medium
+  evidence_style: real_people_and_places_plus_clear_marketplace_metrics
+
+official_observations:
+  - Official trademark guidance requires clear separation from Airbnb identity and marks.
+  - Investor communication organizes the company around people, places, trust, and marketplace growth.
+  - Human stories work best when paired with concrete operational or economic proof.
+
+derived_design_dna:
+  composition:
+    - documentary photography as a narrative anchor
+    - journey maps connect human moments to platform actions
+    - metrics remain subordinate to the person or place they explain
+    - warm negative space and short conversational statements
+  hierarchy:
+    headline_share: high
+    body_share: low_to_medium
+    focal_objects: 1_to_2
+    supporting_elements_max: 4
+  surface:
+    geometry: soft_but_not_branded
+    decoration: minimal
+    image_treatment: authentic_place_specific_documentary
+
+safe_adaptation:
+  palette:
+    rule: use_user_owned_warm_neutrals_and_accent
+    avoid: airbnb_rauch_or_confusingly_similar_coral
+  typography:
+    strategy: user_brand_humanist_sans
+    display_weight: 600
+    body_weight: 400
+  spacing:
+    safe_margin_percent: 5.5
+    whitespace: high
+
+preferred_layout_patterns:
+  - human-story-hero
+  - provider-customer-journey
+  - trust-loop
+  - place-and-proof
+  - marketplace-flywheel
+  - community-impact
+
+motion_language:
+  tempo: warm_and_deliberate
+  preferred: [photo-dissolve, map-path-build, journey-state-change, metric-count-with-hold]
+  avoid: [travel-postcard-collage, bouncy-icons, decorative-map-pins]
+
+anti_patterns: [airbnb_imitation, generic_smiling_stock_people, coral_everywhere, unsupported_community_claims, metric_wall]
+
+compatible_secondary_roles:
+  customer_story: borrow_documentary_sequence_and_warm_pacing
+  marketplace_model: borrow_two_sided_journey_structure
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  local_reference_examples: [human-marketplace-rights-boundary, human-marketplace-investor-archive]
+
+source_ids: [airbnb-trademark-guidelines-web, airbnb-investor-events-web]

@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "status": "planning",
+  "deck": {
+    "title": "Untitled presentation",
+    "audience": "To be inferred",
+    "objective": "To be inferred",
+    "centralTakeaway": "To be inferred",
+    "language": "zh-CN",
+    "aspectRatio": "16:9",
+    "primaryReference": "neutral-editorial",
+    "secondaryReferences": [],
+    "outputs": ["pptx"]
+  },
+  "motionBudget": {
+    "maxVideoSlides": 3,
+    "maxTotalVideoSeconds": 45,
+    "maxTransitionStyles": 2
+  },
+  "slides": []
+}

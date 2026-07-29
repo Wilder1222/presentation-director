@@ -1,0 +1,388 @@
+{
+  "version": "2.0",
+  "snapshotDate": "2026-07-29",
+  "maintenance": "manual-only",
+  "cachePolicy": {
+    "mode": "on-demand",
+    "bundledRaw": false,
+    "environmentVariable": "CODEX_PRESENTATION_REFERENCE_CACHE",
+    "defaultLocation": "~/.codex/cache/codex-presentation-director/reference-library"
+  },
+  "sources": [
+    {
+      "id": "apple-employee-choice-communications-kit",
+      "company": "apple",
+      "kind": "official_pdf",
+      "classification": "official_template_guide",
+      "url": "https://www.apple.com/hk/en/business/docs/resources/Employee_Choice_Communications_Kit.pdf",
+      "file": "raw/apple/employee-choice-communications-kit.pdf",
+      "rights": "internal-reference; follow document usage restrictions"
+    },
+    {
+      "id": "apple-mac-employee-experience-guide",
+      "company": "apple",
+      "kind": "official_pdf",
+      "classification": "official_template_guide",
+      "url": "https://www.apple.com/mo/business/enterprise/docs/resources/Mac_Employee_Experience_Kit_Guide.pdf",
+      "file": "raw/apple/mac-employee-experience-guide.pdf",
+      "rights": "internal-reference; follow document usage restrictions"
+    },
+    {
+      "id": "openai-enterprise-ai-2025-report",
+      "company": "openai",
+      "kind": "official_pdf",
+      "classification": "official_report_pdf",
+      "url": "https://cdn.openai.com/pdf/7ef17d82-96bf-4dd1-9df2-228f7f377a29/the-state-of-enterprise-ai_2025-report.pdf",
+      "file": "raw/openai/state-of-enterprise-ai-2025.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    },
+    {
+      "id": "openai-signals-global-report",
+      "company": "openai",
+      "kind": "official_pdf",
+      "classification": "official_report_pdf",
+      "url": "https://cdn.openai.com/signals/openai-signals-global-report.pdf",
+      "file": "raw/openai/openai-signals-global-report.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    },
+    {
+      "id": "nvidia-company-overview-july-2026",
+      "company": "nvidia",
+      "kind": "official_pdf",
+      "classification": "official_presentation_pdf",
+      "url": "https://s201.q4cdn.com/141608511/files/doc_presentations/2026/07/NDR_July2026_.pdf",
+      "file": "raw/nvidia/company-overview-july-2026.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    },
+    {
+      "id": "nvidia-gtc-taipei-2026-keynote",
+      "company": "nvidia",
+      "kind": "official_pdf",
+      "classification": "official_presentation_pdf",
+      "url": "https://s201.q4cdn.com/141608511/files/doc_events/2026/Jun/01/JHH-Computex-2026-Keynote.pdf",
+      "file": "raw/nvidia/gtc-taipei-2026-keynote.pdf",
+      "rights": "internal-reference; do not redistribute as a template",
+      "heavy": true
+    },
+    {
+      "id": "nvidia-trademark-guidelines",
+      "company": "nvidia",
+      "kind": "official_pdf",
+      "classification": "official_brand_guideline",
+      "url": "https://www.nvidia.com/content/dam/en-zz/Solutions/about-us/documents/NVIDIA-Trademark-and-Logo-Usage-Guidelines.pdf",
+      "file": "raw/nvidia/trademark-and-logo-usage-guidelines.pdf",
+      "rights": "follow official trademark and logo terms"
+    },
+    {
+      "id": "apple-wwdc26-web",
+      "company": "apple",
+      "kind": "official_web_capture",
+      "classification": "official_web_capture",
+      "url": "https://developer.apple.com/wwdc26/",
+      "file": "captures/apple/wwdc26.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference only"
+    },
+    {
+      "id": "apple-creator-studio-web",
+      "company": "apple",
+      "kind": "official_web_capture",
+      "classification": "official_web_capture",
+      "url": "https://www.apple.com/apple-creator-studio/",
+      "file": "captures/apple/apple-creator-studio.png",
+      "captureStatus": "ready-viewport-only",
+      "rights": "internal-reference only"
+    },
+    {
+      "id": "openai-brand-web",
+      "company": "openai",
+      "kind": "official_web_capture",
+      "classification": "official_web_capture",
+      "url": "https://openai.com/brand/",
+      "file": null,
+      "captureStatus": "blocked-cloudflare",
+      "rights": "internal-reference; follow OpenAI brand terms"
+    },
+    {
+      "id": "openai-devday-2024-web",
+      "company": "openai",
+      "kind": "official_web_capture",
+      "classification": "official_web_capture",
+      "url": "https://openai.com/devday/2024/",
+      "file": null,
+      "captureStatus": "blocked-cloudflare",
+      "rights": "internal-reference only"
+    },
+    {
+      "id": "nvidia-presentations-web",
+      "company": "nvidia",
+      "kind": "official_web_capture",
+      "classification": "official_web_capture",
+      "url": "https://investor.nvidia.com/events-and-presentations/presentations/",
+      "file": null,
+      "captureStatus": "blocked-cloudflare",
+      "rights": "internal-reference only"
+    },
+    {
+      "id": "github-brand-web",
+      "company": "github",
+      "kind": "official_web_capture",
+      "classification": "official_brand_guideline",
+      "url": "https://brand.github.com/",
+      "file": "captures/github/brand.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow GitHub brand and trademark terms"
+    },
+    {
+      "id": "github-motion-principles-web",
+      "company": "github",
+      "kind": "official_web_capture",
+      "classification": "official_motion_guideline",
+      "url": "https://brand.github.com/motion/principles",
+      "file": "captures/github/motion-principles.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow GitHub brand and trademark terms"
+    },
+    {
+      "id": "github-experiential-web",
+      "company": "github",
+      "kind": "official_web_capture",
+      "classification": "official_brand_case_study",
+      "url": "https://brand.github.com/brand-in-action/experiential",
+      "file": "captures/github/experiential.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow GitHub brand and trademark terms"
+    },
+    {
+      "id": "ibm-layout-web",
+      "company": "ibm",
+      "kind": "official_web_capture",
+      "classification": "official_design_guideline",
+      "url": "https://www.ibm.com/design/language/layout/overview/",
+      "file": "captures/ibm/layout.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow IBM Design Language terms"
+    },
+    {
+      "id": "ibm-data-visualization-web",
+      "company": "ibm",
+      "kind": "official_web_capture",
+      "classification": "official_data_visualization_guideline",
+      "url": "https://www.ibm.com/design/language/data-visualization/overview/",
+      "file": "captures/ibm/data-visualization.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow IBM Design Language terms"
+    },
+    {
+      "id": "ibm-animation-web",
+      "company": "ibm",
+      "kind": "official_web_capture",
+      "classification": "official_motion_guideline",
+      "url": "https://www.ibm.com/design/language/animation/overview/",
+      "file": "captures/ibm/animation.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow IBM Design Language terms"
+    },
+    {
+      "id": "google-material-eras-web",
+      "company": "google",
+      "kind": "official_web_capture",
+      "classification": "official_design_history",
+      "url": "https://design.google/library/material-design-eras",
+      "file": "captures/google/material-design-eras.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow Google brand and content terms"
+    },
+    {
+      "id": "google-expressive-web",
+      "company": "google",
+      "kind": "official_web_capture",
+      "classification": "official_design_research",
+      "url": "https://design.google/library/expressive-material-design-google-research",
+      "file": "captures/google/expressive-material-design.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow Google brand and content terms"
+    },
+    {
+      "id": "google-io-2026-ai-web",
+      "company": "google",
+      "kind": "official_web_capture",
+      "classification": "official_event_story",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-google-ai/",
+      "file": "captures/google/io-2026-ai.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow Google brand and content terms"
+    },
+    {
+      "id": "spotify-brand-redesign-web",
+      "company": "spotify",
+      "kind": "official_web_capture",
+      "classification": "official_brand_case_study",
+      "url": "https://spotify.design/article/making-the-brand-redesigning-spotify-design",
+      "file": null,
+      "captureUrl": "https://medium.com/spotify-design/making-the-brand-redesigning-spotify-design-6889927ecd67",
+      "assetDirectory": "captures/spotify/source-assets/brand",
+      "captureStatus": "ready-official-author-mirror-assets",
+      "rights": "internal-reference; follow Spotify brand and content terms"
+    },
+    {
+      "id": "spotify-design-principles-web",
+      "company": "spotify",
+      "kind": "official_web_capture",
+      "classification": "official_design_principles",
+      "url": "https://spotify.design/article/introducing-spotifys-new-design-principles",
+      "file": null,
+      "captureUrl": "https://medium.com/spotify-design/introducing-spotifys-new-design-principles-c99c58ed7558",
+      "assetDirectory": "captures/spotify/source-assets/principles",
+      "captureStatus": "ready-official-author-mirror-assets",
+      "rights": "internal-reference; follow Spotify brand and content terms"
+    },
+    {
+      "id": "spotify-design-systems-web",
+      "company": "spotify",
+      "kind": "official_web_capture",
+      "classification": "official_design_system_case_study",
+      "url": "https://spotify.design/article/reimagining-design-systems-at-spotify",
+      "file": null,
+      "captureUrl": "https://medium.com/spotify-design/reimagining-design-systems-at-spotify-2fe20fbb3552",
+      "assetDirectory": "captures/spotify/source-assets/systems",
+      "captureStatus": "ready-official-author-mirror-assets",
+      "rights": "internal-reference; follow Spotify brand and content terms"
+    },
+    {
+      "id": "figma-brand-guidelines-web",
+      "company": "figma",
+      "kind": "official_web_capture",
+      "classification": "official_brand_guideline",
+      "url": "https://www.figma.com/using-the-figma-brand/",
+      "file": "captures/figma/brand-guidelines.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; do not imitate Figma visual identity"
+    },
+    {
+      "id": "figma-config-2024-branding-web",
+      "company": "figma",
+      "kind": "official_web_capture",
+      "classification": "official_brand_case_study",
+      "url": "https://www.figma.com/blog/config-2024-branding/",
+      "file": "captures/figma/config-2024-branding.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; do not imitate Figma visual identity"
+    },
+    {
+      "id": "figma-evolving-visual-language-web",
+      "company": "figma",
+      "kind": "official_web_capture",
+      "classification": "official_brand_case_study",
+      "url": "https://www.figma.com/blog/figma-on-figma-evolving-our-visual-language/",
+      "file": null,
+      "captureStatus": "link-only-dynamic-video",
+      "rights": "internal-reference; do not imitate Figma visual identity"
+    },
+    {
+      "id": "airbnb-trademark-guidelines-web",
+      "company": "human-marketplace",
+      "kind": "official_web_capture",
+      "classification": "official_trademark_guideline",
+      "url": "https://www.airbnb.com/help/article/3233",
+      "file": "captures/human-marketplace/airbnb-trademark-guidelines.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; abstract principles only; avoid Airbnb trade dress"
+    },
+    {
+      "id": "airbnb-investor-events-web",
+      "company": "human-marketplace",
+      "kind": "official_web_capture",
+      "classification": "official_investor_archive",
+      "url": "https://investors.airbnb.com/events-and-presentations/default.aspx",
+      "file": "captures/human-marketplace/airbnb-investor-events.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; abstract marketplace narrative only"
+    },
+    {
+      "id": "cloudflare-investor-day-2026",
+      "company": "cloudflare-network",
+      "kind": "official_pdf",
+      "classification": "official_presentation_pdf",
+      "url": "https://www.cloudflare.net/files/doc_downloads/Presentations/2026/06/15/New/Master-Deck-2026-Investor-Day-FINAL.pdf",
+      "file": "raw/cloudflare-network/investor-day-2026.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    },
+    {
+      "id": "stripe-sessions-2026-web",
+      "company": "stripe-developer-finance",
+      "kind": "official_web_capture",
+      "classification": "official_event_site",
+      "url": "https://stripe.com/en-sg/sessions/2026",
+      "file": "captures/stripe-developer-finance/sessions-2026.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow Stripe trademark terms"
+    },
+    {
+      "id": "stripe-2025-update-web",
+      "company": "stripe-developer-finance",
+      "kind": "official_web_capture",
+      "classification": "official_company_update",
+      "url": "https://stripe.com/gb/newsroom/news/stripe-2025-update",
+      "file": "captures/stripe-developer-finance/2025-update.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow Stripe trademark terms"
+    },
+    {
+      "id": "vercel-design-web",
+      "company": "vercel-product-demo",
+      "kind": "official_web_capture",
+      "classification": "official_design_portfolio",
+      "url": "https://vercel.com/design",
+      "file": "captures/vercel-product-demo/design.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow Vercel trademark and content terms"
+    },
+    {
+      "id": "vercel-ship-2025-design-web",
+      "company": "vercel-product-demo",
+      "kind": "official_web_capture",
+      "classification": "official_design_case_study",
+      "url": "https://vercel.com/blog/designing-and-building-the-vercel-ship-conference-platform",
+      "file": "captures/vercel-product-demo/ship-2025-design.png",
+      "captureStatus": "ready",
+      "rights": "internal-reference; follow Vercel trademark and content terms"
+    },
+    {
+      "id": "snowflake-investor-day-2026",
+      "company": "snowflake-saas-investor",
+      "kind": "official_pdf",
+      "classification": "official_presentation_pdf",
+      "url": "https://s26.q4cdn.com/463892824/files/doc_presentations/2026/Jun/02/Snowflake-Investor_Day_2026_vF.pdf",
+      "file": "raw/snowflake-saas-investor/investor-day-2026.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    },
+    {
+      "id": "adobe-investor-summit-2026",
+      "company": "adobe-creative-workflow",
+      "kind": "official_pdf",
+      "classification": "official_presentation_pdf",
+      "url": "https://www.adobe.com/cc-shared/assets/investor-relations/pdfs/adbe-investor-session-summit-2026.pdf",
+      "file": "raw/adobe-creative-workflow/investor-summit-2026.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    },
+    {
+      "id": "salesforce-q4-fy26-investor-deck",
+      "company": "salesforce-customer-success",
+      "kind": "official_pdf",
+      "classification": "official_presentation_pdf",
+      "url": "https://s205.q4cdn.com/626266368/files/doc_financials/2026/q4/CRM-Q4-FY26-Quarterly-Investor-Deck.pdf",
+      "file": "raw/salesforce-customer-success/q4-fy26-investor-deck.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    },
+    {
+      "id": "bcg-future-marketing-genai-2025",
+      "company": "bcg-consulting-evidence",
+      "kind": "official_pdf",
+      "classification": "official_report_pdf",
+      "url": "https://media-publications.bcg.com/BCG-Executive-Perspectives-The-Future-of-Marketing-with-GenAI-EP16-13June2025.pdf",
+      "file": "raw/bcg-consulting-evidence/future-of-marketing-with-genai-2025.pdf",
+      "rights": "internal-reference; do not redistribute as a template"
+    }
+  ]
+}

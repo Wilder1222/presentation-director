@@ -1,0 +1,19 @@
+version: 1
+id: vercel-product-demo-role-pack
+scope: secondary_reference_only
+use_for: [product_demo, developer_tool, build_pipeline, live_interface, design_engineering]
+do_not_use_for: [global_brand_copy, investor_metrics, brand_recreation]
+
+narrative_job: Show a developer product as a fast sequence from intent to visible result.
+visual_grammar:
+  - product surface is the main proof
+  - monochrome fields create focus before one precise accent appears
+  - zoom from system overview into one interaction detail
+  - technical craft is visible through real states, not abstract claims
+
+preferred_patterns: [product-state-hero, workflow-to-preview, before-after-build, interface-close-up, implementation-proof]
+motion_cues: [cursorless-state-change, focus-zoom, panel-morph, build-to-preview]
+anti_patterns: [fake-terminal-typing, copied-vercel-triangle, black-and-white-without-hierarchy, excessive-glow]
+
+local_reference_examples: [vercel-design-precision, vercel-ship-fluid-system]
+source_ids: [vercel-design-web, vercel-ship-2025-design-web]

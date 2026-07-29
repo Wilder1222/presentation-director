@@ -1,0 +1,19 @@
+version: 1
+id: adobe-creative-workflow-role-pack
+scope: secondary_reference_only
+use_for: [creative_workflow, product_portfolio, adoption_story, innovation_matrix, execution_metrics]
+do_not_use_for: [global_brand_identity, copied_product_art, generic_creative_collage]
+
+narrative_job: Show how a creative portfolio turns inspiration into repeatable, measurable workflow value.
+visual_grammar:
+  - lead with a human creative ambition
+  - organize products by workflow role rather than logo inventory
+  - use a matrix only when axes express a real strategic choice
+  - pair adoption metrics with the behavior that caused them
+
+preferred_patterns: [mission-visual, portfolio-strategy, workflow-chain, innovation-matrix, adoption-proof]
+motion_cues: [asset-to-workflow, layer-reveal, matrix-build, before-after-output]
+anti_patterns: [rainbow-app-icon-wall, copied-adobe-gradient, decorative-creative-assets, feature-inventory]
+
+local_reference_examples: [adobe-mission, adobe-customer-strategy, adobe-innovation-matrix, adobe-execution-evidence]
+source_ids: [adobe-investor-summit-2026]

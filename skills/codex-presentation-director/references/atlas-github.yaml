@@ -1,0 +1,94 @@
+version: 2
+id: github-developer-collaboration-inspired
+label: GitHub-inspired developer collaboration narrative
+status: derived_internal_reference_from_official_guidance
+official_template: false
+usage:
+  allowed: abstract_design_principles
+  prohibited:
+    - redistribute_captured_assets
+    - copy_github_marks_or_octocat
+    - imply_github_endorsement
+    - recreate_exact_campaign_compositions
+
+best_for:
+  - developer_platform
+  - open_source_ecosystem
+  - collaboration_workflow
+  - technical_event
+  - community_story
+
+communication:
+  default_job: Make technical collaboration feel credible, open, and human.
+  pacing: utility_first_then_community_then_impact
+  density: medium
+  evidence_style: product_states_plus_real_contributor_or_ecosystem_examples
+
+official_observations:
+  - Strong monochrome foundations leave room for illustration, code, or campaign color.
+  - Motion is tied to hierarchy, state, and spatial continuity rather than spectacle.
+  - Experiential work uses modular systems that remain recognizable across many surfaces.
+
+derived_design_dna:
+  composition:
+    - developer utility anchored by one warm editorial gesture
+    - modular frames that can hold code, product UI, or community proof
+    - strong borders and generous outer margins
+    - diagrams read as collaboration paths rather than infrastructure plumbing
+  hierarchy:
+    headline_share: high
+    body_share: medium
+    focal_objects: 1_to_3
+    supporting_elements_max: 5
+  surface:
+    geometry: precise_panels_plus_occasional_soft_or_illustrative_forms
+    decoration: purposeful_and_sparse
+    image_treatment: authentic_product_or_community_context
+
+safe_adaptation:
+  palette:
+    ink: "#151515"
+    paper: "#F6F5F2"
+    muted: "#73706B"
+    accent: use_user_brand_accent
+  typography:
+    strategy: use_user_sans_plus_monospace_for_code_only
+    display_weight: 650
+    body_weight: 400
+  spacing:
+    safe_margin_percent: 5
+    whitespace: medium_high
+  image_direction:
+    - real developer surfaces
+    - diverse collaborators or authentic project artifacts
+    - avoid generic terminal wallpaper
+
+preferred_layout_patterns:
+  - developer-hero
+  - code-and-outcome
+  - collaboration-loop
+  - ecosystem-map
+  - product-state-sequence
+  - community-proof
+
+motion_language:
+  tempo: responsive_and_grounded
+  preferred: [state-change, connected-path-build, masked-panel-reveal, subtle-parallax]
+  avoid: [random_particles, continuous_spinning, decorative_terminal_typing]
+
+anti_patterns:
+  - fake_github_ui
+  - gratuitous_code_backgrounds
+  - octocat_imitation
+  - mixing_multiple_campaign_styles
+
+compatible_secondary_roles:
+  developer_workflow: use_for_code_or_collaboration_slides_only
+  ecosystem: keep_primary_deck_palette_and_borrow_the_modular_relationship_model
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  local_reference_examples: [github-brand-system, github-motion-principles, github-experiential-system]
+
+source_ids: [github-brand-web, github-motion-principles-web, github-experiential-web]

@@ -1,0 +1,24 @@
+version: 1
+id: salesforce-customer-success-role-pack
+scope: secondary_reference_only
+use_for: [customer_success, enterprise_ai, ecosystem, recurring_revenue, regional_growth]
+do_not_use_for: [global_brand_identity, mascot_recreation, decorative-cloud-scenes]
+
+narrative_job: Tie enterprise platform breadth to customer outcomes and recurring economic proof.
+visual_grammar:
+  - customer or workflow outcome precedes platform detail
+  - ecosystem architecture names actors and value exchanges
+  - major financial results use one dominant number plus comparison context
+  - maps appear only when geography explains performance
+
+preferred_patterns: [customer-outcome, agentic-enterprise-stack, ecosystem-map, recurring-revenue-proof, regional-growth]
+motion_cues: [actor-flow, platform-layer-build, metric-count-with-context, map-region-reveal]
+anti_patterns: [copied-cloud-branding, mascot-like-illustrations, logo-cloud, disconnected-ai-claims]
+
+local_reference_examples:
+  - salesforce-product-story-a
+  - salesforce-product-story-b
+  - salesforce-financial-results
+  - salesforce-region-growth
+
+source_ids: [salesforce-q4-fy26-investor-deck]

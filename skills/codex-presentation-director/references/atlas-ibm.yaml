@@ -1,0 +1,82 @@
+version: 2
+id: ibm-engineered-evidence-inspired
+label: IBM-inspired engineered evidence system
+status: derived_internal_reference_from_official_design_language
+official_template: false
+usage:
+  allowed: abstract_design_principles
+  prohibited: [redistribute_captured_assets, copy_ibm_marks, imply_ibm_endorsement, recreate_exact_examples]
+
+best_for:
+  - enterprise_technology
+  - research_and_evidence
+  - data_visualization
+  - systems_architecture
+  - operational_transformation
+
+communication:
+  default_job: Make a complex enterprise system feel ordered, inspectable, and defensible.
+  pacing: premise_to_model_to_evidence_to_decision
+  density: medium_to_high
+  evidence_style: explicit_scales_legends_annotations_and_source_notes
+
+official_observations:
+  - The 2x grid creates visible alignment and consistent rhythm across scales.
+  - Data visualization uses purposeful color, direct labels, and clear comparison logic.
+  - Animation explains transformation, causality, and continuity.
+
+derived_design_dna:
+  composition:
+    - strong modular grid with deliberate asymmetry
+    - large typographic anchors paired with precise secondary information
+    - charts treated as primary arguments rather than decoration
+    - technical diagrams use orthogonal structure and visible grouping
+  hierarchy:
+    headline_share: medium_high
+    body_share: medium
+    focal_objects: 1_to_2
+    supporting_elements_max: 6
+  surface:
+    geometry: rectilinear_and_systematic
+    decoration: minimal
+    image_treatment: documentary_or_technical
+
+safe_adaptation:
+  palette:
+    ink: "#161616"
+    paper: "#F4F4F4"
+    neutral: "#8D8D8D"
+    accent: use_one_user_brand_hue_with_tonal_steps
+  typography:
+    strategy: user_sans_or_licensed_engineered_grotesk
+    display_weight: 500
+    body_weight: 400
+  spacing:
+    safe_margin_percent: 4.5
+    grid: 16_or_8_column_modular
+
+preferred_layout_patterns:
+  - evidence-led-title
+  - annotated-chart
+  - system-stack
+  - before-after-operating-model
+  - metric-and-interpretation
+  - decision-summary
+
+motion_language:
+  tempo: precise_and_explanatory
+  preferred: [axis-build, data-trace, layer-expansion, state-interpolation]
+  avoid: [elastic_bounce, decorative_3d, unrelated_motion_paths]
+
+anti_patterns: [tiny_legends, rainbow_charts, decorative_dashboards, false_precision, dense_unstructured_text]
+
+compatible_secondary_roles:
+  evidence: borrow_chart_grammar_without_importing_the_global_palette
+  architecture: borrow_grouping_and_connector_discipline
+
+evidence_snapshot:
+  captured_on: "2026-07-29"
+  catalog: assets/reference-library/catalog.json
+  local_reference_examples: [ibm-engineered-grid, ibm-data-visualization, ibm-motion-structure]
+
+source_ids: [ibm-layout-web, ibm-data-visualization-web, ibm-animation-web]

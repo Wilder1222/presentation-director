@@ -1,0 +1,4 @@
+Record every external claim and asset here while building.
+
+Format:
+slide_id | claim_or_asset | source_url_or_local_path | usage | rights_note
