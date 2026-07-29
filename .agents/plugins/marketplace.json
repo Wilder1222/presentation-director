@@ -1,0 +1,20 @@
+{
+  "name": "wilder1222-plugins",
+  "interface": {
+    "displayName": "Wilder1222 Plugins"
+  },
+  "plugins": [
+    {
+      "name": "codex-presentation-director",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
