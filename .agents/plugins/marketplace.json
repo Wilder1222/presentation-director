@@ -7,8 +7,9 @@
     {
       "name": "codex-presentation-director",
       "source": {
-        "source": "local",
-        "path": "./"
+        "source": "url",
+        "url": "https://github.com/Wilder1222/codex-presentation-director.git",
+        "ref": "main"
       },
       "policy": {
         "installation": "AVAILABLE",
