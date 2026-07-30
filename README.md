@@ -8,7 +8,7 @@
 
 Turn a brief, document, or reference deck into a presentation with a locked visual system, the right renderer for every slide, purposeful motion, and a final quality review.
 
-![Version](https://img.shields.io/badge/version-0.4.0-4F46E5)
+![Version](https://img.shields.io/badge/version-0.5.0-4F46E5)
 ![Codex Plugin](https://img.shields.io/badge/Codex-standard_plugin-111111)
 ![Agent Skills](https://img.shields.io/badge/agents-Codex%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Gemini%20%7C%20Cursor-2563EB)
 ![Presentation](https://img.shields.io/badge/output-PPTX%20%7C%20PDF%20%7C%20HTML%20%7C%20MP4-0A7D55)
@@ -53,6 +53,7 @@ AI can generate slides. Presentation Director coordinates the decisions that mak
 ## Core capabilities
 
 - Turn a topic, document, reference deck, or company template into a complete presentation narrative.
+- When style is unspecified, either auto-select the best-fit direction or present visual candidates for the user to choose.
 - Preserve enterprise masters and brand rules, or establish an original design direction from the Design Atlas.
 - Generate hero visuals, product concepts, realistic UI, precise technical diagrams, and data-led slides within one system.
 - Create short progressive animations with HyperFrames and multi-scene product demos with Remotion.
@@ -60,6 +61,7 @@ AI can generate slides. Presentation Director coordinates the decisions that mak
 - Produce PPTX, PDF, HTML, MP4, slide previews, and replaceable media assets from a shared presentation manifest.
 - Keep source provenance and usage boundaries attached to external references and generated assets.
 - Detect missing specialist capabilities before production and explain what must be installed for the requested result.
+- Load selected preset raw references on demand, or research official web sources for a custom direction.
 
 ## Quick start
 
@@ -90,6 +92,22 @@ Presentation Director will plan the story, establish the design system, check th
 For capability profiles, provider setup, other Agent hosts, and fallback behavior, see the [Installation and Capabilities Guide](docs/INSTALLATION.md).
 
 ## Example prompts
+
+### Let the Director choose
+
+```text
+Use $presentation-director to create this deck without intermediate design
+checkpoints. Select the visual direction that best fits the audience,
+decision, content density, and delivery format, then explain the choice.
+```
+
+### Compare visual directions
+
+```text
+Use $presentation-director to propose three visual directions for this
+brief. Show cover, core-content, and architecture frames for each option,
+then wait for my selection before producing the deck.
+```
 
 ### Preserve a company template
 

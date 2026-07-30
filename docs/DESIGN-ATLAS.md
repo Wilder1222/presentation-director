@@ -53,6 +53,18 @@ secondary_references:
 
 Secondary references may influence composition or diagram language, but they must not override the global typography, palette, or brand rules locked in `DESIGN.md`.
 
+## Style decision modes
+
+Presentation Director supports three routes:
+
+- `specified`: preserve a supplied template or follow a user-provided direction.
+- `auto`: score the presentation objective and characteristics, select one best-fit direction, record the rationale, and continue without a checkpoint.
+- `recommend`: produce 2-3 visual candidates and a comparison board, then wait for the user's selection.
+
+When no style is supplied, recommendation is the default unless the user delegates the decision or asks for uninterrupted delivery.
+
+After a preset is selected, its source ids are resolved and the smallest relevant raw source set is loaded when official PDF links exist. A non-Atlas custom direction triggers official-source-first web research and remains local to that presentation project.
+
 ## Role packs
 
 Role packs provide targeted patterns for a small group of slides. Included packs cover:
@@ -102,7 +114,7 @@ List registered sources without downloading them:
 node .\skills\presentation-director\scripts\collect-reference-library.mjs --list
 ```
 
-Load one source:
+Load one selected source:
 
 ```powershell
 node .\skills\presentation-director\scripts\collect-reference-library.mjs --source <source-id>

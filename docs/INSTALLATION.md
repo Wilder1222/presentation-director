@@ -13,6 +13,8 @@ This guide covers host installation, capability profiles, provider detection, an
 
 Three.js dependencies are optional and should be installed only in presentation projects that use 3D.
 
+Browser or web-research capability is required on demand when a selected visual direction is not represented by the bundled Design Atlas.
+
 ## Install in Codex
 
 Add the Presentation Director marketplace:
@@ -60,6 +62,8 @@ Presentation Director is useful on its own for narrative, reference selection, m
 | `motion-studio` | Visual Studio, short motion, and multi-scene video. |
 | `full-studio` | Complete general workflow; 3D remains on demand. |
 | `spatial-studio` | Full Studio plus Three.js, React Three Fiber, and `@remotion/three`. |
+
+`reference_research` is an on-demand capability rather than a production profile. After selecting a custom style, rerun preflight with `--require reference_research` so the Agent can search official sites and direct web sources.
 
 The profile names describe verified capability sets. A partial installation must never be reported as Full Studio.
 

@@ -2,12 +2,31 @@
 
 ## Contents
 
-1. Shared contract
-2. Image generation and product UI
-3. Diagrams
-4. HyperFrames
-5. Remotion and optional Three.js
-6. PPTX
+1. Style candidate board
+2. Shared contract
+3. Image generation and product UI
+4. Diagrams
+5. HyperFrames
+6. Remotion and optional Three.js
+7. PPTX
+
+## Style candidate board
+
+This is the only visual artifact allowed before the final `DESIGN.md`. It is a temporary decision aid, not a deck asset.
+
+```text
+Communication job: [audience, outcome, central takeaway]
+Candidate count: 2-3 materially different, task-appropriate directions
+Frames per candidate: cover, core content, hardest visual role
+Comparison: same 16:9 ratio, scale, and labeling for every direction
+Preset evidence: use bundled catalog previews and identify the Atlas
+Custom evidence: label original concept frames as generated, not sourced
+Show for each: palette, typography, density, composition, imagery, diagram, motion, tradeoff
+Exclude: logos, copied marketing text, exact official compositions, and mixed candidate identities
+Output: tmp/style-discovery/options.webp or options.png
+```
+
+Do not use rejected candidate traits in production. After selection, resolve references and write the final design contract before invoking production providers.
 
 ## Shared contract
 

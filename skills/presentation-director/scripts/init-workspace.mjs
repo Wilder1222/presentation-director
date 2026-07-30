@@ -18,6 +18,8 @@ const PROJECT_DIRS = [
   "motion/remotion/three",
   "output",
   "tmp",
+  "tmp/style-discovery",
+  "tmp/style-discovery/research",
 ];
 
 function usage() {

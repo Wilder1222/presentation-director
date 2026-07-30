@@ -67,7 +67,7 @@ tmp/
 
 ```json
 {
-  "version": "1.0",
+  "version": "1.1",
   "status": "planning",
   "capabilityProfile": {
     "platform": "codex",
@@ -90,6 +90,29 @@ tmp/
     "primaryReference": "openai-editorial-inspired",
     "secondaryReferences": [],
     "outputs": ["pptx", "pdf"]
+  },
+  "styleDecision": {
+    "mode": "auto",
+    "status": "selected",
+    "selectedId": "openai-editorial-inspired",
+    "selectedKind": "preset",
+    "selectedAt": "2026-07-30T12:00:00.000Z",
+    "rationale": "Editorial hierarchy fits the evidence-led enterprise narrative.",
+    "visualBoard": null,
+    "candidates": [],
+    "referenceDepth": "source",
+    "rawAvailable": true,
+    "rawStatus": "loaded",
+    "researchStatus": "not-required",
+    "sources": [
+      {
+        "sourceId": "openai-enterprise-ai-2025-report",
+        "url": "https://cdn.openai.com/pdf/7ef17d82-96bf-4dd1-9df2-228f7f377a29/the-state-of-enterprise-ai_2025-report.pdf",
+        "cacheFile": "raw/openai/state-of-enterprise-ai-2025.pdf",
+        "cacheStatus": "loaded",
+        "usage": "Design reference only"
+      }
+    ]
   },
   "motionBudget": {
     "maxVideoSlides": 3,

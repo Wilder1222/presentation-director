@@ -1,6 +1,6 @@
 ---
 name: presentation-director
-description: Direct high-quality presentations from a brief, source material, a reference deck, or a named visual direction. Use when an AI agent needs to plan, create, revise, or review PPT/PPTX decks, presentation visuals, product demos, architecture slides, optional Three.js scenes, or motion-enhanced presentations while checking and coordinating installed specialist capabilities.
+description: Direct high-quality presentations from a brief, source material, a reference deck, or a named visual direction; recommend or automatically select a traceable style when none is supplied. Use when an AI agent needs to plan, create, revise, or review PPT/PPTX decks, presentation visuals, product demos, architecture slides, optional Three.js scenes, or motion-enhanced presentations while checking and coordinating installed specialist capabilities.
 ---
 
 # Presentation Director
@@ -13,14 +13,20 @@ Act as the presentation director. Own the communication job, narrative, visual c
 2. If a required capability is missing, show the user its platform-specific installation guidance and fallback impact. Stop until the capability is installed or the user explicitly approves a fallback. Never silently downgrade or claim Full Studio.
 3. Define the communication job before choosing layouts:
    `By the end, [audience] should [outcome] because [central takeaway].`
-4. Select exactly one visual route:
+4. Select exactly one style-decision mode:
+   - `specified` when the user supplies a template, brand system, named style, or visual reference.
+   - `auto` when the user delegates the choice or requests no intermediate confirmation.
+   - `recommend` when the user requests options or gives no style direction; this is the default for an unspecified style.
+5. Resolve exactly one visual route:
    - Use a supplied PPTX/template as the source of truth.
-   - Use an explicit custom direction or one primary Atlas reference.
-   - Use the presentation engine's default library only when neither exists.
-5. Create `DESIGN.md` before generating any visual or motion asset.
-6. Create `presentation.json` before rendering slides.
-7. Build the most-visible static frame before adding animation.
-8. Render and inspect every final slide or motion composition before delivery.
+   - Use an explicit custom direction or one selected primary Atlas reference.
+   - For `recommend`, show a visual comparison board and wait for selection.
+   - For `auto`, record the fit rationale and continue without a selection checkpoint.
+6. Resolve reference depth after selection. Load relevant raw sources for a preset that has them; research official and first-party web references for a custom direction.
+7. Create the final `DESIGN.md` only after style and reference resolution. Style-selection boards are temporary decision artifacts, not production assets.
+8. Create `presentation.json` before rendering slides and preserve its `styleDecision` record.
+9. Build the most-visible static frame before adding animation.
+10. Render and inspect every final slide or motion composition before delivery.
 
 Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments as audience-facing slide copy.
 
@@ -56,6 +62,7 @@ For a requested Three.js scene, add `--require three_d`. Rerun `check-capabiliti
 - Read [references/manifest.md](references/manifest.md) before authoring `presentation.json`.
 - Read [references/review.md](references/review.md) before final rendering and delivery.
 - Read [references/prompt-contracts.md](references/prompt-contracts.md) before handing work to imagegen, HyperFrames, Remotion, UI capture, or a diagram renderer.
+- Read [references/style-discovery.md](references/style-discovery.md) whenever the user has not supplied a usable template, or when the style is delegated, recommended, named, or custom researched.
 - Read [references/patterns/layouts.md](references/patterns/layouts.md) when selecting slide silhouettes.
 - Read [references/patterns/motion.md](references/patterns/motion.md) when any motion is requested or materially useful.
 - Read [references/renderers/threejs.md](references/renderers/threejs.md) only when a Remotion video needs spatial 3D, a product turntable, an exploded assembly, spatial layers, or a camera path.
@@ -108,6 +115,10 @@ Keep the title, key claim, sources, and any necessary labels native in PPTX when
 ## Control style and motion
 
 - Lock one `primaryReference` for the deck.
+- Use `specified`, `auto`, or `recommend` as the style-decision mode. Never force an approval checkpoint after the user delegates automatic selection.
+- In `recommend` mode, compare 2-3 task-appropriate visual directions and do not proceed until the user selects one.
+- After a preset Atlas is selected, resolve its `source_ids` and load the smallest useful raw set when official PDF links exist.
+- After a custom direction is selected, require `reference_research`, search official and first-party web sources, and record direct URLs and rights before locking the design contract.
 - Allow a secondary reference only for named slide roles; never mix its palette into the global identity.
 - Treat all company materials in the Atlas and role packs as internal design references, not distributable templates.
 - Keep raw reference files outside the plugin. Preserve their canonical links in `sources.json` and load one source at a time with the on-demand collector.

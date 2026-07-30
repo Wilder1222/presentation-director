@@ -3,10 +3,20 @@
 ## Identity
 
 - Status: planning
-- Style name: neutral-editorial
-- Primary reference: user-template-or-neutral
+- Style decision mode: recommend unless the user specifies or delegates the choice
+- Style name: unresolved until style selection
+- Primary reference: unresolved
 - Secondary references: none
 - Communication tone: clear, restrained, evidence-led
+
+## Reference Evidence
+
+- Selection status: pending
+- Selection rationale: pending
+- Reference depth: unresolved
+- Raw source status: not checked
+- Web research status: not required unless a custom direction is selected
+- Final source boundaries: record direct links, rights, and safe adaptations after selection
 
 ## Colors
 
@@ -16,7 +26,7 @@
 - Accent: `#4F46E5`
 - Hairline: `#D6D2C8`
 
-Use the accent on no more than 10% of a typical slide. A user template overrides this palette.
+These values are temporary planning defaults only. Replace them after style resolution. A user template overrides this palette.
 
 ## Typography
 

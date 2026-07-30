@@ -1,4 +1,4 @@
 interface:
   display_name: "Presentation Director"
   short_description: "Direct polished PPTX, visuals, 3D, and motion"
-  default_prompt: "Use $presentation-director to check required capabilities first, prompt me to install anything missing, and then turn my brief and references into a coherent, validated presentation."
+  default_prompt: "Use $presentation-director to check required capabilities, infer whether my style is specified, automatic, or needs visual candidates, resolve traceable references, and turn my brief into a coherent, validated presentation."

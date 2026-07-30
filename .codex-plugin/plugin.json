@@ -1,7 +1,7 @@
 {
   "name": "presentation-director",
-  "version": "0.4.0+codex.20260730061202",
-  "description": "Portable presentation direction with capability preflight, install guidance, editable PowerPoint, generated visuals, motion, and optional Three.js scenes.",
+  "version": "0.5.0+codex.20260730144344",
+  "description": "Portable presentation direction with optional style discovery, traceable reference research, editable PowerPoint, generated visuals, motion, and optional Three.js scenes.",
   "author": {
     "name": "Wilder1222",
     "url": "https://github.com/Wilder1222"
@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Presentation Director",
     "shortDescription": "Direct polished PPTX, visuals, 3D, and motion",
-    "longDescription": "A lightweight presentation director that plans narrative and design, selects traceable reference DNA, routes work to presentation, image, HyperFrames, and Remotion capabilities, optionally uses Three.js inside Remotion for deterministic 3D video, and validates the final result.",
+    "longDescription": "A lightweight presentation director that plans narrative, supports specified, automatic, or candidate-based style selection, resolves traceable reference DNA, routes work to presentation, image, HyperFrames, and Remotion capabilities, optionally uses Three.js inside Remotion, and validates the final result.",
     "developerName": "Wilder1222",
     "category": "Productivity",
     "capabilities": [
@@ -39,7 +39,8 @@
     "defaultPrompt": [
       "Check required capabilities, prompt for missing providers, then create a coherent presentation from my content and template.",
       "Redesign this deck while preserving its template, editability, narrative, and visual consistency.",
-      "Plan a product-launch presentation with original visuals, accurate architecture, and restrained motion."
+      "Recommend visual directions for this brief, let me choose one, then create the deck with traceable references.",
+      "Automatically choose the best-fit visual direction and create a product-launch presentation with original visuals, accurate architecture, and restrained motion."
     ]
   }
 }

@@ -55,7 +55,12 @@ If a capability is missing, present its installation guidance and stop. A fallba
 
 ## Route design references
 
+- Use `specified` when the user provides direction, `auto` when the user delegates the choice, and `recommend` when alternatives are requested or direction is absent. Read `style-discovery.md` before resolving the route.
+- Score style fit against audience, objective, narrative, density, visual roles, editability, delivery environment, and motion usefulness.
+- In recommend mode, show 2-3 visual candidates and wait. In auto mode, select one and record the rationale without adding a checkpoint.
 - Choose exactly one primary Atlas for the whole deck.
+- When a selected preset has official raw links, load the smallest relevant raw source set before locking `DESIGN.md`.
+- When a selected direction is not represented by the Atlas, require web reference research, prioritize official sources, and store direct URLs. Do not add task-specific research to the global Atlas automatically.
 - A secondary Atlas may influence only explicitly named slide roles and must retain the primary palette and typography.
 - Load at most one role pack for a slide. Role packs supply narrative structure, diagram grammar, and evidence patterns—not a replacement brand identity.
 - Use `cloudflare-network` for network, security, control-plane, or developer-infrastructure slides.

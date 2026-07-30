@@ -17,6 +17,11 @@ const RENDERERS = new Set([
 const EDITABILITY = new Set(["native", "mixed", "replaceable-media", "flattened"]);
 const VIDEO_RENDERERS = new Set(["hyperframes_video", "remotion_video"]);
 const THREE_ASSET_KINDS = new Set(["3d-model", "texture", "environment-map"]);
+const STYLE_MODES = new Set(["specified", "auto", "recommend"]);
+const STYLE_KINDS = new Set(["user-template", "preset", "custom"]);
+const REFERENCE_DEPTHS = new Set(["user-source", "preview", "source", "web-research"]);
+const RAW_STATUSES = new Set(["not-checked", "not-applicable", "not-available", "loaded"]);
+const RESEARCH_STATUSES = new Set(["not-required", "pending", "complete"]);
 const DESIGN_HEADINGS = [
   "## Identity",
   "## Colors",
@@ -81,7 +86,7 @@ export async function validateWorkspace(projectDir, options = {}) {
   for (const heading of DESIGN_HEADINGS) {
     if (!design.includes(heading)) addIssue(issues, "error", "design.heading", `Missing DESIGN.md section: ${heading}`);
   }
-  if (/\b(TODO|TBD)\b|\{\{.+?\}\}/i.test(design) && !options.allowDraft) {
+  if (/\b(TODO|TBD|unresolved|pending)\b|\{\{.+?\}\}/i.test(design) && !options.allowDraft) {
     addIssue(issues, "error", "design.placeholder", "DESIGN.md contains unresolved placeholders.");
   }
 
@@ -100,7 +105,12 @@ export async function validateWorkspace(projectDir, options = {}) {
     return { ok: false, issues, summary: {} };
   }
 
-  if (manifest.version !== "1.0") addIssue(issues, "error", "manifest.version", 'version must be "1.0".');
+  if (!["1.0", "1.1"].includes(manifest.version)) {
+    addIssue(issues, "error", "manifest.version", 'version must be "1.0" or "1.1".');
+  }
+  if (manifest.version === "1.1" && !design.includes("## Reference Evidence")) {
+    addIssue(issues, "error", "design.reference_evidence", "Manifest 1.1 requires a ## Reference Evidence section in DESIGN.md.");
+  }
   if (!manifest.deck || typeof manifest.deck !== "object") {
     addIssue(issues, "error", "deck.missing", "deck is required in presentation.json.");
   }
@@ -119,6 +129,114 @@ export async function validateWorkspace(projectDir, options = {}) {
   if (!draft && slides.length === 0) addIssue(issues, "error", "slides.empty", "A final presentation must contain slides.");
   if (manifest.status === "planning" && !options.allowDraft) {
     addIssue(issues, "error", "status.planning", "Change status from planning before final validation.");
+  }
+
+  const styleDecision = manifest.styleDecision;
+  if (!styleDecision || typeof styleDecision !== "object" || Array.isArray(styleDecision)) {
+    if (manifest.version === "1.1" || !draft) {
+      addIssue(issues, "error", "styleDecision.missing", "Manifest 1.1 requires styleDecision.");
+    } else {
+      addIssue(issues, "warning", "styleDecision.legacy", "Legacy manifest has no styleDecision record.");
+    }
+  } else {
+    if (!STYLE_MODES.has(styleDecision.mode)) {
+      addIssue(issues, "error", "styleDecision.mode", "mode must be specified, auto, or recommend.");
+    }
+    if (!['pending', 'selected'].includes(styleDecision.status)) {
+      addIssue(issues, "error", "styleDecision.status", "status must be pending or selected.");
+    }
+    if (!Array.isArray(styleDecision.candidates)) {
+      addIssue(issues, "error", "styleDecision.candidates", "candidates must be an array.");
+    }
+    if (!Array.isArray(styleDecision.sources)) {
+      addIssue(issues, "error", "styleDecision.sources", "sources must be an array.");
+    }
+    if (typeof styleDecision.rawAvailable !== "boolean") {
+      addIssue(issues, "error", "styleDecision.rawAvailable", "rawAvailable must be boolean.");
+    }
+    if (!RAW_STATUSES.has(styleDecision.rawStatus)) {
+      addIssue(issues, "error", "styleDecision.rawStatus", "rawStatus is unsupported.");
+    }
+    if (!RESEARCH_STATUSES.has(styleDecision.researchStatus)) {
+      addIssue(issues, "error", "styleDecision.researchStatus", "researchStatus is unsupported.");
+    }
+
+    if (!draft && styleDecision.status !== "selected") {
+      addIssue(issues, "error", "styleDecision.unresolved", "Final delivery requires a selected style direction.");
+    }
+
+    if (styleDecision.status === "selected") {
+      for (const key of ["selectedId", "selectedKind", "selectedAt", "rationale", "referenceDepth"]) {
+        if (!styleDecision[key] || typeof styleDecision[key] !== "string") {
+          addIssue(issues, "error", `styleDecision.${key}`, `${key} is required after style selection.`);
+        }
+      }
+      if (styleDecision.selectedKind && !STYLE_KINDS.has(styleDecision.selectedKind)) {
+        addIssue(issues, "error", "styleDecision.selectedKind", "selectedKind must be user-template, preset, or custom.");
+      }
+      if (styleDecision.selectedAt && Number.isNaN(Date.parse(styleDecision.selectedAt))) {
+        addIssue(issues, "error", "styleDecision.selectedAt", "selectedAt must be an ISO timestamp.");
+      }
+      if (styleDecision.referenceDepth && !REFERENCE_DEPTHS.has(styleDecision.referenceDepth)) {
+        addIssue(issues, "error", "styleDecision.referenceDepth", "referenceDepth is unsupported.");
+      }
+
+      if (styleDecision.mode === "recommend") {
+        if (!Array.isArray(styleDecision.candidates) || styleDecision.candidates.length < 2) {
+          addIssue(issues, "error", "styleDecision.recommend_candidates", "Recommend mode requires at least two visual candidates.");
+        }
+        if (!styleDecision.visualBoard || typeof styleDecision.visualBoard !== "string") {
+          addIssue(issues, "error", "styleDecision.visualBoard", "Recommend mode requires a local visual comparison board.");
+        } else {
+          await validateLocalPath(root, styleDecision.visualBoard, issues, "styleDecision.visualBoard", draft);
+        }
+      }
+
+      if (styleDecision.selectedKind === "user-template" && styleDecision.referenceDepth !== "user-source") {
+        addIssue(issues, "error", "styleDecision.template_depth", "A user template must use referenceDepth user-source.");
+      }
+
+      if (styleDecision.selectedKind === "preset") {
+        if (styleDecision.rawAvailable === true) {
+          if (styleDecision.rawStatus !== "loaded") {
+            addIssue(issues, "error", "styleDecision.raw_required", "A selected preset with raw sources must load the chosen raw source.");
+          }
+          if (styleDecision.referenceDepth !== "source") {
+            addIssue(issues, "error", "styleDecision.raw_depth", "A loaded preset raw source must use referenceDepth source.");
+          }
+          const loadedRaw = Array.isArray(styleDecision.sources) && styleDecision.sources.some(
+            (source) => source?.sourceId && source?.url && source?.cacheStatus === "loaded",
+          );
+          if (!loadedRaw) {
+            addIssue(issues, "error", "styleDecision.raw_record", "Loaded raw references require sourceId, url, and cacheStatus loaded.");
+          }
+        } else if (!draft && styleDecision.rawStatus !== "not-available") {
+          addIssue(issues, "error", "styleDecision.raw_unavailable", "Preset styles without raw links must declare rawStatus not-available.");
+        }
+      }
+
+      if (styleDecision.selectedKind === "custom") {
+        if (styleDecision.referenceDepth !== "web-research") {
+          addIssue(issues, "error", "styleDecision.custom_depth", "Custom styles must use referenceDepth web-research.");
+        }
+        if (styleDecision.researchStatus !== "complete") {
+          addIssue(issues, "error", "styleDecision.custom_research", "Custom styles require completed web reference research.");
+        }
+        const styleSources = Array.isArray(styleDecision.sources) ? styleDecision.sources : [];
+        if (styleSources.length < 2) {
+          addIssue(issues, "error", "styleDecision.custom_sources", "Custom styles require at least two direct reference sources.");
+        }
+        if (!styleSources.some((source) => ["official", "first-party"].includes(source?.authority))) {
+          addIssue(issues, "error", "styleDecision.custom_authority", "Custom style research requires at least one official or first-party source.");
+        }
+        for (let index = 0; index < styleSources.length; index += 1) {
+          const source = styleSources[index];
+          if (!source?.url || !/^https?:\/\//i.test(source.url)) {
+            addIssue(issues, "error", "styleDecision.source_url", "Custom style sources require direct HTTP(S) URLs.", `styleDecision.sources[${index}]`);
+          }
+        }
+      }
+    }
   }
 
   const capabilityProfile = manifest.capabilityProfile;
@@ -203,6 +321,18 @@ export async function validateWorkspace(projectDir, options = {}) {
   let threeDSlides = 0;
   const availableCapabilities = new Set(Array.isArray(capabilityProfile?.available) ? capabilityProfile.available : []);
   const rendererCapabilities = dependencyConfig.rendererCapabilities || {};
+
+  if (!draft && styleDecision?.selectedKind === "custom") {
+    const requiredCapabilities = new Set(Array.isArray(capabilityProfile?.required) ? capabilityProfile.required : []);
+    if (!requiredCapabilities.has("reference_research") || !availableCapabilities.has("reference_research")) {
+      addIssue(
+        issues,
+        "error",
+        "capabilities.reference_research",
+        "Custom style research requires reference_research in both capabilityProfile.required and available.",
+      );
+    }
+  }
 
   for (let index = 0; index < slides.length; index += 1) {
     const slide = slides[index];

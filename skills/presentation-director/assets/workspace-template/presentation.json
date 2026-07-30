@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "status": "planning",
   "deck": {
     "title": "Untitled presentation",
@@ -8,9 +8,24 @@
     "centralTakeaway": "To be inferred",
     "language": "zh-CN",
     "aspectRatio": "16:9",
-    "primaryReference": "neutral-editorial",
+    "primaryReference": "unresolved",
     "secondaryReferences": [],
     "outputs": ["pptx"]
+  },
+  "styleDecision": {
+    "mode": "recommend",
+    "status": "pending",
+    "selectedId": null,
+    "selectedKind": null,
+    "selectedAt": null,
+    "rationale": null,
+    "visualBoard": null,
+    "candidates": [],
+    "referenceDepth": "unresolved",
+    "rawAvailable": false,
+    "rawStatus": "not-checked",
+    "researchStatus": "not-required",
+    "sources": []
   },
   "capabilityProfile": {
     "platform": "unresolved",

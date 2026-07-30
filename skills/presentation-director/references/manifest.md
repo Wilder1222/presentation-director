@@ -4,10 +4,11 @@
 
 1. Purpose and top-level structure
 2. Capability profile
-3. Deck and slide objects
-4. Assets and motion
-5. Optional Three.js component
-6. Sources and validation
+3. Style decision
+4. Deck and slide objects
+5. Assets and motion
+6. Optional Three.js component
+7. Sources and validation
 
 ## Purpose
 
@@ -17,9 +18,10 @@ Use `presentation.json` as the source of truth for narrative, renderer routing, 
 
 ```json
 {
-  "version": "1.0",
+  "version": "1.1",
   "status": "planning",
   "capabilityProfile": {},
+  "styleDecision": {},
   "deck": {},
   "motionBudget": {},
   "slides": []
@@ -66,6 +68,54 @@ Rules:
 - Adding `threeD` to any slide requires `three_d` in `available` as well as the normal `video` capability.
 - Rerun preflight after installing, removing, enabling, disabling, or changing a provider. Do not reuse a stale profile.
 
+## Style decision
+
+Record how the visual direction was chosen and how deeply its references were resolved:
+
+```json
+{
+  "mode": "recommend",
+  "status": "selected",
+  "selectedId": "openai-editorial-inspired",
+  "selectedKind": "preset",
+  "selectedAt": "2026-07-30T12:00:00.000Z",
+  "rationale": "Editorial hierarchy fits an evidence-led enterprise AI narrative.",
+  "visualBoard": "tmp/style-discovery/options.webp",
+  "candidates": [
+    { "id": "openai-editorial-inspired", "name": "Editorial Intelligence", "kind": "preset" },
+    { "id": "ibm-engineered-grid-inspired", "name": "Engineered Evidence", "kind": "preset" },
+    { "id": "calm-operating-system", "name": "Calm Operating System", "kind": "custom" }
+  ],
+  "referenceDepth": "source",
+  "rawAvailable": true,
+  "rawStatus": "loaded",
+  "researchStatus": "not-required",
+  "sources": [
+    {
+      "sourceId": "openai-enterprise-ai-2025-report",
+      "url": "https://cdn.openai.com/pdf/7ef17d82-96bf-4dd1-9df2-228f7f377a29/the-state-of-enterprise-ai_2025-report.pdf",
+      "cacheFile": "raw/openai/state-of-enterprise-ai-2025.pdf",
+      "cacheStatus": "loaded",
+      "usage": "Design reference only"
+    }
+  ]
+}
+```
+
+Rules:
+
+- `mode` is `specified`, `auto`, or `recommend`.
+- `recommend` requires at least two visual candidates and a project-local comparison board.
+- `auto` records the rationale but does not require a user checkpoint or candidate board.
+- `selectedKind` is `user-template`, `preset`, or `custom`.
+- `referenceDepth` is `user-source`, `preview`, `source`, or `web-research`.
+- A preset with official raw links must load the selected raw source and record `rawStatus: loaded`.
+- A custom style requires `reference_research`, `researchStatus: complete`, at least two direct sources, and at least one official or first-party source.
+- Search-result pages are not source records; store direct destination URLs.
+- Do not write the final design contract while recommendation status remains `pending`.
+
+Read `style-discovery.md` for the complete workflow.
+
 ## Deck object
 
 ```json
@@ -87,7 +137,7 @@ Rules:
 }
 ```
 
-Use one primary reference. Restrict every secondary reference to slide roles.
+Use one primary reference. It must match `styleDecision.selectedId` or the supplied user template. Restrict every secondary reference to slide roles.
 
 ## Slide object
 

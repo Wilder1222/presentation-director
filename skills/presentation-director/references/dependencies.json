@@ -130,6 +130,23 @@
         "generic": "Install a Remotion integration or configure Remotion in the project."
       }
     },
+    "reference_research": {
+      "label": "Web reference research",
+      "fallback": "Choose a bundled preset, supply direct references, or explicitly approve a custom direction based on limited evidence.",
+      "providers": [
+        { "kind": "skill-any", "values": ["playwright", "agent-browser", "browser", "control-in-app-browser", "control-chrome", "web-research"] },
+        { "kind": "package-any", "values": ["playwright", "playwright-core"] },
+        { "kind": "command-any", "values": ["playwright"] }
+      ],
+      "install": {
+        "codex": "Install or enable the Browser or Playwright capability in Codex, then start a new task.",
+        "claude-code": "Install a trusted browser or web-research plugin, or configure Playwright in the project.",
+        "copilot": "Install a browser or web-research Agent Skill, or configure Playwright in the project.",
+        "gemini": "Install a browser or web-research extension, or configure Playwright in the project.",
+        "cursor": "Install a browser or web-research skill, or configure Playwright in the project.",
+        "generic": "Install a trusted browser or web-research capability, or configure Playwright."
+      }
+    },
     "three_d": {
       "label": "Three.js spatial video",
       "fallback": "Use a static product render or non-3D motion composition.",

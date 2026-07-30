@@ -9,8 +9,10 @@ Presentation Director is a lightweight orchestration layer. It owns presentation
 ```mermaid
 flowchart LR
     A["Brief / document / reference deck"] --> B["Presentation Director"]
-    B --> C["Narrative + DESIGN.md"]
-    C --> D["presentation.json"]
+    B --> C["Communication job"]
+    C --> S{"Style decision"}
+    S --> R["Preset raw / custom web research"]
+    R --> D["DESIGN.md + presentation.json"]
     D --> E{"Renderer router"}
     E --> F["Native PPTX"]
     E --> G["Image / UI / SVG"]
@@ -28,13 +30,15 @@ The workflow is source-first. The final PPTX is a delivery artifact, not the onl
 
 ## Operating principles
 
-1. **Narrative before layout.** Define the audience, desired action, central takeaway, and slide roles before selecting renderers.
-2. **Design before assets.** Lock the visual identity before images, UI, diagrams, or motion are produced.
-3. **Purpose before technology.** Choose a renderer because it communicates the slide correctly, not because the tool is available.
-4. **One contract across providers.** Every provider reads the same design and presentation source files.
-5. **Honest editability.** Native, mixed, flattened, and replaceable-media outputs are declared at slide level.
-6. **Motion with a budget.** Animation is used for sequence, state change, product demonstration, or a meaningful reveal.
-7. **Validation before delivery.** Structural checks and rendered-slide review are required for final output.
+1. **Narrative before style.** Define the audience, desired action, central takeaway, and slide roles before evaluating visual directions.
+2. **Optional style checkpoint.** Respect specified, automatic, and recommendation modes instead of forcing one interaction model.
+3. **References before design.** Load selected preset raw sources or research a custom direction before locking the visual identity.
+4. **Design before assets.** Lock the visual identity before images, UI, diagrams, or motion are produced.
+5. **Purpose before technology.** Choose a renderer because it communicates the slide correctly, not because the tool is available.
+6. **One contract across providers.** Every provider reads the same design and presentation source files.
+7. **Honest editability.** Native, mixed, flattened, and replaceable-media outputs are declared at slide level.
+8. **Motion with a budget.** Animation is used for sequence, state change, product demonstration, or a meaningful reveal.
+9. **Validation before delivery.** Structural checks and rendered-slide review are required for final output.
 
 ## Source-of-truth contracts
 
@@ -58,6 +62,8 @@ All visual providers must read this file. Provider defaults must not override it
 
 `presentation.json` tracks:
 
+- Style-decision mode, candidates, selection rationale, and reference depth.
+- Preset raw loading or custom web-research status and source records.
 - Deck narrative and slide order.
 - Slide roles and content.
 - Renderer selection.
