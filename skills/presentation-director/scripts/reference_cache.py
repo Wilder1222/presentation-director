@@ -8,7 +8,7 @@ from pathlib import Path
 
 PRIMARY_CACHE_ENV = "PRESENTATION_REFERENCE_CACHE"
 LEGACY_CACHE_ENV = "CODEX_PRESENTATION_REFERENCE_CACHE"
-DEFAULT_RELATIVE_CACHE = Path(".codex") / "cache" / "codex-presentation-director" / "reference-library"
+DEFAULT_RELATIVE_CACHE = Path(".codex") / "cache" / "presentation-director" / "reference-library"
 
 
 def resolve_cache_dir(explicit: str | None = None) -> Path:

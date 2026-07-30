@@ -122,8 +122,8 @@ export async function validateSkillStructure() {
     issue(issues, "agent.short_description", "agents/openai.yaml short_description must contain 25-64 characters.", "agents/openai.yaml");
   }
   const defaultPrompt = openaiYaml.match(/^\s*default_prompt:\s*"([^"]+)"\s*$/m)?.[1];
-  if (!defaultPrompt?.includes("$codex-presentation-director")) {
-    issue(issues, "agent.default_prompt", "default_prompt must explicitly invoke $codex-presentation-director.", "agents/openai.yaml");
+  if (!defaultPrompt?.includes("$presentation-director")) {
+    issue(issues, "agent.default_prompt", "default_prompt must explicitly invoke $presentation-director.", "agents/openai.yaml");
   }
 
   const dependencies = await readJson(DEPENDENCIES_PATH, issues, "references/dependencies.json");
@@ -180,8 +180,8 @@ export async function validateSkillStructure() {
   if (claudeManifest?.name !== "presentation-director") {
     issue(issues, "manifest.claude_name", "Claude Code plugin name must be presentation-director.", ".claude-plugin/plugin.json");
   }
-  if (geminiManifest?.name !== "codex-presentation-director") {
-    issue(issues, "manifest.gemini_name", "Gemini extension name must be codex-presentation-director.", "gemini-extension.json");
+  if (geminiManifest?.name !== "presentation-director") {
+    issue(issues, "manifest.gemini_name", "Gemini extension name must be presentation-director.", "gemini-extension.json");
   }
 
   return {

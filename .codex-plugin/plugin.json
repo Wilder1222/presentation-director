@@ -1,13 +1,13 @@
 {
-  "name": "codex-presentation-director",
-  "version": "0.3.0+codex.20260730060310",
+  "name": "presentation-director",
+  "version": "0.4.0+codex.20260730061202",
   "description": "Portable presentation direction with capability preflight, install guidance, editable PowerPoint, generated visuals, motion, and optional Three.js scenes.",
   "author": {
     "name": "Wilder1222",
     "url": "https://github.com/Wilder1222"
   },
-  "homepage": "https://github.com/Wilder1222/codex-presentation-director",
-  "repository": "https://github.com/Wilder1222/codex-presentation-director",
+  "homepage": "https://github.com/Wilder1222/presentation-director",
+  "repository": "https://github.com/Wilder1222/presentation-director",
   "license": "MIT",
   "keywords": [
     "presentations",
@@ -19,7 +19,7 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Codex Presentation Director",
+    "displayName": "Presentation Director",
     "shortDescription": "Direct polished PPTX, visuals, 3D, and motion",
     "longDescription": "A lightweight presentation director that plans narrative and design, selects traceable reference DNA, routes work to presentation, image, HyperFrames, and Remotion capabilities, optionally uses Three.js inside Remotion for deterministic 3D video, and validates the final result.",
     "developerName": "Wilder1222",

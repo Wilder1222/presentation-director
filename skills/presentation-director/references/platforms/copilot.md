@@ -7,10 +7,10 @@ Use this adapter with GitHub Copilot CLI, Copilot cloud agent, or VS Code agent 
 Copilot can load the shared Agent Skill directly. For CLI installation from the repository, use the supported skill installer against:
 
 ```text
-skills/codex-presentation-director/SKILL.md
+skills/presentation-director/SKILL.md
 ```
 
-For repository-local discovery, package or copy the skill to `.github/skills/codex-presentation-director/` or `.agents/skills/codex-presentation-director/` without changing its internal relative paths.
+For repository-local discovery, package or copy the skill to `.github/skills/presentation-director/` or `.agents/skills/presentation-director/` without changing its internal relative paths.
 
 ## Dependency behavior
 

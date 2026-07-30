@@ -30,7 +30,7 @@ Resolution order:
 1. An explicit `--cache-dir` argument.
 2. `PRESENTATION_REFERENCE_CACHE`.
 3. Legacy `CODEX_PRESENTATION_REFERENCE_CACHE` for backward compatibility.
-4. `~/.codex/cache/codex-presentation-director/reference-library`.
+4. `~/.codex/cache/presentation-director/reference-library`.
 
 The cache may contain:
 

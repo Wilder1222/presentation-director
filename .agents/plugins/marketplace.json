@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "codex-presentation-director",
+      "name": "presentation-director",
       "source": {
         "source": "url",
-        "url": "https://github.com/Wilder1222/codex-presentation-director.git",
+        "url": "https://github.com/Wilder1222/presentation-director.git",
         "ref": "main"
       },
       "policy": {

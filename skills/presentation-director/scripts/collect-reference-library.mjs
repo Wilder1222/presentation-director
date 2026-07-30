@@ -39,7 +39,7 @@ function resolveCacheDir(explicit) {
     explicit ||
       process.env[PRIMARY_CACHE_ENV] ||
       process.env[LEGACY_CACHE_ENV] ||
-      path.join(os.homedir(), ".codex", "cache", "codex-presentation-director", "reference-library"),
+      path.join(os.homedir(), ".codex", "cache", "presentation-director", "reference-library"),
   );
 }
 

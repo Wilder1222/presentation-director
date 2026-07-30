@@ -1,14 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "presentation-director",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Direct coherent, design-led presentations across editable slides, generated visuals, diagrams, motion, and optional 3D scenes.",
   "author": {
     "name": "Wilder1222",
     "url": "https://github.com/Wilder1222"
   },
-  "homepage": "https://github.com/Wilder1222/codex-presentation-director",
-  "repository": "https://github.com/Wilder1222/codex-presentation-director",
+  "homepage": "https://github.com/Wilder1222/presentation-director",
+  "repository": "https://github.com/Wilder1222/presentation-director",
   "license": "MIT",
   "keywords": ["presentations", "powerpoint", "slides", "design", "motion", "threejs", "agent-skills"]
 }

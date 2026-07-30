@@ -1,5 +1,5 @@
 ---
-name: codex-presentation-director
+name: presentation-director
 description: Direct high-quality presentations from a brief, source material, a reference deck, or a named visual direction. Use when an AI agent needs to plan, create, revise, or review PPT/PPTX decks, presentation visuals, product demos, architecture slides, optional Three.js scenes, or motion-enhanced presentations while checking and coordinating installed specialist capabilities.
 ---
 

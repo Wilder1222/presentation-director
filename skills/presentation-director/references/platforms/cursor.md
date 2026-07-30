@@ -4,7 +4,7 @@ Use this adapter in Cursor IDE or Cursor CLI.
 
 ## Distribution
 
-Import or copy the complete skill directory to `.cursor/skills/codex-presentation-director/` for a project installation, or to the corresponding user skill directory. Preserve `references/`, `scripts/`, and `assets/` beside `SKILL.md`.
+Import or copy the complete skill directory to `.cursor/skills/presentation-director/` for a project installation, or to the corresponding user skill directory. Preserve `references/`, `scripts/`, and `assets/` beside `SKILL.md`.
 
 ## Dependency behavior
 

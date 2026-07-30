@@ -16,7 +16,7 @@ if ([string]::IsNullOrWhiteSpace($CacheDir)) {
 }
 if ([string]::IsNullOrWhiteSpace($CacheDir)) {
     $userProfile = [Environment]::GetFolderPath("UserProfile")
-    $CacheDir = Join-Path $userProfile ".codex\cache\codex-presentation-director\reference-library"
+    $CacheDir = Join-Path $userProfile ".codex\cache\presentation-director\reference-library"
 }
 if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
     $OutputRoot = Join-Path $CacheDir "captures\spotify\source-assets"

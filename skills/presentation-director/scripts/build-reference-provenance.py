@@ -98,7 +98,7 @@ def main() -> int:
         "cachePolicy": {
             "bundled": False,
             "environmentVariable": CACHE_ENV,
-            "defaultLocation": "~/.codex/cache/codex-presentation-director/reference-library",
+            "defaultLocation": "~/.codex/cache/presentation-director/reference-library",
         },
         "originals": originals,
         "catalogAssets": assets,

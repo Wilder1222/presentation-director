@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="assets/icon.png" alt="Codex Presentation Director plugin icon" width="128" height="128" />
+<img src="assets/icon.png" alt="Presentation Director plugin icon" width="128" height="128" />
 
-# Codex Presentation Director
+# Presentation Director
 
 **Turn content, reference decks, and design intent into coherent, verifiable, delivery-ready presentations.**
 
-![Version](https://img.shields.io/badge/version-0.3.0-4F46E5)
+![Version](https://img.shields.io/badge/version-0.4.0-4F46E5)
 ![Codex Plugin](https://img.shields.io/badge/Codex-standard_plugin-111111)
 ![Agent Skills](https://img.shields.io/badge/agents-Codex%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Gemini%20%7C%20Cursor-2563EB)
 ![Presentation](https://img.shields.io/badge/output-PPTX%20%7C%20PDF%20%7C%20HTML%20%7C%20MP4-0A7D55)
@@ -20,7 +20,7 @@
 
 Codex can already create images, presentations, websites, and videos. A professional deck still needs one system to coordinate narrative, visual direction, source provenance, renderer choice, editability, motion, and final review.
 
-Codex Presentation Director is a lightweight presentation-director plugin. It does not reimplement image models, video engines, or PowerPoint XML. Instead, it establishes a shared design and content contract, then routes each slide to the capability best suited to the job:
+Presentation Director is a lightweight presentation-director plugin. It does not reimplement image models, video engines, or PowerPoint XML. Instead, it establishes a shared design and content contract, then routes each slide to the capability best suited to the job:
 
 - **Presentations** for editable PPTX, template reuse, charts, and native objects.
 - **Image Generation** for hero visuals, product concepts, and backgrounds.
@@ -38,7 +38,7 @@ The operating principle is simple: **keep the Skill lightweight, delegate genera
 
 Convert the brief into a shared design contract, route assets to the right renderers, assemble the deck, and run a visual review before delivery.
 
-![Codex Presentation Director workflow from brief to QA](assets/screenshot-workflow.png)
+![Presentation Director workflow from brief to QA](assets/screenshot-workflow.png)
 
 ### One design contract, multiple controlled outputs
 
@@ -89,7 +89,7 @@ The Director is useful on its own for narrative, Design Atlas selection, manifes
 Run preflight for an existing project:
 
 ```powershell
-node .\skills\codex-presentation-director\scripts\check-capabilities.mjs `
+node .\skills\presentation-director\scripts\check-capabilities.mjs `
   --platform codex `
   --project D:\presentations\agent-platform `
   --profile full-studio `
@@ -119,13 +119,13 @@ The dependency registry intentionally stores detectable provider contracts rathe
 ### Codex: add the plugin marketplace
 
 ```powershell
-codex plugin marketplace add Wilder1222/codex-presentation-director --ref main
+codex plugin marketplace add Wilder1222/presentation-director --ref main
 ```
 
 ### Codex: install the plugin
 
 ```powershell
-codex plugin add codex-presentation-director@wilder1222-plugins
+codex plugin add presentation-director@wilder1222-plugins
 ```
 
 Open a new Codex task after installation so the Skill can be discovered.
@@ -138,15 +138,15 @@ This repository also includes a Claude Code plugin manifest, a Gemini extension 
 |---|---|---|
 | Claude Code | `.claude-plugin/plugin.json` | Add this repository as a trusted plugin source or copy the Skill into a configured Claude skills directory. |
 | Gemini CLI | `gemini-extension.json` | Install or link this repository as an extension so the root `skills/` directory is visible. |
-| GitHub Copilot | `SKILL.md` | Copy or link `skills/codex-presentation-director` into a Copilot-supported Agent Skills directory. |
-| Cursor | `SKILL.md` | Copy or link `skills/codex-presentation-director` into a Cursor-supported Agent Skills directory. |
+| GitHub Copilot | `SKILL.md` | Copy or link `skills/presentation-director` into a Copilot-supported Agent Skills directory. |
+| Cursor | `SKILL.md` | Copy or link `skills/presentation-director` into a Cursor-supported Agent Skills directory. |
 
-The canonical Skill stays under `skills/codex-presentation-director`; platform adapters do not fork its behavior. Run preflight with `--platform claude-code`, `copilot`, `gemini`, or `cursor` after installation.
+The canonical Skill stays under `skills/presentation-director`; platform adapters do not fork its behavior. Run preflight with `--platform claude-code`, `copilot`, `gemini`, or `cursor` after installation.
 
 ### Create a presentation
 
 ```text
-Use $codex-presentation-director to create a 12-slide AI agent product deck
+Use $presentation-director to create a 12-slide AI agent product deck
 based on my uploaded company template. The audience is enterprise technology
 leaders and the objective is to secure approval for a pilot. Keep the
 architecture slide accurate and editable; generated visuals are allowed on
@@ -169,7 +169,7 @@ The plugin will:
 ### Enterprise template mode
 
 ```text
-Use $codex-presentation-director to update this quarterly business review.
+Use $presentation-director to update this quarterly business review.
 Strictly preserve the uploaded PPTX master, typography, colors, and footer.
 Keep every chart and text block editable.
 ```
@@ -177,7 +177,7 @@ Keep every chart and text block editable.
 ### Product launch mode
 
 ```text
-Use $codex-presentation-director to create a launch deck for an AI hardware
+Use $presentation-director to create a launch deck for an AI hardware
 product. Use a restrained product-reveal language, create an original hero
 visual, and produce a 10-second exploded-view sequence for slide 6.
 ```
@@ -185,7 +185,7 @@ visual, and produce a 10-second exploded-view sequence for slide 6.
 ### Technical architecture mode
 
 ```text
-Use $codex-presentation-director to turn this technical proposal into an
+Use $presentation-director to turn this technical proposal into an
 8-slide executive narrative. Render architecture relationships with SVG or
 native PowerPoint shapes. Do not use an image model for nodes, connectors,
 or labels.
@@ -194,7 +194,7 @@ or labels.
 ### Three.js 3D mode
 
 ```text
-Use $codex-presentation-director to create a Three.js turntable and exploded
+Use $presentation-director to create a Three.js turntable and exploded
 assembly for the product slide. Render through Remotion, embed the resulting
 MP4, keep a static poster in the deck, and record the source and license for
 every model, texture, and environment asset.
@@ -264,7 +264,7 @@ Implementation constraints:
 - Record the source and license for GLB/glTF models, textures, and environment maps.
 - HyperFrames may composite a finished 3D video, but it must not manage an independent WebGL animation loop.
 
-See [`renderers/threejs.md`](skills/codex-presentation-director/references/renderers/threejs.md) for the full contract.
+See [`renderers/threejs.md`](skills/presentation-director/references/renderers/threejs.md) for the full contract.
 
 ## Design Atlas
 
@@ -293,7 +293,7 @@ The plugin packages 104 compressed previews backed by 38 source records. Raw PDF
 Default cache location:
 
 ```text
-~/.codex/cache/codex-presentation-director/reference-library
+~/.codex/cache/presentation-director/reference-library
 ```
 
 Override it with an environment variable:
@@ -307,13 +307,13 @@ $env:PRESENTATION_REFERENCE_CACHE = "D:\presentation-reference-cache"
 List sources without downloading anything:
 
 ```powershell
-node .\skills\codex-presentation-director\scripts\collect-reference-library.mjs --list
+node .\skills\presentation-director\scripts\collect-reference-library.mjs --list
 ```
 
 Load one source on demand:
 
 ```powershell
-node .\skills\codex-presentation-director\scripts\collect-reference-library.mjs --source <source-id>
+node .\skills\presentation-director\scripts\collect-reference-library.mjs --source <source-id>
 ```
 
 Add `--include-heavy` explicitly for a source marked `heavy`. Use `--all` only when intentionally rebuilding the complete local reference cache.
@@ -342,14 +342,14 @@ Add `--include-heavy` explicitly for a source marked `heavy`. Use `--all` only w
 ### Repository structure
 
 ```text
-codex-presentation-director/
+presentation-director/
 ├── .agents/plugins/marketplace.json       # Marketplace catalog
 ├── .codex-plugin/plugin.json              # Standard plugin metadata
 ├── .claude-plugin/plugin.json             # Claude Code adapter
 ├── gemini-extension.json                  # Gemini CLI adapter
 ├── assets/                                # Marketplace icon and screenshots
 ├── LICENSE                                # MIT License
-├── skills/codex-presentation-director/
+├── skills/presentation-director/
 │   ├── SKILL.md                           # Director entry point and hard gates
 │   ├── agents/openai.yaml                 # Codex UI metadata
 │   ├── assets/
@@ -373,7 +373,7 @@ codex-presentation-director/
 ### Initialize a presentation workspace
 
 ```powershell
-node .\skills\codex-presentation-director\scripts\init-workspace.mjs `
+node .\skills\presentation-director\scripts\init-workspace.mjs `
   D:\presentations\agent-platform `
   --title "AI Agent Platform" `
   --language en-US `
@@ -434,7 +434,7 @@ tmp/
 }
 ```
 
-See [`manifest.md`](skills/codex-presentation-director/references/manifest.md) for the complete schema and 3D examples.
+See [`manifest.md`](skills/presentation-director/references/manifest.md) for the complete schema and 3D examples.
 
 ### Add a Design Atlas entry
 
@@ -464,7 +464,7 @@ See [`manifest.md`](skills/codex-presentation-director/references/manifest.md) f
 Check installed capabilities and update the workspace profile:
 
 ```powershell
-node .\skills\codex-presentation-director\scripts\check-capabilities.mjs `
+node .\skills\presentation-director\scripts\check-capabilities.mjs `
   --platform codex `
   --project <project-directory> `
   --profile full-studio `
@@ -481,25 +481,25 @@ Validate the Skill:
 
 ```powershell
 python "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" `
-  ".\skills\codex-presentation-director"
+  ".\skills\presentation-director"
 ```
 
 Validate progressive loading, reference links, and internal Skill structure:
 
 ```powershell
-node .\skills\codex-presentation-director\scripts\validate-skill-structure.mjs
+node .\skills\presentation-director\scripts\validate-skill-structure.mjs
 ```
 
 Validate reference metadata and previews:
 
 ```powershell
-python .\skills\codex-presentation-director\scripts\validate-reference-library.py
+python .\skills\presentation-director\scripts\validate-reference-library.py
 ```
 
 Validate a presentation workspace:
 
 ```powershell
-node .\skills\codex-presentation-director\scripts\validate-workspace.mjs <project-directory>
+node .\skills\presentation-director\scripts\validate-workspace.mjs <project-directory>
 ```
 
 Use `--allow-draft` during development. Final delivery must pass without it.
