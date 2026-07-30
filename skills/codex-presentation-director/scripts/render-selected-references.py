@@ -5,9 +5,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import fitz
+
+sys.dont_write_bytecode = True
 
 from reference_cache import resolve_cache_dir, safe_cache_path
 

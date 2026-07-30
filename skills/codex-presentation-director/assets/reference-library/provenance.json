@@ -3,7 +3,8 @@
   "snapshotDate": "2026-07-29",
   "cachePolicy": {
     "bundled": false,
-    "environmentVariable": "CODEX_PRESENTATION_REFERENCE_CACHE",
+    "environmentVariable": "PRESENTATION_REFERENCE_CACHE",
+    "legacyEnvironmentVariable": "CODEX_PRESENTATION_REFERENCE_CACHE",
     "defaultLocation": "~/.codex/cache/codex-presentation-director/reference-library"
   },
   "originals": [

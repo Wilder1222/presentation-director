@@ -1,24 +1,26 @@
 ---
 name: codex-presentation-director
-description: Direct high-quality presentations from a brief, source material, a reference deck, or a named visual direction. Use when Codex needs to plan, create, revise, or review PPT/PPTX decks, presentation visuals, product demos, architecture slides, or motion-enhanced presentations while coordinating the Presentations, imagegen, HyperFrames, and Remotion skills.
+description: Direct high-quality presentations from a brief, source material, a reference deck, or a named visual direction. Use when an AI agent needs to plan, create, revise, or review PPT/PPTX decks, presentation visuals, product demos, architecture slides, optional Three.js scenes, or motion-enhanced presentations while checking and coordinating installed specialist capabilities.
 ---
 
-# Codex Presentation Director
+# Presentation Director
 
-Act as the presentation director. Own the communication job, narrative, visual contract, renderer choices, motion budget, provenance, and final quality. Delegate rendering to the installed specialist skills instead of reimplementing their engines.
+Act as the presentation director. Own the communication job, narrative, visual contract, renderer choices, motion budget, provenance, dependency readiness, and final quality. Delegate rendering to installed specialist capabilities instead of reimplementing their engines.
 
 ## Apply the hard gates
 
-1. Define the communication job before choosing layouts:
+1. Run capability preflight before creating `DESIGN.md` or generating assets. Read [references/dependencies.json](references/dependencies.json), select the requested profile, and write `capabilityProfile` to `presentation.json`.
+2. If a required capability is missing, show the user its platform-specific installation guidance and fallback impact. Stop until the capability is installed or the user explicitly approves a fallback. Never silently downgrade or claim Full Studio.
+3. Define the communication job before choosing layouts:
    `By the end, [audience] should [outcome] because [central takeaway].`
-2. Select exactly one visual route:
+4. Select exactly one visual route:
    - Use a supplied PPTX/template as the source of truth.
    - Use an explicit custom direction or one primary Atlas reference.
    - Use the presentation engine's default library only when neither exists.
-3. Create `DESIGN.md` before generating any visual or motion asset.
-4. Create `presentation.json` before rendering slides.
-5. Build the most-visible static frame before adding animation.
-6. Render and inspect every final slide or motion composition before delivery.
+5. Create `DESIGN.md` before generating any visual or motion asset.
+6. Create `presentation.json` before rendering slides.
+7. Build the most-visible static frame before adding animation.
+8. Render and inspect every final slide or motion composition before delivery.
 
 Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments as audience-facing slide copy.
 
@@ -27,30 +29,46 @@ Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments a
 Run:
 
 ```text
-node <skill-dir>/scripts/init-workspace.mjs <project-dir> --title "<deck title>" --language zh-CN
+node <skill-dir>/scripts/init-workspace.mjs <project-dir> --title "<deck title>" --language zh-CN --platform <platform> --profile full-studio
+```
+
+For an existing workspace, run:
+
+```text
+node <skill-dir>/scripts/check-capabilities.mjs --platform <platform> --project <project-dir> --profile <requested-mode> --write
 ```
 
 Keep reusable project truth in `DESIGN.md` and `presentation.json`. Keep disposable build notes, source notes, prompt records, and QA ledgers under `tmp/` as `.txt` files. Put final deliverables under `output/` unless the user gives another destination.
 
+For a requested Three.js scene, add `--require three_d`. Rerun `check-capabilities.mjs --write` after installing, enabling, or changing any provider. Use `--approve-fallbacks` only after the user explicitly accepts the reported loss of capability.
+
 ## Load only the required references
 
 - Read [references/workflow.md](references/workflow.md) for every deck build or major revision.
+- Read [references/dependencies.json](references/dependencies.json) before capability preflight or installation guidance.
+- Read exactly one host adapter before invoking providers:
+  - [references/platforms/codex.md](references/platforms/codex.md)
+  - [references/platforms/claude-code.md](references/platforms/claude-code.md)
+  - [references/platforms/copilot.md](references/platforms/copilot.md)
+  - [references/platforms/gemini.md](references/platforms/gemini.md)
+  - [references/platforms/cursor.md](references/platforms/cursor.md)
 - Read [references/routing.md](references/routing.md) before assigning renderers or output formats.
 - Read [references/manifest.md](references/manifest.md) before authoring `presentation.json`.
 - Read [references/review.md](references/review.md) before final rendering and delivery.
 - Read [references/prompt-contracts.md](references/prompt-contracts.md) before handing work to imagegen, HyperFrames, Remotion, UI capture, or a diagram renderer.
-- Read [references/layout-patterns.md](references/layout-patterns.md) when selecting slide silhouettes.
-- Read [references/motion-patterns.md](references/motion-patterns.md) when any motion is requested or materially useful.
+- Read [references/patterns/layouts.md](references/patterns/layouts.md) when selecting slide silhouettes.
+- Read [references/patterns/motion.md](references/patterns/motion.md) when any motion is requested or materially useful.
+- Read [references/renderers/threejs.md](references/renderers/threejs.md) only when a Remotion video needs spatial 3D, a product turntable, an exploded assembly, spatial layers, or a camera path.
 - Read only the chosen primary Atlas file and any role-scoped secondary file:
-  - [references/atlas-apple.yaml](references/atlas-apple.yaml)
-  - [references/atlas-openai.yaml](references/atlas-openai.yaml)
-  - [references/atlas-nvidia.yaml](references/atlas-nvidia.yaml)
-  - [references/atlas-github.yaml](references/atlas-github.yaml)
-  - [references/atlas-ibm.yaml](references/atlas-ibm.yaml)
-  - [references/atlas-google.yaml](references/atlas-google.yaml)
-  - [references/atlas-spotify.yaml](references/atlas-spotify.yaml)
-  - [references/atlas-figma.yaml](references/atlas-figma.yaml)
-  - [references/atlas-human-marketplace.yaml](references/atlas-human-marketplace.yaml)
+  - [references/atlas/apple.yaml](references/atlas/apple.yaml)
+  - [references/atlas/openai.yaml](references/atlas/openai.yaml)
+  - [references/atlas/nvidia.yaml](references/atlas/nvidia.yaml)
+  - [references/atlas/github.yaml](references/atlas/github.yaml)
+  - [references/atlas/ibm.yaml](references/atlas/ibm.yaml)
+  - [references/atlas/google.yaml](references/atlas/google.yaml)
+  - [references/atlas/spotify.yaml](references/atlas/spotify.yaml)
+  - [references/atlas/figma.yaml](references/atlas/figma.yaml)
+  - [references/atlas/human-marketplace.yaml](references/atlas/human-marketplace.yaml)
 - Read one role pack only when a named slide role needs specialist evidence or visual grammar. A role pack never supplies the deck-wide palette or typography:
   - [references/role-packs/cloudflare-network.yaml](references/role-packs/cloudflare-network.yaml)
   - [references/role-packs/stripe-developer-finance.yaml](references/role-packs/stripe-developer-finance.yaml)
@@ -59,19 +77,20 @@ Keep reusable project truth in `DESIGN.md` and `presentation.json`. Keep disposa
   - [references/role-packs/adobe-creative-workflow.yaml](references/role-packs/adobe-creative-workflow.yaml)
   - [references/role-packs/salesforce-customer-success.yaml](references/role-packs/salesforce-customer-success.yaml)
   - [references/role-packs/bcg-consulting-evidence.yaml](references/role-packs/bcg-consulting-evidence.yaml)
-- Read [references/source-registry.yaml](references/source-registry.yaml) only when provenance, refresh, or rights status is relevant.
-- Read [references/reference-library.md](references/reference-library.md) when selecting or refreshing downloaded official reference material.
-- Use the bundled `previewFile` from `catalog.json` for visual selection. Do not download a raw source or high-resolution cache object unless a selected slide needs closer inspection, regeneration, or provenance verification.
+- Read [references/library/source-registry.yaml](references/library/source-registry.yaml) only when provenance, refresh, or rights status is relevant.
+- Read [references/library/reference-library.md](references/library/reference-library.md) when selecting or refreshing downloaded official reference material.
+- Use `assets/reference-library/catalog.json` and its bundled `previewFile` values for visual selection. Do not download a raw source or high-resolution cache object unless a selected slide needs closer inspection, regeneration, or provenance verification.
 
-## Invoke specialist skills when their route is selected
+## Invoke installed providers when their route is selected
 
-- Invoke `Presentations` for every local PPTX read/create/edit workflow. Follow its template route, artifact-tool requirement, source-note policy, rendering checks, and overflow checks.
-- Invoke `imagegen` for original product imagery, conceptual hero art, backgrounds, and illustrative assets. Do not use it for exact architecture, charts, tables, or text-heavy UI.
-- Invoke `hyperframes` and `hyperframes-cli` for deterministic short motion, animated architecture builds, title cards, slide loops, and 3-15 second sequences. Give the composition the same `DESIGN.md`.
-- Invoke `remotion-best-practices` for 15-90 second multi-scene product demos, narration, captions, or parameterized video. Read its required video-layout guidance before coding.
+- Use the presentation provider recorded by capability preflight for every local PPTX read/create/edit workflow. Follow its template route, source-note policy, rendering checks, and overflow checks.
+- Use the detected image-generation provider for original product imagery, conceptual hero art, backgrounds, and illustrative assets. Do not use it for exact architecture, charts, tables, or text-heavy UI.
+- Use the detected short-motion provider for deterministic animated architecture builds, title cards, slide loops, and 3-15 second sequences. Give the composition the same `DESIGN.md`.
+- Use the detected video provider for 15-90 second multi-scene product demos, narration, captions, or parameterized video. Follow that provider's video-layout guidance before coding.
+- When a `remotion_video` slide declares `threeD`, use project-local Three.js, React Three Fiber, and `@remotion/three` as a component inside Remotion. Drive every 3D animation from the Remotion frame timeline and provide a poster fallback.
 - Use native PowerPoint shapes for simple editable diagrams and Graphviz or another deterministic diagram route for complex topology. Keep labels outside image generation.
 
-If a required specialist skill is unavailable, preserve the narrative and static layout, record the fallback in `tmp/fallback-reasons.txt`, and generate a replaceable poster frame. Do not silently claim animation or editability that was not produced.
+If a required capability is unavailable, present its installation guidance first and stop. Continue with a static or alternate fallback only after explicit user approval, rerun capability preflight with `--approve-fallbacks --write`, record the decision in `tmp/fallback-reasons.txt`, and change every unsupported slide renderer in `presentation.json`. Do not silently claim animation, 3D, or editability that was not produced.
 
 ## Route each slide deliberately
 
@@ -82,7 +101,7 @@ Assign one renderer to every slide:
 - `svg`: precise architecture, process, roadmap, or topology.
 - `ui_capture`: realistic product UI built in HTML/React and captured at presentation resolution.
 - `hyperframes_video`: short deterministic motion with a static fallback frame.
-- `remotion_video`: longer multi-scene video with a static fallback frame.
+- `remotion_video`: longer multi-scene video with a static fallback frame; may contain an optional deterministic `threeD` component.
 
 Keep the title, key claim, sources, and any necessary labels native in PPTX whenever feasible. Treat generated images and videos as replaceable media assets.
 
@@ -115,4 +134,4 @@ Run the workspace validator:
 node <skill-dir>/scripts/validate-workspace.mjs <project-dir>
 ```
 
-Then execute the renderer-specific checks in [references/review.md](references/review.md). Resolve every unintended overlap, clipping, broken connector, missing asset, unresolved placeholder, contrast failure, and motion-budget violation. Deliver only the requested final outputs plus a concise summary of what remains flattened or replaceable.
+Then execute the renderer-specific checks in [references/review.md](references/review.md). Resolve every capability mismatch, unintended overlap, clipping, broken connector, missing asset, unresolved placeholder, contrast failure, and motion-budget violation. Deliver only the requested final outputs plus a concise summary of what remains flattened or replaceable.

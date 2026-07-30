@@ -1,17 +1,43 @@
 # Renderer and Output Routing
 
+## Contents
+
+1. Capability routing
+2. Output and slide-role routing
+3. Design-reference routing
+4. Image and motion routing
+5. Editability
+6. Motion budget
+
+## Route capabilities before renderers
+
+Use `dependencies.json` and the current `capabilityProfile` as the source of truth. Do not assign a renderer merely because its documentation exists.
+
+| Renderer | Required capability |
+|---|---|
+| `native_ppt` | `presentation` |
+| `image_slide` | `image_generation` |
+| `svg` | Director core only |
+| `ui_capture` | `ui_capture` |
+| `hyperframes_video` | `short_motion` |
+| `remotion_video` | `video` |
+| `remotion_video` with `threeD` | `video` and `three_d` |
+
+If a capability is missing, present its installation guidance and stop. A fallback is a user decision, not an automatic renderer choice. After explicit approval, rerun capability preflight with `--approve-fallbacks --write` and replace every unsupported renderer in `presentation.json` before asset generation.
+
 ## Choose the output route
 
 | Need | Primary route | Required companion | Fallback |
 |---|---|---|---|
-| Editable PowerPoint | PPTX with native objects | `Presentations` | Static PPTX with replaceable media |
-| Existing company template | Duplicate and edit source layouts | `Presentations` template-following route | Ask for a usable PPTX/POTX if parsing fails |
-| Original hero or concept art | Raster asset | `imagegen` | Typographic or sourced-image composition |
-| Exact simple architecture/process | Native PPT shapes | `Presentations` | SVG |
-| Complex topology/network | Graphviz or deterministic SVG | diagram tooling + `Presentations` | Simplify topology |
-| Product UI | HTML/React capture | browser/capture tooling + `Presentations` | Native framed screenshot |
-| 3–15 second slide motion | MP4/WebM + poster | `hyperframes`, `hyperframes-cli` | Progressive static build |
-| 15–90 second demo/video | MP4 + poster | `remotion-best-practices` | Short HyperFrames summary or static storyboard |
+| Editable PowerPoint | PPTX with native objects | `presentation` provider | Static PPTX with replaceable media |
+| Existing company template | Duplicate and edit source layouts | `presentation` provider with template support | Ask for a usable PPTX/POTX if parsing fails |
+| Original hero or concept art | Raster asset | `image_generation` provider | Typographic or licensed sourced-image composition |
+| Exact simple architecture/process | Native PPT shapes | `presentation` provider | SVG |
+| Complex topology/network | Graphviz or deterministic SVG | diagram tooling + `presentation` provider | Simplify topology |
+| Product UI | HTML/React capture | `ui_capture` + `presentation` providers | Native framed screenshot |
+| Spatial product or assembly animation | Remotion video with optional Three.js component | `video` + `three_d` + poster | 3D still, isometric SVG, or static storyboard |
+| 3–15 second slide motion | MP4/WebM + poster | `short_motion` provider | Progressive static build |
+| 15–90 second demo/video | MP4 + poster | `video` provider | Short motion summary or static storyboard |
 | Full web presentation | HTML runtime | HyperFrames or a dedicated HTML-slide route | PPTX/PDF |
 
 ## Assign renderers by slide role
@@ -22,7 +48,7 @@
 | giant claim / quote | `native_ppt` | Use `image_slide` only when the background is the message |
 | metrics / chart / table | `native_ppt` | Use `svg` for a custom but exact chart |
 | architecture / process | `native_ppt` or `svg` | Use `hyperframes_video` when sequence or data flow is central |
-| product UI | `ui_capture` | Use `hyperframes_video` for a short interaction; Remotion for a narrated demo |
+| product UI | `ui_capture` | Use `hyperframes_video` for a short interaction; Remotion for a narrated demo or meaningful device/space visualization |
 | comparison | `native_ppt` | Use `svg` when geometry is specialized |
 | roadmap | `native_ppt` or `svg` | Use short motion only when stages must reveal progressively |
 | closing / decision | `native_ppt` | Use a restrained visual asset for emotional closure |
@@ -91,6 +117,12 @@ Use for:
 - batch variants.
 
 Keep duration between 15 and 90 seconds by default. Use frame-based Remotion APIs; do not use CSS transitions or CSS animations.
+
+### Optional Three.js component
+
+Use Three.js only inside `remotion_video` in this plugin version. Select it when depth, assembly, or camera position explains the claim: product turntables, exploded assemblies, spatial layer builds, or short camera paths. Do not use it for ordinary architecture, charts, tables, roadmaps, or decorative “tech” backgrounds.
+
+Read [renderers/threejs.md](renderers/threejs.md), add a `## 3D Direction` section to `DESIGN.md`, and declare `threeD` in the slide manifest. Use `@remotion/three` and React Three Fiber, keep all animation frame-driven, and deliver both a rendered video and poster. HyperFrames may composite the finished clip but must not own an unsynchronized WebGL loop.
 
 ## Editability route
 

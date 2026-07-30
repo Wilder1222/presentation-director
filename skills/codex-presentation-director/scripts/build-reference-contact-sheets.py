@@ -3,9 +3,12 @@
 import argparse
 import math
 import re
+import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+
+sys.dont_write_bytecode = True
 
 from reference_cache import resolve_cache_dir
 

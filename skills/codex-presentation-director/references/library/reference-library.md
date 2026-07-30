@@ -2,6 +2,18 @@
 
 Use this library for internal visual analysis and style selection. The plugin bundles only metadata, Design DNA, and compact previews. Raw PDFs, full-resolution captures, and review renders live in an optional external cache and are never required for normal Skill loading.
 
+## Contents
+
+1. Bundled metadata
+2. External cache
+3. List raw links without downloading
+4. Load one raw PDF on demand
+5. Render selected PDF pages on demand
+6. Refresh compact previews and provenance
+7. Refresh Spotify Design on demand
+8. Validate
+9. Rights and selection rules
+
 ## Bundled metadata
 
 - Canonical sources and raw target paths: `assets/reference-library/sources.json`
@@ -16,8 +28,9 @@ Every PDF catalog entry links `sourceId + page + file + previewFile`. Every web 
 Resolution order:
 
 1. An explicit `--cache-dir` argument.
-2. `CODEX_PRESENTATION_REFERENCE_CACHE`.
-3. `~/.codex/cache/codex-presentation-director/reference-library`.
+2. `PRESENTATION_REFERENCE_CACHE`.
+3. Legacy `CODEX_PRESENTATION_REFERENCE_CACHE` for backward compatibility.
+4. `~/.codex/cache/codex-presentation-director/reference-library`.
 
 The cache may contain:
 

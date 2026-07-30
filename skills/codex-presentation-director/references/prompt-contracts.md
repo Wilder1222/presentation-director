@@ -1,6 +1,17 @@
 # Specialist Handoff Contracts
 
+## Contents
+
+1. Shared contract
+2. Image generation and product UI
+3. Diagrams
+4. HyperFrames
+5. Remotion and optional Three.js
+6. PPTX
+
 ## Shared contract
+
+Create a specialist handoff only after capability preflight records the required capability as available. If it is missing, show installation guidance and stop; do not write a prompt that implies the provider ran. Use the provider identified by preflight rather than assuming a platform-specific skill name.
 
 Every specialist handoff must include:
 
@@ -81,13 +92,13 @@ Composition purpose: [why motion materially helps]
 Hero frame: [static end-state composition]
 Duration: [3-15 seconds]
 Scenes: [ordered beats]
-Motion pattern: [from motion-patterns.md]
+Motion pattern: [from patterns/motion.md]
 Required poster frame: [path]
 Required video: [path]
 Design source: [path to shared DESIGN.md]
 ```
 
-Then invoke the HyperFrames skills and follow their non-negotiable rules:
+Then invoke the detected short-motion provider. When that provider is HyperFrames, follow these non-negotiable rules:
 
 - scaffold the composition with `npx hyperframes init <name> --non-interactive` instead of creating its structure by hand;
 - read the shared `DESIGN.md`;
@@ -113,11 +124,30 @@ Video output: [path]
 Design source: [path to shared DESIGN.md]
 ```
 
-Then invoke `remotion-best-practices`, read its required video-layout reference, and use frame-based APIs. Do not use CSS transitions or CSS animations. Render representative still frames before the full video.
+Then invoke the detected video provider. When that provider is Remotion, read its required video-layout reference and use frame-based APIs. Do not use CSS transitions or CSS animations. Render representative still frames before the full video.
+
+### Three.js component inside Remotion
+
+When the manifest contains `threeD`, extend the Remotion handoff with:
+
+```text
+3D purpose: [what depth, assembly, or camera movement explains]
+Hero frame: [camera angle, crop, focal object, overlay safe zones]
+Scene graph: [objects, groups, parent-child relationships, world scale]
+Camera: [type, FOV, start/end/target, path anchors]
+Materials and lighting: [roles from DESIGN.md]
+Motion: [object/camera states, frame ranges, easing, hold frames]
+Assets: [local GLB/glTF, textures, HDRI, source and rights]
+Performance: [target hardware, pixel-ratio cap, shadow/postprocessing policy]
+Fallback: [poster path and equivalent static explanation]
+Acceptance: [determinism, clipping, z-fighting, legibility, loading and render checks]
+```
+
+Confirm both `video` and `three_d` are available. When the video provider is Remotion, read its 3D guidance. Use `<ThreeCanvas width={width} height={height}>`, provide lighting, set `layout="none"` on sequences inside the canvas, and drive every animated value from `useCurrentFrame()`. Never use `useFrame()`, wall-clock time, unseeded randomness, self-running mixers, or self-running shaders. Keep audience-facing copy outside perspective space unless its spatial attachment is meaningful.
 
 ## PPTX handoff
 
-Provide the `Presentations` skill with:
+Provide the detected presentation provider with:
 
 - `DESIGN.md`;
 - `presentation.json`;
@@ -127,4 +157,4 @@ Provide the `Presentations` skill with:
 - source notes path;
 - explicit editability expectations.
 
-Follow the active Presentations skill's visual route and implementation engine. Do not substitute PptxGenJS, python-pptx, or direct XML manipulation when the installed skill requires another engine.
+Follow the detected provider's visual route and implementation engine. Do not substitute PptxGenJS, python-pptx, or direct XML manipulation when the installed provider requires another engine.

@@ -2,6 +2,22 @@
 
 Use motion as explanation, state change, demonstration, or reveal. Every motion slide needs a static poster frame and a stated purpose.
 
+## Contents
+
+1. Dissolve reveal
+2. Progressive build
+3. Masked product reveal
+4. Camera push
+5. Architecture build
+6. Data flow
+7. Product state change
+8. Compare morph
+9. Section transition
+10. Product orbit reveal
+11. Exploded assembly
+12. Spatial layer build
+13. Motion anti-patterns
+
 ## dissolve-reveal
 
 - **Purpose:** introduce a major claim or reset attention.
@@ -77,6 +93,33 @@ Use motion as explanation, state change, demonstration, or reveal. Every motion 
 - **Limit:** choose at most two transition families per deck.
 - **Avoid:** a unique transition for every section.
 
+## product-orbit-reveal
+
+- **Purpose:** reveal product form, finish, or one meaningful side.
+- **Best engine:** Remotion + `@remotion/three`.
+- **Duration:** 4–10 seconds.
+- **Sequence:** hero angle -> restrained orbit or object turntable -> proof angle -> hold for native callout.
+- **Rules:** end on the poster composition and keep the camera target stable.
+- **Avoid:** perpetual spinning, dramatic lens changes, or orbiting when one still is clearer.
+
+## exploded-assembly
+
+- **Purpose:** explain how physical or spatial components relate.
+- **Best engine:** Remotion + `@remotion/three`.
+- **Duration:** 6–15 seconds.
+- **Sequence:** whole -> controlled separation -> relationship emphasis -> optional reassembly -> hold.
+- **Rules:** separate along meaningful axes and keep labels as readable overlays.
+- **Avoid:** arbitrary explosions, collisions, or physics-driven randomness.
+
+## spatial-layer-build
+
+- **Purpose:** use depth to explain containment, hierarchy, or stacked infrastructure.
+- **Best engine:** Remotion + `@remotion/three`.
+- **Duration:** 6–12 seconds.
+- **Sequence:** spatial frame -> base layer -> dependent layers -> active relationship -> final system view.
+- **Rules:** use one depth axis consistently and provide an equivalent poster.
+- **Avoid:** turning a clear architecture diagram into an unreadable 3D maze.
+
 ## Motion anti-patterns
 
 - Animation on every slide.
@@ -86,5 +129,7 @@ Use motion as explanation, state change, demonstration, or reveal. Every motion 
 - Infinite loops in captured video.
 - Exit animations before a HyperFrames scene transition.
 - CSS animations or transitions in Remotion.
+- `useFrame()`, wall-clock time, self-running mixers, or unseeded randomness in Remotion 3D.
+- Generic particle tunnels, glowing globes, or floating geometry with no explanatory role.
 - Missing poster frames.
 - Timing so fast that labels cannot be read or so slow that the talk stalls.

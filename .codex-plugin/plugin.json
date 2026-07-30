@@ -1,18 +1,45 @@
 {
   "name": "codex-presentation-director",
-  "version": "0.1.0",
-  "description": "Direct coherent, design-led presentations across editable PowerPoint, generated visuals, diagrams, and motion.",
+  "version": "0.3.0+codex.20260730060310",
+  "description": "Portable presentation direction with capability preflight, install guidance, editable PowerPoint, generated visuals, motion, and optional Three.js scenes.",
   "author": {
-    "name": "Local developer"
+    "name": "Wilder1222",
+    "url": "https://github.com/Wilder1222"
   },
+  "homepage": "https://github.com/Wilder1222/codex-presentation-director",
+  "repository": "https://github.com/Wilder1222/codex-presentation-director",
+  "license": "MIT",
+  "keywords": [
+    "presentations",
+    "powerpoint",
+    "slides",
+    "design",
+    "motion",
+    "threejs"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Codex Presentation Director",
-    "shortDescription": "Direct polished PPTX, visuals, diagrams, and motion",
-    "longDescription": "A lightweight presentation director that plans narrative and design, selects traceable reference DNA, routes work to presentation, image, HyperFrames, and Remotion capabilities, and validates the final result.",
-    "developerName": "Local developer",
+    "shortDescription": "Direct polished PPTX, visuals, 3D, and motion",
+    "longDescription": "A lightweight presentation director that plans narrative and design, selects traceable reference DNA, routes work to presentation, image, HyperFrames, and Remotion capabilities, optionally uses Three.js inside Remotion for deterministic 3D video, and validates the final result.",
+    "developerName": "Wilder1222",
     "category": "Productivity",
-    "capabilities": ["Interactive", "Write"],
-    "defaultPrompt": "Turn my brief and references into a coherent, validated presentation."
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "brandColor": "#7C3AED",
+    "logo": "./assets/icon.png",
+    "composerIcon": "./assets/icon.png",
+    "screenshots": [
+      "./assets/screenshot-workflow.png",
+      "./assets/screenshot-renderer-routing.png",
+      "./assets/screenshot-threejs.png"
+    ],
+    "defaultPrompt": [
+      "Check required capabilities, prompt for missing providers, then create a coherent presentation from my content and template.",
+      "Redesign this deck while preserving its template, editability, narrative, and visual consistency.",
+      "Plan a product-launch presentation with original visuals, accurate architecture, and restrained motion."
+    ]
   }
 }

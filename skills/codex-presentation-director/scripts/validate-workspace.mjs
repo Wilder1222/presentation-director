@@ -4,6 +4,8 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const DEPENDENCY_PATH = path.join(SKILL_DIR, "references", "dependencies.json");
 const RENDERERS = new Set([
   "native_ppt",
   "image_slide",
@@ -14,6 +16,7 @@ const RENDERERS = new Set([
 ]);
 const EDITABILITY = new Set(["native", "mixed", "replaceable-media", "flattened"]);
 const VIDEO_RENDERERS = new Set(["hyperframes_video", "remotion_video"]);
+const THREE_ASSET_KINDS = new Set(["3d-model", "texture", "environment-map"]);
 const DESIGN_HEADINGS = [
   "## Identity",
   "## Colors",
@@ -89,6 +92,13 @@ export async function validateWorkspace(projectDir, options = {}) {
     addIssue(issues, "error", "manifest.json", `presentation.json is invalid JSON: ${error.message}`);
     return { ok: false, issues, summary: {} };
   }
+  let dependencyConfig;
+  try {
+    dependencyConfig = JSON.parse(await readFile(DEPENDENCY_PATH, "utf8"));
+  } catch (error) {
+    addIssue(issues, "error", "capabilities.config", `Dependency configuration is invalid: ${error.message}`);
+    return { ok: false, issues, summary: {} };
+  }
 
   if (manifest.version !== "1.0") addIssue(issues, "error", "manifest.version", 'version must be "1.0".');
   if (!manifest.deck || typeof manifest.deck !== "object") {
@@ -111,11 +121,88 @@ export async function validateWorkspace(projectDir, options = {}) {
     addIssue(issues, "error", "status.planning", "Change status from planning before final validation.");
   }
 
+  const capabilityProfile = manifest.capabilityProfile;
+  if (!capabilityProfile || typeof capabilityProfile !== "object" || Array.isArray(capabilityProfile)) {
+    if (!draft) addIssue(issues, "error", "capabilities.missing", "Final delivery requires capabilityProfile.");
+  } else if (!draft || capabilityProfile.checkedAt) {
+    for (const key of ["platform", "requestedMode", "resolvedMode", "checkedAt"]) {
+      if (!capabilityProfile[key] || typeof capabilityProfile[key] !== "string") {
+        addIssue(issues, "error", `capabilities.${key}`, `capabilityProfile.${key} is required.`);
+      }
+    }
+    if (capabilityProfile.checkedAt && Number.isNaN(Date.parse(capabilityProfile.checkedAt))) {
+      addIssue(issues, "error", "capabilities.checkedAt", "capabilityProfile.checkedAt must be an ISO timestamp.");
+    }
+    for (const key of ["required", "available", "missing"]) {
+      if (!Array.isArray(capabilityProfile[key]) || capabilityProfile[key].some((item) => typeof item !== "string")) {
+        addIssue(issues, "error", `capabilities.${key}`, `capabilityProfile.${key} must be an array of strings.`);
+      }
+    }
+    if (typeof capabilityProfile.taskReady !== "boolean") {
+      addIssue(issues, "error", "capabilities.taskReady", "capabilityProfile.taskReady must be boolean.");
+    }
+    if (typeof capabilityProfile.fallbacksApproved !== "boolean") {
+      addIssue(issues, "error", "capabilities.fallbacksApproved", "capabilityProfile.fallbacksApproved must be boolean.");
+    }
+    const missingCapabilities = Array.isArray(capabilityProfile.missing) ? capabilityProfile.missing : [];
+    const requiredCapabilities = Array.isArray(capabilityProfile.required) ? capabilityProfile.required : [];
+    const availableCapabilities = Array.isArray(capabilityProfile.available) ? capabilityProfile.available : [];
+    const knownCapabilities = new Set(Object.keys(dependencyConfig.capabilities || {}));
+    const knownProfiles = new Set((dependencyConfig.profiles || []).map((profile) => profile.id));
+    for (const modeKey of ["requestedMode", "resolvedMode"]) {
+      if (capabilityProfile[modeKey] && !knownProfiles.has(capabilityProfile[modeKey])) {
+        addIssue(issues, "error", `capabilities.${modeKey}`, `Unknown capability profile: ${capabilityProfile[modeKey]}.`);
+      }
+    }
+    for (const [key, values] of [["required", requiredCapabilities], ["available", availableCapabilities], ["missing", missingCapabilities]]) {
+      for (const capability of values) {
+        if (!knownCapabilities.has(capability)) {
+          addIssue(issues, "error", `capabilities.${key}`, `Unknown capability in ${key}: ${capability}.`);
+        }
+      }
+    }
+    const expectedMissing = requiredCapabilities.filter((capability) => !availableCapabilities.includes(capability)).sort();
+    if (JSON.stringify([...missingCapabilities].sort()) !== JSON.stringify(expectedMissing)) {
+      addIssue(issues, "error", "capabilities.missing_set", "missing must equal required capabilities that are not available.");
+    }
+    const requestedProfile = (dependencyConfig.profiles || []).find((profile) => profile.id === capabilityProfile.requestedMode);
+    for (const capability of requestedProfile?.requires || []) {
+      if (!requiredCapabilities.includes(capability)) {
+        addIssue(issues, "error", "capabilities.required_set", `requestedMode requires ${capability}, but it is absent from required.`);
+      }
+    }
+    if (capabilityProfile.taskReady !== (missingCapabilities.length === 0)) {
+      addIssue(issues, "error", "capabilities.readiness", "taskReady must match whether required capabilities are missing.");
+    }
+    if (!draft && missingCapabilities.length > 0 && capabilityProfile.fallbacksApproved !== true) {
+      addIssue(
+        issues,
+        "error",
+        "capabilities.unapproved_fallback",
+        "Missing required capabilities need explicit fallback approval before final delivery.",
+      );
+    }
+    if (!draft && missingCapabilities.length > 0 && capabilityProfile.fallbacksApproved === true) {
+      const fallbackPath = path.join(root, "tmp", "fallback-reasons.txt");
+      if (!(await exists(fallbackPath)) || !(await readFile(fallbackPath, "utf8")).trim()) {
+        addIssue(
+          issues,
+          "error",
+          "capabilities.fallback_record",
+          "Approved fallbacks require a non-empty tmp/fallback-reasons.txt record.",
+        );
+      }
+    }
+  }
+
   const ids = new Set();
   const patterns = [];
   const transitions = new Set();
   let videoSlides = 0;
   let videoSeconds = 0;
+  let threeDSlides = 0;
+  const availableCapabilities = new Set(Array.isArray(capabilityProfile?.available) ? capabilityProfile.available : []);
+  const rendererCapabilities = dependencyConfig.rendererCapabilities || {};
 
   for (let index = 0; index < slides.length; index += 1) {
     const slide = slides[index];
@@ -133,6 +220,17 @@ export async function validateWorkspace(projectDir, options = {}) {
     }
     if (slide.renderer && !RENDERERS.has(slide.renderer)) {
       addIssue(issues, "error", "slide.renderer", `Unsupported renderer: ${slide.renderer}`, location);
+    }
+    for (const requiredCapability of rendererCapabilities[slide.renderer] || []) {
+      if (!draft && !availableCapabilities.has(requiredCapability)) {
+        addIssue(
+          issues,
+          "error",
+          "capabilities.renderer_unavailable",
+          `Renderer ${slide.renderer} requires unavailable capability: ${requiredCapability}.`,
+          location,
+        );
+      }
     }
     if (slide.editability && !EDITABILITY.has(slide.editability)) {
       addIssue(issues, "error", "slide.editability", `Unsupported editability: ${slide.editability}`, location);
@@ -155,6 +253,37 @@ export async function validateWorkspace(projectDir, options = {}) {
         location,
       );
     }
+    if (slide.threeD !== undefined) {
+      threeDSlides += 1;
+      if (slide.renderer !== "remotion_video") {
+        addIssue(issues, "error", "three.renderer", "threeD is supported only on remotion_video slides.", location);
+      }
+      if (!draft && !availableCapabilities.has("three_d")) {
+        addIssue(
+          issues,
+          "error",
+          "capabilities.three_unavailable",
+          "threeD requires the three_d capability to be available in capabilityProfile.",
+          location,
+        );
+      }
+      if (!design.includes("## 3D Direction")) {
+        addIssue(issues, "error", "design.3d_direction", "3D slides require a ## 3D Direction section in DESIGN.md.", location);
+      }
+      if (!slide.threeD || typeof slide.threeD !== "object" || Array.isArray(slide.threeD)) {
+        addIssue(issues, "error", "three.object", "threeD must be an object.", location);
+      } else {
+        if (slide.threeD.runtime !== "remotion-three") {
+          addIssue(issues, "error", "three.runtime", "threeD.runtime must be remotion-three.", location);
+        }
+        for (const key of ["purpose", "scenePath", "fallback"]) {
+          if (!slide.threeD[key] || typeof slide.threeD[key] !== "string") {
+            addIssue(issues, "error", `three.${key}`, `threeD.${key} is required.`, location);
+          }
+        }
+        await validateLocalPath(root, slide.threeD.scenePath, issues, location, draft);
+      }
+    }
     if ((slide.title || "").length > 70) {
       addIssue(issues, "warning", "slide.title_length", "Title may wrap; shorten it or change the layout.", location);
     }
@@ -171,6 +300,14 @@ export async function validateWorkspace(projectDir, options = {}) {
       }
       if (!draft && asset.status !== "ready") {
         addIssue(issues, "error", "asset.not_ready", "Final presentations may reference only ready assets.", assetLocation);
+      }
+      if (THREE_ASSET_KINDS.has(asset.kind)) {
+        if (!asset.source || typeof asset.source !== "string") {
+          addIssue(issues, "error", "asset.3d_source", "3D models, textures, and environment maps require source metadata.", assetLocation);
+        }
+        if (!asset.rights || typeof asset.rights !== "string") {
+          addIssue(issues, "error", "asset.3d_rights", "3D models, textures, and environment maps require rights metadata.", assetLocation);
+        }
       }
       await validateLocalPath(root, asset.path, issues, assetLocation, draft && asset.status === "planned");
     }
@@ -229,7 +366,16 @@ export async function validateWorkspace(projectDir, options = {}) {
   return {
     ok: errors === 0,
     issues,
-    summary: { slides: slides.length, videoSlides, videoSeconds, transitionStyles: transitions.size, errors, warnings },
+    summary: {
+      slides: slides.length,
+      videoSlides,
+      videoSeconds,
+      threeDSlides,
+      transitionStyles: transitions.size,
+      capabilityMode: capabilityProfile?.resolvedMode || "unresolved",
+      errors,
+      warnings,
+    },
   };
 }
 

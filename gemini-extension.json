@@ -1,0 +1,13 @@
+{
+  "name": "codex-presentation-director",
+  "version": "0.3.0",
+  "description": "Portable presentation direction with capability preflight, Design Atlas, editable-slide routing, motion, and optional 3D.",
+  "settings": [
+    {
+      "name": "Presentation reference cache",
+      "description": "Optional external directory for raw and high-resolution reference files.",
+      "envVar": "PRESENTATION_REFERENCE_CACHE",
+      "sensitive": false
+    }
+  ]
+}

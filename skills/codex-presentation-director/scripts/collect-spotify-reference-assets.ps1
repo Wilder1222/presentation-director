@@ -9,6 +9,9 @@ param(
 $ErrorActionPreference = "Stop"
 
 if ([string]::IsNullOrWhiteSpace($CacheDir)) {
+    $CacheDir = $env:PRESENTATION_REFERENCE_CACHE
+}
+if ([string]::IsNullOrWhiteSpace($CacheDir)) {
     $CacheDir = $env:CODEX_PRESENTATION_REFERENCE_CACHE
 }
 if ([string]::IsNullOrWhiteSpace($CacheDir)) {

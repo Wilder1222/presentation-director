@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "1.0",
+  "defaultProfile": "full-studio",
+  "profiles": [
+    {
+      "id": "director-core",
+      "label": "Director Core",
+      "description": "Narrative, Design Atlas, manifest planning, and review contracts.",
+      "requires": []
+    },
+    {
+      "id": "static-studio",
+      "label": "Static Studio",
+      "description": "Editable static presentation output.",
+      "requires": ["presentation"]
+    },
+    {
+      "id": "visual-studio",
+      "label": "Visual Studio",
+      "description": "Static presentation output plus original imagery and product UI capture.",
+      "requires": ["presentation", "image_generation", "ui_capture"]
+    },
+    {
+      "id": "motion-studio",
+      "label": "Motion Studio",
+      "description": "Visual Studio plus short motion and multi-scene video.",
+      "requires": ["presentation", "image_generation", "ui_capture", "short_motion", "video"]
+    },
+    {
+      "id": "full-studio",
+      "label": "Full Studio",
+      "description": "All general presentation capabilities. Spatial 3D remains an on-demand module.",
+      "requires": ["presentation", "image_generation", "ui_capture", "short_motion", "video"]
+    },
+    {
+      "id": "spatial-studio",
+      "label": "Spatial Studio",
+      "description": "Full Studio plus deterministic Three.js scenes inside Remotion.",
+      "requires": ["presentation", "image_generation", "ui_capture", "short_motion", "video", "three_d"]
+    }
+  ],
+  "rendererCapabilities": {
+    "native_ppt": ["presentation"],
+    "image_slide": ["image_generation"],
+    "svg": [],
+    "ui_capture": ["ui_capture"],
+    "hyperframes_video": ["short_motion"],
+    "remotion_video": ["video"],
+    "threeD": ["three_d"]
+  },
+  "capabilities": {
+    "presentation": {
+      "label": "Editable presentation engine",
+      "fallback": "Planning and static poster assets only; no editable PPTX delivery.",
+      "providers": [
+        { "kind": "skill-any", "values": ["presentations", "pptx", "slides"] },
+        { "kind": "package-any", "values": ["pptxgenjs"] }
+      ],
+      "install": {
+        "codex": "Open Codex Plugins and install or enable the Presentations capability, then start a new task.",
+        "claude-code": "Install a trusted PPTX or presentation plugin, or configure a project-local PptxGenJS renderer.",
+        "copilot": "Install a trusted presentation Agent Skill or make PptxGenJS available to the project.",
+        "gemini": "Install a trusted presentation extension or make PptxGenJS available to the project.",
+        "cursor": "Install a trusted presentation Agent Skill or make PptxGenJS available to the project.",
+        "generic": "Install a presentation Agent Skill or a compatible PPTX renderer such as PptxGenJS."
+      }
+    },
+    "image_generation": {
+      "label": "Original image generation",
+      "fallback": "Use user-supplied or licensed imagery; generated hero and concept visuals are unavailable.",
+      "providers": [
+        { "kind": "skill-any", "values": ["imagegen", "image-generation", "image-generator"] }
+      ],
+      "install": {
+        "codex": "Open Codex Plugins and install or enable Image Generation, then start a new task.",
+        "claude-code": "Install a trusted image-generation plugin or configure an approved image provider.",
+        "copilot": "Install a trusted image-generation skill or configure an approved image provider.",
+        "gemini": "Install or enable an image-generation extension or configure an approved image provider.",
+        "cursor": "Enable Cursor image generation or install a trusted image-generation skill.",
+        "generic": "Install a trusted image-generation skill or configure an approved image provider."
+      }
+    },
+    "ui_capture": {
+      "label": "Browser-based product UI capture",
+      "fallback": "Use supplied screenshots; generated interactive UI capture is unavailable.",
+      "providers": [
+        { "kind": "skill-any", "values": ["playwright", "agent-browser", "browser", "computer-use"] },
+        { "kind": "package-any", "values": ["playwright", "playwright-core"] },
+        { "kind": "command-any", "values": ["playwright"] }
+      ],
+      "install": {
+        "codex": "Install or enable a browser automation capability such as Playwright in Codex.",
+        "claude-code": "Install a trusted browser automation plugin or configure Playwright in the project.",
+        "copilot": "Install a browser automation Agent Skill or configure Playwright in the project.",
+        "gemini": "Install a browser automation extension or configure Playwright in the project.",
+        "cursor": "Install a browser automation skill or configure Playwright in the project.",
+        "generic": "Install a browser automation skill or configure Playwright in the project."
+      }
+    },
+    "short_motion": {
+      "label": "Short deterministic motion",
+      "fallback": "Deliver the approved static poster frame without short-form animation.",
+      "providers": [
+        { "kind": "skill-any", "values": ["hyperframes", "hyperframes-cli"] },
+        { "kind": "command-any", "values": ["hyperframes"] }
+      ],
+      "install": {
+        "codex": "Open Codex Plugins, install or enable HyperFrames, then start a new task.",
+        "claude-code": "Install a trusted HyperFrames plugin or make the HyperFrames CLI available.",
+        "copilot": "Install a HyperFrames Agent Skill or make the HyperFrames CLI available.",
+        "gemini": "Install a HyperFrames extension or make the HyperFrames CLI available.",
+        "cursor": "Install a HyperFrames Agent Skill or make the HyperFrames CLI available.",
+        "generic": "Install a HyperFrames integration or make the HyperFrames CLI available."
+      }
+    },
+    "video": {
+      "label": "Remotion video production",
+      "fallback": "Deliver static poster frames; multi-scene product demos are unavailable.",
+      "providers": [
+        { "kind": "skill-any", "values": ["remotion", "remotion-best-practices"] },
+        { "kind": "package-any", "values": ["remotion", "@remotion/cli"] },
+        { "kind": "command-any", "values": ["remotion"] }
+      ],
+      "install": {
+        "codex": "Open Codex Plugins, install or enable Remotion, then start a new task.",
+        "claude-code": "Install a trusted Remotion plugin or configure Remotion in the project.",
+        "copilot": "Install a Remotion Agent Skill or configure Remotion in the project.",
+        "gemini": "Install a Remotion extension or configure Remotion in the project.",
+        "cursor": "Install a Remotion Agent Skill or configure Remotion in the project.",
+        "generic": "Install a Remotion integration or configure Remotion in the project."
+      }
+    },
+    "three_d": {
+      "label": "Three.js spatial video",
+      "fallback": "Use a static product render or non-3D motion composition.",
+      "providers": [
+        { "kind": "package-all", "values": ["three", "@react-three/fiber", "@remotion/three"] }
+      ],
+      "install": {
+        "codex": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
+        "claude-code": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
+        "copilot": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
+        "gemini": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
+        "cursor": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
+        "generic": "In the presentation project, install: npm install three @react-three/fiber @remotion/three"
+      }
+    }
+  }
+}

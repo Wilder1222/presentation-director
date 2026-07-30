@@ -5,7 +5,8 @@
   "cachePolicy": {
     "mode": "on-demand",
     "bundledRaw": false,
-    "environmentVariable": "CODEX_PRESENTATION_REFERENCE_CACHE",
+    "environmentVariable": "PRESENTATION_REFERENCE_CACHE",
+    "legacyEnvironmentVariable": "CODEX_PRESENTATION_REFERENCE_CACHE",
     "defaultLocation": "~/.codex/cache/codex-presentation-director/reference-library"
   },
   "sources": [

@@ -1,3 +1,4 @@
+# Canonical source registry for manual reference-library maintenance.
 version: 1
 snapshot_date: "2026-07-29"
 maintenance: manual_only

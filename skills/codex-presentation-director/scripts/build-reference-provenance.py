@@ -6,11 +6,14 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import sys
 from datetime import date
 from pathlib import Path
 
 import fitz
 from PIL import Image
+
+sys.dont_write_bytecode = True
 
 from reference_cache import CACHE_ENV, resolve_cache_dir, safe_cache_path
 

@@ -2,6 +2,22 @@
 
 Select patterns by narrative job, not by visual novelty. Each slide gets one dominant pattern. Preserve the deck grid, type scale, and palette while varying adjacent silhouettes.
 
+## Contents
+
+1. Minimal title
+2. Centered product reveal
+3. Giant claim
+4. Evidence and meaning
+5. Product interface frame
+6. Feature close-up
+7. Layered architecture
+8. Data flow
+9. Ecosystem map
+10. Decisive comparison
+11. Roadmap with gates
+12. Closing resolution
+13. Selection checks
+
 ## 1. Minimal title
 
 - **Use for:** opening, section reset, major transition.

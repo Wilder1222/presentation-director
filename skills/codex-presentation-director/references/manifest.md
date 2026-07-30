@@ -1,5 +1,14 @@
 # Presentation Manifest Contract
 
+## Contents
+
+1. Purpose and top-level structure
+2. Capability profile
+3. Deck and slide objects
+4. Assets and motion
+5. Optional Three.js component
+6. Sources and validation
+
 ## Purpose
 
 Use `presentation.json` as the source of truth for narrative, renderer routing, assets, motion, editability, and provenance. Do not infer these choices again during rendering.
@@ -10,13 +19,52 @@ Use `presentation.json` as the source of truth for narrative, renderer routing, 
 {
   "version": "1.0",
   "status": "planning",
+  "capabilityProfile": {},
   "deck": {},
   "motionBudget": {},
   "slides": []
 }
 ```
 
-Set `status` to `planning` while assets may still be missing. Set it to `final` only when every referenced local path exists and the deck is ready for final QA.
+Set `status` to `planning` while assets may still be missing. Set it to `final` only when every referenced local path exists, the capability profile is current, every renderer is supported or replaced by an approved fallback, and the deck is ready for final QA.
+
+## Capability profile
+
+Create this object with `check-capabilities.mjs --write`; do not author provider availability from memory.
+
+```json
+{
+  "platform": "codex",
+  "requestedMode": "full-studio",
+  "resolvedMode": "full-studio",
+  "checkedAt": "2026-07-30T08:00:00.000Z",
+  "required": [
+    "presentation",
+    "image_generation",
+    "ui_capture",
+    "short_motion",
+    "video"
+  ],
+  "available": [
+    "presentation",
+    "image_generation",
+    "ui_capture",
+    "short_motion",
+    "video"
+  ],
+  "missing": [],
+  "taskReady": true,
+  "fallbacksApproved": false
+}
+```
+
+Rules:
+
+- `requestedMode` records what the user asked for; `resolvedMode` records what the detected providers can actually deliver.
+- `taskReady` must equal `missing.length === 0`.
+- A final manifest may retain missing requested capabilities only when `fallbacksApproved` is `true`, the approval is recorded in `tmp/fallback-reasons.txt`, and no slide still uses a renderer backed by a missing capability.
+- Adding `threeD` to any slide requires `three_d` in `available` as well as the normal `video` capability.
+- Rerun preflight after installing, removing, enabling, disabling, or changing a provider. Do not reuse a stale profile.
 
 ## Deck object
 
@@ -134,6 +182,63 @@ Every video slide requires:
 - a static poster frame;
 - a replaceable video asset.
 
+## Optional Three.js component
+
+A Three.js scene is a component of `remotion_video`, not a separate renderer. Add `threeD` only when spatial depth materially explains the claim.
+
+```json
+{
+  "id": "s05",
+  "role": "product-reveal",
+  "claimKind": "original",
+  "claim": "The device is designed as one continuous system.",
+  "title": "One enclosure, three coordinated layers",
+  "layoutPattern": "single-hero",
+  "renderer": "remotion_video",
+  "editability": "replaceable-media",
+  "content": {},
+  "motion": {
+    "engine": "remotion",
+    "pattern": "exploded-assembly",
+    "durationSeconds": 10,
+    "transition": "dissolve",
+    "purpose": "Explain how the three physical layers align"
+  },
+  "threeD": {
+    "runtime": "remotion-three",
+    "purpose": "Use depth to make the assembly relationship unambiguous",
+    "scenePath": "motion/remotion/product-assembly/src/ProductAssembly.tsx",
+    "camera": {
+      "type": "perspective",
+      "fov": 36,
+      "start": [0, 0.4, 5.2],
+      "target": [0, 0, 0]
+    },
+    "fallback": "Use the poster with three native callout labels"
+  },
+  "posterFrame": "motion/remotion/product-assembly/poster.png",
+  "assets": [
+    {
+      "id": "product-model",
+      "kind": "3d-model",
+      "path": "assets/models/product.glb",
+      "status": "ready",
+      "source": "original",
+      "rights": "owned"
+    },
+    {
+      "id": "product-assembly-video",
+      "kind": "video",
+      "path": "motion/remotion/product-assembly/output.mp4",
+      "status": "ready"
+    }
+  ],
+  "sources": []
+}
+```
+
+For this plugin version, `threeD.runtime` must be `remotion-three` and the slide renderer must be `remotion_video`. Required 3D fields are `purpose`, `scenePath`, and `fallback`; the existing top-level `posterFrame` is the static fallback path. Track `source` and `rights` for every asset whose `kind` is `3d-model`, `texture`, or `environment-map`.
+
 ## Sources
 
 ```json
@@ -152,6 +257,7 @@ Use `path` instead of `url` for user-supplied local sources. The rendering stage
 Run:
 
 ```text
+node <skill-dir>/scripts/check-capabilities.mjs --platform <platform> --project <project-dir> --profile <requested-mode> --write
 node <skill-dir>/scripts/validate-workspace.mjs <project-dir>
 ```
 

@@ -12,6 +12,17 @@
     "secondaryReferences": [],
     "outputs": ["pptx"]
   },
+  "capabilityProfile": {
+    "platform": "unresolved",
+    "requestedMode": "full-studio",
+    "resolvedMode": "director-core",
+    "checkedAt": null,
+    "required": [],
+    "available": [],
+    "missing": [],
+    "taskReady": false,
+    "fallbacksApproved": false
+  },
   "motionBudget": {
     "maxVideoSlides": 3,
     "maxTotalVideoSeconds": 45,

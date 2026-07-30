@@ -2,6 +2,7 @@
 
 ## Contents
 
+0. Capability preflight
 1. Intake
 2. Visual route
 3. Communication and narrative
@@ -10,6 +11,25 @@
 6. Asset production
 7. Rendering
 8. Review and delivery
+
+## 0. Run capability preflight
+
+Before design or asset generation, choose the host platform and requested capability profile, then run:
+
+```text
+node <skill-dir>/scripts/check-capabilities.mjs --platform <platform> --project <project-dir> --profile full-studio --write
+```
+
+Use `full-studio` for the complete general workflow. Add `--require three_d` when the accepted plan needs spatial 3D. The checker writes `capabilityProfile` to `presentation.json` and reports the providers it actually found.
+
+If a required capability is missing:
+
+1. show the checker-provided installation guidance and explain which outputs are blocked;
+2. stop before creating assets or promising the blocked output;
+3. rerun the checker after installation; or
+4. only after explicit user approval, rerun with `--approve-fallbacks --write`, record the decision in `tmp/fallback-reasons.txt`, and replace unsupported renderers in the manifest.
+
+Never infer that a provider exists from documentation alone. Never describe an incomplete profile as Full Studio.
 
 ## 1. Intake
 
@@ -32,7 +52,7 @@ Choose the first matching route:
 
 1. **User template**: preserve its master, layouts, placeholders, theme, and inherited elements. Use Atlas material only for composition ideas inside compatible content frames.
 2. **Explicit direction**: translate the user's mood, brand, or named references into a custom design contract.
-3. **No direction**: use the default library of the active Presentations skill.
+3. **No direction**: use the default library of the detected presentation provider.
 
 Never combine a supplied template with an unrelated default slide library.
 
@@ -89,7 +109,7 @@ Create the slide sequence before asset generation. For every slide, define:
 - sources;
 - motion only when it earns its cost.
 
-Read `manifest.md` for the complete contract. Set `status` to `planning` during design and `final` only after all paths and sources resolve.
+Read `manifest.md` for the complete contract. Preserve the preflight-generated `capabilityProfile`. Set `status` to `planning` during design and `final` only after all paths and sources resolve and every selected renderer is supported by an available capability or an explicitly approved fallback.
 
 ## 6. Produce assets
 
@@ -107,7 +127,7 @@ Do not generate motion before the static hero frame passes composition review.
 
 ## 7. Render
 
-- Build PPTX with the `Presentations` skill and its required local engine.
+- Build PPTX with the presentation provider recorded in `capabilityProfile` and its required local engine.
 - Keep titles, claims, labels, charts, and simple diagrams native whenever practical.
 - Insert generated media in replaceable frames.
 - Add a poster image for every video slide.
@@ -120,6 +140,9 @@ Run `validate-workspace.mjs`, then follow `review.md`.
 
 Do not deliver until:
 
+- `capabilityProfile.checkedAt` reflects the current provider state;
+- every selected renderer is supported by `capabilityProfile.available`;
+- any fallback is explicitly approved, recorded, and reflected in the final renderer assignments;
 - all slides render;
 - every slide has been inspected individually;
 - there are no unintended overlaps or clipped titles;

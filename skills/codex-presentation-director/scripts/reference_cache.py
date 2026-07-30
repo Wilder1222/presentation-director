@@ -6,14 +6,15 @@ import os
 from pathlib import Path
 
 
-CACHE_ENV = "CODEX_PRESENTATION_REFERENCE_CACHE"
+PRIMARY_CACHE_ENV = "PRESENTATION_REFERENCE_CACHE"
+LEGACY_CACHE_ENV = "CODEX_PRESENTATION_REFERENCE_CACHE"
 DEFAULT_RELATIVE_CACHE = Path(".codex") / "cache" / "codex-presentation-director" / "reference-library"
 
 
 def resolve_cache_dir(explicit: str | None = None) -> Path:
     if explicit:
         return Path(explicit).expanduser().resolve()
-    configured = os.environ.get(CACHE_ENV)
+    configured = os.environ.get(PRIMARY_CACHE_ENV) or os.environ.get(LEGACY_CACHE_ENV)
     if configured:
         return Path(configured).expanduser().resolve()
     return (Path.home() / DEFAULT_RELATIVE_CACHE).resolve()

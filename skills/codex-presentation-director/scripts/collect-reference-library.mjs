@@ -12,7 +12,8 @@ import { fileURLToPath } from "node:url";
 const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const METADATA_DIR = path.join(SKILL_DIR, "assets", "reference-library");
 const SOURCES_PATH = path.join(METADATA_DIR, "sources.json");
-const CACHE_ENV = "CODEX_PRESENTATION_REFERENCE_CACHE";
+const PRIMARY_CACHE_ENV = "PRESENTATION_REFERENCE_CACHE";
+const LEGACY_CACHE_ENV = "CODEX_PRESENTATION_REFERENCE_CACHE";
 
 function valueAfter(argv, flag) {
   const index = argv.indexOf(flag);
@@ -36,7 +37,8 @@ function parseArgs(argv) {
 function resolveCacheDir(explicit) {
   return path.resolve(
     explicit ||
-      process.env[CACHE_ENV] ||
+      process.env[PRIMARY_CACHE_ENV] ||
+      process.env[LEGACY_CACHE_ENV] ||
       path.join(os.homedir(), ".codex", "cache", "codex-presentation-director", "reference-library"),
   );
 }
@@ -77,7 +79,7 @@ async function download(source, options, cacheDir) {
   await rm(partial, { force: true });
   const response = await fetch(source.url, {
     redirect: "follow",
-    headers: { "user-agent": "Codex-Presentation-Director/1.0 on-demand reference cache" },
+    headers: { "user-agent": "Presentation-Director/1.0 on-demand reference cache" },
     signal: AbortSignal.timeout(15 * 60 * 1000),
   });
   if (!response.ok) throw new Error(`${source.id}: HTTP ${response.status}`);

@@ -40,6 +40,16 @@ Use the accent on no more than 10% of a typical slide. A user template overrides
 - Budget: at most 3 video slides, 45 total seconds, and 2 transition styles.
 - Build every static hero frame before animating it.
 
+## 3D Direction
+
+- Enabled: no; use only when depth, camera position, or object assembly explains the claim.
+- Focal object and hero angle: none by default.
+- Camera: restrained field of view, a stable target, and manifest-defined anchors.
+- Materials and lighting: inherit the deck palette and prioritize form readability over spectacle.
+- Depth and overlays: reserve slide-safe negative space for native titles and labels.
+- Performance: local GLB/glTF assets, capped pixel ratio, limited postprocessing, and a static poster fallback.
+- Determinism: all Remotion 3D animation derives from `useCurrentFrame()` and manifest inputs.
+
 ## Do Not
 
 - Do not use generic blue gradients, glassmorphism, neon circuitry, or decorative icon grids by default.
