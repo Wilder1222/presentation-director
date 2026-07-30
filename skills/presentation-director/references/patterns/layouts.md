@@ -1,6 +1,6 @@
 # Slide Pattern Library
 
-Select patterns by narrative job, not by visual novelty. Each slide gets one dominant pattern. Preserve the deck grid, type scale, and palette while varying adjacent silhouettes.
+Select patterns by narrative job, not by visual novelty. Each slide gets one dominant pattern. Preserve the deck grid, type scale, palette, and `tasteProfile` while varying adjacent silhouettes. A pattern is scaffolding, not a finished design; adapt it through the content motif and signature moves.
 
 ## Contents
 
@@ -127,3 +127,6 @@ Select patterns by narrative job, not by visual novelty. Each slide gets one dom
 - Is the dominant relationship visible from the back of a room?
 - Does the silhouette differ from the previous slide without changing the design system?
 - Is animation necessary, or will a static hierarchy communicate faster?
+- Does the page still look specific to this subject after removing decoration?
+- Is a repeated card grid hiding a relationship that should be expressed directly?
+- Can every break from the grid be explained by the design thesis?

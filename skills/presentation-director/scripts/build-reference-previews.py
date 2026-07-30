@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create compact bundled WebP previews while keeping high-resolution files cache-only."""
+"""Create compact bundled WebP previews from workspace-local high-resolution files."""
 
 from __future__ import annotations
 
@@ -22,6 +22,7 @@ METADATA = ROOT / "assets" / "reference-library"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-dir")
+    parser.add_argument("--workspace")
     parser.add_argument("--max-edge", type=int, default=1200)
     parser.add_argument("--quality", type=int, default=78)
     return parser.parse_args()
@@ -29,7 +30,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     options = parse_args()
-    cache = resolve_cache_dir(options.cache_dir)
+    cache = resolve_cache_dir(options.cache_dir, options.workspace)
     catalog_path = METADATA / "catalog.json"
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     created = 0

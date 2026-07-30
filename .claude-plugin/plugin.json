@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "presentation-director",
-  "version": "0.5.0",
-  "description": "Direct coherent presentations with optional style discovery, traceable references, editable slides, generated visuals, motion, and optional 3D scenes.",
+  "version": "0.7.0",
+  "description": "Create ready-to-present, narrative-led, visually impactful, high-fidelity, native-first editable PowerPoint decks with traceable references, motion, and optional 3D scenes.",
   "author": {
     "name": "Wilder1222",
     "url": "https://github.com/Wilder1222"

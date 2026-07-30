@@ -4,6 +4,8 @@ The Design Atlas stores reusable presentation principles extracted from strong d
 
 It does not redistribute company templates, logos, proprietary fonts, or marketing assets.
 
+The Atlas is evidence, not a finished identity. Presentation Director combines the selected reference with a project-specific design thesis, content motif, productive tensions, one or two signature moves, and explicit anti-defaults. See the runtime [Design Taste contract](../skills/presentation-director/references/design-taste.md).
+
 [Back to README](../README.md) · [Architecture](ARCHITECTURE.md) · [Development](DEVELOPMENT.md)
 
 ## Design DNA
@@ -19,6 +21,8 @@ Each Atlas entry describes abstract rules such as:
 - Motion tempo and preferred transitions.
 - Slide roles where the system performs best.
 - Patterns and behaviors that should be avoided.
+
+The project `tasteProfile` supplies what a reusable Atlas cannot: why this presentation should look this way, what makes it specific to the current content, and which generated defaults must be rejected.
 
 Built-in Design DNA includes:
 
@@ -81,7 +85,7 @@ These packs support roles such as platform architecture, developer workflow, dat
 
 ## Reference library
 
-The repository includes compact, normalized previews and source metadata. Large raw PDFs and high-resolution source assets are excluded from Git and loaded into an optional local cache only when required.
+The repository includes compact, normalized previews and source metadata. Large raw PDFs and high-resolution source assets are excluded from Git and loaded into the active presentation workspace only when required.
 
 This structure keeps the plugin lightweight while preserving traceability:
 
@@ -89,38 +93,32 @@ This structure keeps the plugin lightweight while preserving traceability:
 Source registry
     -> provenance and rights metadata
     -> compressed preview in the repository
-    -> optional original asset in the local cache
+    -> optional original asset in the workspace reference library
 ```
 
-The default cache location is:
+The fixed workspace location is:
 
 ```text
-~/.codex/cache/presentation-director/reference-library
+<current-directory>/presentation-director/reference-library
 ```
 
-Override it with:
-
-```powershell
-$env:PRESENTATION_REFERENCE_CACHE = "D:\presentation-reference-cache"
-```
-
-`CODEX_PRESENTATION_REFERENCE_CACHE` remains supported as a legacy alias.
+Raw PDFs are stored under `reference-library/raw`. Selected pages, captures, and review sheets remain beside them. User-home and system-global caches are not used.
 
 ## On-demand source loading
 
 List registered sources without downloading them:
 
 ```powershell
-node .\skills\presentation-director\scripts\collect-reference-library.mjs --list
+node .\skills\presentation-director\scripts\collect-reference-library.mjs --workspace .\presentation-director --list
 ```
 
 Load one selected source:
 
 ```powershell
-node .\skills\presentation-director\scripts\collect-reference-library.mjs --source <source-id>
+node .\skills\presentation-director\scripts\collect-reference-library.mjs --workspace .\presentation-director --source <source-id>
 ```
 
-Add `--include-heavy` for a source marked `heavy`. Use `--all` only when intentionally rebuilding the entire local reference cache.
+Add `--include-heavy` for a source marked `heavy`. Use `--all` only when intentionally rebuilding the entire workspace reference library.
 
 The library is manually maintained. Presentation Director does not monitor external sites or automatically expand the source registry.
 

@@ -17,6 +17,14 @@ def natural_key(path: Path):
     return [int(part) if part.isdigit() else part.lower() for part in re.split(r"(\d+)", path.name)]
 
 
+def workspace_local(root: Path, candidate: Path, label: str) -> Path:
+    resolved_root = root.resolve()
+    resolved = (candidate if candidate.is_absolute() else resolved_root / candidate).resolve()
+    if resolved != resolved_root and resolved_root not in resolved.parents:
+        raise ValueError(f"{label} must stay inside {resolved_root}: {resolved}")
+    return resolved
+
+
 def build_sheet(images, output_path: Path, columns: int, thumb_width: int):
     label_height = 32
     gap = 16
@@ -46,6 +54,7 @@ def build_sheet(images, output_path: Path, columns: int, thumb_width: int):
 def main():
     parser = argparse.ArgumentParser(description="Build paginated contact sheets for reference images.")
     parser.add_argument("--cache-dir")
+    parser.add_argument("--workspace")
     parser.add_argument("--input-root")
     parser.add_argument("--output-root")
     parser.add_argument("--columns", type=int, default=4)
@@ -53,9 +62,9 @@ def main():
     parser.add_argument("--thumb-width", type=int, default=320)
     args = parser.parse_args()
 
-    cache = resolve_cache_dir(args.cache_dir)
-    input_root = Path(args.input_root).resolve() if args.input_root else cache / "review"
-    output_root = Path(args.output_root).resolve() if args.output_root else cache / "contact-sheets"
+    cache = resolve_cache_dir(args.cache_dir, args.workspace)
+    input_root = workspace_local(cache, Path(args.input_root), "input-root") if args.input_root else cache / "review"
+    output_root = workspace_local(cache, Path(args.output_root), "output-root") if args.output_root else cache / "contact-sheets"
     total = 0
     for source_dir in sorted((path for path in input_root.iterdir() if path.is_dir()), key=lambda path: path.name):
         pages = sorted(

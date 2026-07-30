@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DEPENDENCY_PATH = path.join(SKILL_DIR, "references", "dependencies.json");
+const WORKSPACE_NAME = "presentation-director";
 const RENDERERS = new Set([
   "native_ppt",
   "image_slide",
@@ -22,6 +23,17 @@ const STYLE_KINDS = new Set(["user-template", "preset", "custom"]);
 const REFERENCE_DEPTHS = new Set(["user-source", "preview", "source", "web-research"]);
 const RAW_STATUSES = new Set(["not-checked", "not-applicable", "not-available", "loaded"]);
 const RESEARCH_STATUSES = new Set(["not-required", "pending", "complete"]);
+const TASTE_STATUSES = new Set(["draft", "locked"]);
+const CONTENT_SWAP_STATUSES = new Set(["not-run", "revise", "pass"]);
+const DELIVERY_CONTRACT = {
+  primaryArtifact: "pptx",
+  readyToPresent: true,
+  narrativeRequired: true,
+  visualImpact: "high",
+  fidelity: "high",
+  editability: "native-first",
+  fullPageRaster: "exception-only",
+};
 const DESIGN_HEADINGS = [
   "## Identity",
   "## Colors",
@@ -31,6 +43,7 @@ const DESIGN_HEADINGS = [
   "## Do Not",
   "## Rights",
 ];
+const TASTE_HEADINGS = ["## Design Thesis", "## Design DNA", "## Anti-AI Defaults"];
 
 function parseArgs(argv) {
   const projectDir = argv.find((arg) => !arg.startsWith("--"));
@@ -60,13 +73,13 @@ function isLocalReference(value) {
 
 async function validateLocalPath(projectDir, relativePath, issues, location, allowPlanned) {
   if (!isLocalReference(relativePath)) return;
-  if (allowPlanned) return;
   const resolved = path.resolve(projectDir, relativePath);
   const rootWithSep = `${path.resolve(projectDir)}${path.sep}`;
   if (resolved !== path.resolve(projectDir) && !resolved.startsWith(rootWithSep)) {
     addIssue(issues, "error", "path.outside_workspace", `Path escapes the project: ${relativePath}`, location);
     return;
   }
+  if (allowPlanned) return;
   if (!(await exists(resolved))) {
     addIssue(issues, "error", "path.missing", `Referenced file does not exist: ${relativePath}`, location);
   }
@@ -105,11 +118,55 @@ export async function validateWorkspace(projectDir, options = {}) {
     return { ok: false, issues, summary: {} };
   }
 
-  if (!["1.0", "1.1"].includes(manifest.version)) {
-    addIssue(issues, "error", "manifest.version", 'version must be "1.0" or "1.1".');
+  if (!["1.0", "1.1", "1.2", "1.3"].includes(manifest.version)) {
+    addIssue(issues, "error", "manifest.version", 'version must be "1.0", "1.1", "1.2", or "1.3".');
   }
-  if (manifest.version === "1.1" && !design.includes("## Reference Evidence")) {
-    addIssue(issues, "error", "design.reference_evidence", "Manifest 1.1 requires a ## Reference Evidence section in DESIGN.md.");
+  if (["1.1", "1.2", "1.3"].includes(manifest.version) && !design.includes("## Reference Evidence")) {
+    addIssue(issues, "error", "design.reference_evidence", "Manifest 1.1+ requires a ## Reference Evidence section in DESIGN.md.");
+  }
+  if (manifest.version === "1.3") {
+    for (const heading of TASTE_HEADINGS) {
+      if (!design.includes(heading)) addIssue(issues, "error", "design.taste_heading", `Manifest 1.3 requires DESIGN.md section: ${heading}`);
+    }
+  }
+  if (["1.2", "1.3"].includes(manifest.version)) {
+    if (path.basename(root).toLowerCase() !== WORKSPACE_NAME) {
+      addIssue(issues, "error", "workspace.location", `Manifest 1.2+ workspace must be named ${WORKSPACE_NAME}.`);
+    }
+    const expectedStorage = {
+      policy: "workspace-local",
+      workspace: ".",
+      sources: "sources",
+      referenceLibrary: "reference-library",
+      raw: "reference-library/raw",
+      temporary: "tmp",
+      output: "output",
+    };
+    if (!manifest.storage || typeof manifest.storage !== "object" || Array.isArray(manifest.storage)) {
+      addIssue(issues, "error", "storage.missing", "Manifest 1.2+ requires workspace-local storage configuration.");
+    } else {
+      for (const [key, value] of Object.entries(expectedStorage)) {
+        if (manifest.storage[key] !== value) {
+          addIssue(issues, "error", `storage.${key}`, `storage.${key} must be ${value}.`);
+        }
+      }
+    }
+  }
+  if (manifest.version === "1.3") {
+    if (!manifest.deliveryContract || typeof manifest.deliveryContract !== "object" || Array.isArray(manifest.deliveryContract)) {
+      addIssue(issues, "error", "deliveryContract.missing", "Manifest 1.3 requires deliveryContract.");
+    } else {
+      for (const [key, value] of Object.entries(DELIVERY_CONTRACT)) {
+        if (manifest.deliveryContract[key] !== value) {
+          addIssue(
+            issues,
+            "error",
+            `deliveryContract.${key}`,
+            `deliveryContract.${key} must be ${JSON.stringify(value)}.`,
+          );
+        }
+      }
+    }
   }
   if (!manifest.deck || typeof manifest.deck !== "object") {
     addIssue(issues, "error", "deck.missing", "deck is required in presentation.json.");
@@ -122,6 +179,9 @@ export async function validateWorkspace(projectDir, options = {}) {
   if (!Array.isArray(deck.outputs) || deck.outputs.length === 0) {
     addIssue(issues, "error", "deck.outputs", "deck.outputs must contain at least one output format.");
   }
+  if (manifest.status === "final" && (!Array.isArray(deck.outputs) || !deck.outputs.includes("pptx"))) {
+    addIssue(issues, "error", "delivery.pptx_required", "Final delivery must include pptx in deck.outputs.");
+  }
 
   const slides = Array.isArray(manifest.slides) ? manifest.slides : [];
   const draft = options.allowDraft || manifest.status === "planning";
@@ -133,8 +193,8 @@ export async function validateWorkspace(projectDir, options = {}) {
 
   const styleDecision = manifest.styleDecision;
   if (!styleDecision || typeof styleDecision !== "object" || Array.isArray(styleDecision)) {
-    if (manifest.version === "1.1" || !draft) {
-      addIssue(issues, "error", "styleDecision.missing", "Manifest 1.1 requires styleDecision.");
+    if (["1.1", "1.2", "1.3"].includes(manifest.version) || !draft) {
+      addIssue(issues, "error", "styleDecision.missing", "Manifest 1.1+ requires styleDecision.");
     } else {
       addIssue(issues, "warning", "styleDecision.legacy", "Legacy manifest has no styleDecision record.");
     }
@@ -204,11 +264,15 @@ export async function validateWorkspace(projectDir, options = {}) {
           if (styleDecision.referenceDepth !== "source") {
             addIssue(issues, "error", "styleDecision.raw_depth", "A loaded preset raw source must use referenceDepth source.");
           }
-          const loadedRaw = Array.isArray(styleDecision.sources) && styleDecision.sources.some(
+          const loadedRaw = Array.isArray(styleDecision.sources) && styleDecision.sources.find(
             (source) => source?.sourceId && source?.url && source?.cacheStatus === "loaded",
           );
           if (!loadedRaw) {
             addIssue(issues, "error", "styleDecision.raw_record", "Loaded raw references require sourceId, url, and cacheStatus loaded.");
+          } else if (!loadedRaw.cacheFile || !/^reference-library[\\/]raw[\\/]/i.test(loadedRaw.cacheFile)) {
+            addIssue(issues, "error", "styleDecision.raw_path", "Loaded raw references require a workspace-relative cacheFile under reference-library/raw.");
+          } else {
+            await validateLocalPath(root, loadedRaw.cacheFile, issues, "styleDecision.raw", draft);
           }
         } else if (!draft && styleDecision.rawStatus !== "not-available") {
           addIssue(issues, "error", "styleDecision.raw_unavailable", "Preset styles without raw links must declare rawStatus not-available.");
@@ -234,6 +298,84 @@ export async function validateWorkspace(projectDir, options = {}) {
           if (!source?.url || !/^https?:\/\//i.test(source.url)) {
             addIssue(issues, "error", "styleDecision.source_url", "Custom style sources require direct HTTP(S) URLs.", `styleDecision.sources[${index}]`);
           }
+        }
+      }
+
+      for (let index = 0; index < (styleDecision.sources || []).length; index += 1) {
+        const source = styleDecision.sources[index];
+        if (source?.path) await validateLocalPath(root, source.path, issues, `styleDecision.sources[${index}]`, draft);
+        if (source?.cacheFile) {
+          await validateLocalPath(root, source.cacheFile, issues, `styleDecision.sources[${index}]`, draft);
+        }
+      }
+    }
+  }
+
+  const tasteProfile = manifest.tasteProfile;
+  if (manifest.version === "1.3") {
+    if (!tasteProfile || typeof tasteProfile !== "object" || Array.isArray(tasteProfile)) {
+      addIssue(issues, "error", "tasteProfile.missing", "Manifest 1.3 requires tasteProfile.");
+    } else {
+      if (!TASTE_STATUSES.has(tasteProfile.status)) {
+        addIssue(issues, "error", "tasteProfile.status", "status must be draft or locked.");
+      }
+      if (!CONTENT_SWAP_STATUSES.has(tasteProfile.contentSwapTest)) {
+        addIssue(issues, "error", "tasteProfile.contentSwapTest", "contentSwapTest must be not-run, revise, or pass.");
+      }
+      for (const key of ["tensions", "signatureMoves", "antiDefaults"]) {
+        if (!Array.isArray(tasteProfile[key])) {
+          addIssue(issues, "error", `tasteProfile.${key}`, `${key} must be an array.`);
+        }
+      }
+
+      const tensions = Array.isArray(tasteProfile.tensions) ? tasteProfile.tensions : [];
+      const signatureMoves = Array.isArray(tasteProfile.signatureMoves) ? tasteProfile.signatureMoves : [];
+      const antiDefaults = Array.isArray(tasteProfile.antiDefaults) ? tasteProfile.antiDefaults : [];
+      if (tensions.some((item) => typeof item !== "string" || !item.trim())) {
+        addIssue(issues, "error", "tasteProfile.tensions", "Every tension must be a non-empty string.");
+      }
+      if (antiDefaults.some((item) => typeof item !== "string" || !item.trim())) {
+        addIssue(issues, "error", "tasteProfile.antiDefaults", "Every anti-default must be a non-empty string.");
+      }
+      if (new Set(antiDefaults.map((item) => String(item).toLowerCase())).size !== antiDefaults.length) {
+        addIssue(issues, "error", "tasteProfile.antiDefaults_duplicate", "antiDefaults must not contain duplicates.");
+      }
+      if (signatureMoves.length > 2) {
+        addIssue(issues, "error", "tasteProfile.signatureMoves_limit", "Use no more than two signature moves.");
+      }
+      for (let index = 0; index < signatureMoves.length; index += 1) {
+        const move = signatureMoves[index];
+        if (!move || typeof move !== "object" || Array.isArray(move)) {
+          addIssue(issues, "error", "tasteProfile.signatureMove", "Each signature move must be an object.", `tasteProfile.signatureMoves[${index}]`);
+          continue;
+        }
+        for (const key of ["name", "purpose", "scope"]) {
+          if (!move[key] || typeof move[key] !== "string") {
+            addIssue(issues, "error", `tasteProfile.signatureMove_${key}`, `Signature move ${key} is required.`, `tasteProfile.signatureMoves[${index}]`);
+          }
+        }
+      }
+
+      if (!draft) {
+        if (tasteProfile.status !== "locked") {
+          addIssue(issues, "error", "tasteProfile.unlocked", "Final delivery requires a locked tasteProfile.");
+        }
+        for (const key of ["designThesis", "contentMotif", "authorshipNote"]) {
+          if (!tasteProfile[key] || typeof tasteProfile[key] !== "string") {
+            addIssue(issues, "error", `tasteProfile.${key}`, `${key} is required for final delivery.`);
+          }
+        }
+        if (tensions.length < 1 || tensions.length > 2) {
+          addIssue(issues, "error", "tasteProfile.tensions_count", "Final delivery requires one or two productive tensions.");
+        }
+        if (signatureMoves.length < 1) {
+          addIssue(issues, "error", "tasteProfile.signatureMoves_count", "Final delivery requires one or two signature moves.");
+        }
+        if (antiDefaults.length < 3) {
+          addIssue(issues, "error", "tasteProfile.antiDefaults_count", "Final delivery requires at least three task-specific anti-defaults.");
+        }
+        if (tasteProfile.contentSwapTest !== "pass") {
+          addIssue(issues, "error", "tasteProfile.contentSwap_failed", "Final delivery requires contentSwapTest pass.");
         }
       }
     }
@@ -322,6 +464,15 @@ export async function validateWorkspace(projectDir, options = {}) {
   const availableCapabilities = new Set(Array.isArray(capabilityProfile?.available) ? capabilityProfile.available : []);
   const rendererCapabilities = dependencyConfig.rendererCapabilities || {};
 
+  if (!draft && !availableCapabilities.has("presentation")) {
+    addIssue(
+      issues,
+      "error",
+      "delivery.presentation_capability",
+      "Final PPTX delivery requires the presentation capability to be available.",
+    );
+  }
+
   if (!draft && styleDecision?.selectedKind === "custom") {
     const requiredCapabilities = new Set(Array.isArray(capabilityProfile?.required) ? capabilityProfile.required : []);
     if (!requiredCapabilities.has("reference_research") || !availableCapabilities.has("reference_research")) {
@@ -373,6 +524,22 @@ export async function validateWorkspace(projectDir, options = {}) {
     }
     if (slide.renderer === "image_slide" && slide.editability !== "flattened") {
       addIssue(issues, "error", "slide.image_editability", "image_slide must declare editability as flattened.", location);
+    }
+    if (
+      manifest.version === "1.3"
+      && slide.renderer === "image_slide"
+      && (
+        typeof slide.rasterExceptionReason !== "string"
+        || !slide.rasterExceptionReason.trim()
+      )
+    ) {
+      addIssue(
+        issues,
+        "error",
+        "slide.raster_exception_reason",
+        "Manifest 1.3 requires rasterExceptionReason for every full-page image slide.",
+        location,
+      );
     }
     if (VIDEO_RENDERERS.has(slide.renderer) && slide.editability !== "replaceable-media") {
       addIssue(
@@ -513,8 +680,10 @@ const isCli = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath
 if (isCli) {
   const args = parseArgs(process.argv.slice(2));
   if (!args.projectDir) {
-    console.error("Usage: node scripts/validate-workspace.mjs <project-dir> [--allow-draft] [--json]");
-    process.exit(2);
+    const current = path.resolve(process.cwd());
+    args.projectDir = path.basename(current).toLowerCase() === WORKSPACE_NAME && await exists(path.join(current, "presentation.json"))
+      ? current
+      : path.join(current, WORKSPACE_NAME);
   }
 
   const result = await validateWorkspace(args.projectDir, { allowDraft: args.allowDraft });

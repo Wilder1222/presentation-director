@@ -12,7 +12,7 @@ flowchart LR
     B --> C["Communication job"]
     C --> S{"Style decision"}
     S --> R["Preset raw / custom web research"]
-    R --> D["DESIGN.md + presentation.json"]
+    R --> D["Delivery contract + DESIGN.md + presentation.json"]
     D --> E{"Renderer router"}
     E --> F["Native PPTX"]
     E --> G["Image / UI / SVG"]
@@ -23,22 +23,28 @@ flowchart LR
     G --> K
     H --> K
     I --> K
-    K --> L["PPTX / PDF / HTML / MP4"]
+    K --> L["Ready-to-present PPTX + supporting outputs"]
 ```
 
-The workflow is source-first. The final PPTX is a delivery artifact, not the only source of truth.
+The workflow is source-first, but its primary outcome is a complete PPTX that can be presented and modified immediately. The manifest and renderer sources preserve reproducibility; they do not substitute for the finished deck.
+
+## Workspace boundary
+
+Every project-owned persistent file lives under `<current-directory>/presentation-director/`: copied inputs, raw references, generated assets, diagrams, browser captures, HyperFrames and Remotion projects, temporary records, and final outputs. Manifest 1.3 preserves this fixed layout and adds a validated design-taste profile; validation rejects workspace escape paths and unresolved generic directions.
 
 ## Operating principles
 
-1. **Narrative before style.** Define the audience, desired action, central takeaway, and slide roles before evaluating visual directions.
-2. **Optional style checkpoint.** Respect specified, automatic, and recommendation modes instead of forcing one interaction model.
-3. **References before design.** Load selected preset raw sources or research a custom direction before locking the visual identity.
-4. **Design before assets.** Lock the visual identity before images, UI, diagrams, or motion are produced.
-5. **Purpose before technology.** Choose a renderer because it communicates the slide correctly, not because the tool is available.
-6. **One contract across providers.** Every provider reads the same design and presentation source files.
-7. **Honest editability.** Native, mixed, flattened, and replaceable-media outputs are declared at slide level.
-8. **Motion with a budget.** Animation is used for sequence, state change, product demonstration, or a meaningful reveal.
-9. **Validation before delivery.** Structural checks and rendered-slide review are required for final output.
+1. **Finished PPTX first.** The task is incomplete until a ready-to-present PPTX exists, opens, renders correctly, and can be modified.
+2. **Workspace-local by default.** Keep the complete presentation project portable and off user-home or system-global caches.
+3. **Narrative before style.** Define the audience, desired action, central takeaway, and slide roles before evaluating visual directions.
+4. **Optional style checkpoint.** Respect specified, automatic, and recommendation modes instead of forcing one interaction model.
+5. **References before design.** Load selected preset raw sources or research a custom direction before locking the visual identity.
+6. **Design before assets.** Lock the visual identity before images, UI, diagrams, or motion are produced.
+7. **Purpose before technology.** Choose a renderer because it communicates the slide correctly, not because the tool is available.
+8. **One contract across providers.** Every provider reads the same design and presentation source files.
+9. **Native-first editability.** Keep text, data, tables, charts, and simple diagrams editable; disclose every flattened or replaceable-media exception.
+10. **Motion with a budget.** Animation is used for sequence, state change, product demonstration, or a meaningful reveal.
+11. **Validation before delivery.** Structural checks, full-size rendered-slide review, and a target-application open check are required for final output.
 
 ## Source-of-truth contracts
 
@@ -48,6 +54,7 @@ The workflow is source-first. The final PPTX is a delivery artifact, not the onl
 
 - Presentation intent and audience.
 - Primary design direction and permitted secondary references.
+- Design thesis, content motif, productive tensions, signature moves, and anti-defaults.
 - Palette and contrast rules.
 - Typography and type scale.
 - Grid, margins, spacing, and density.
@@ -62,7 +69,9 @@ All visual providers must read this file. Provider defaults must not override it
 
 `presentation.json` tracks:
 
+- The fixed delivery contract: ready-to-present PPTX, required narrative, high visual impact and fidelity, native-first editability, and exception-only rasterization.
 - Style-decision mode, candidates, selection rationale, and reference depth.
+- Locked taste profile, content-swap result, and authorship rationale.
 - Preset raw loading or custom web-research status and source records.
 - Deck narrative and slide order.
 - Slide roles and content.
@@ -101,6 +110,8 @@ Detailed routing rules live in [`routing.md`](../skills/presentation-director/re
 | `replaceable-media` | The animation or video can be replaced, but its internal elements are not editable in PowerPoint. |
 
 A deck containing flattened or replaceable-media slides must not be described as fully editable.
+
+For Manifest 1.3, every `image_slide` must include `rasterExceptionReason`. Full-page rasterization is reserved for cases where a unified visual composition cannot be preserved through native or mixed construction; it is prohibited for architecture, data, charts, tables, and editable factual content.
 
 ## Motion routing
 
@@ -160,6 +171,7 @@ See [`renderers/threejs.md`](../skills/presentation-director/references/renderer
 
 Final output should pass:
 
+- Delivery-contract validation and final PPTX presence in requested outputs.
 - Capability preflight.
 - Manifest and routing validation.
 - Text overflow and safe-area checks.
@@ -168,5 +180,6 @@ Final output should pass:
 - Image, source, and rights review.
 - Motion-budget and poster checks.
 - Rendered-slide visual QA.
+- Target-application open and editability verification.
 
 Acceptance criteria are defined in [`review.md`](../skills/presentation-director/references/review.md).

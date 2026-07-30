@@ -1,7 +1,7 @@
 {
   "name": "presentation-director",
-  "version": "0.5.0+codex.20260730144344",
-  "description": "Portable presentation direction with optional style discovery, traceable reference research, editable PowerPoint, generated visuals, motion, and optional Three.js scenes.",
+  "version": "0.7.0+codex.20260730073612",
+  "description": "Create ready-to-present, narrative-led, visually impactful, high-fidelity, native-first editable PowerPoint decks with motion and optional Three.js scenes.",
   "author": {
     "name": "Wilder1222",
     "url": "https://github.com/Wilder1222"
@@ -20,8 +20,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Presentation Director",
-    "shortDescription": "Direct polished PPTX, visuals, 3D, and motion",
-    "longDescription": "A lightweight presentation director that plans narrative, supports specified, automatic, or candidate-based style selection, resolves traceable reference DNA, routes work to presentation, image, HyperFrames, and Remotion capabilities, optionally uses Three.js inside Remotion, and validates the final result.",
+    "shortDescription": "Create ready-to-use, editable narrative PPTX",
+    "longDescription": "A lightweight presentation director that produces a complete, ready-to-present PPTX with a clear narrative, high visual impact, high-fidelity execution, and native-first editability. It keeps project artifacts local, derives content-specific Design DNA, routes specialist capabilities, and validates the final deck.",
     "developerName": "Wilder1222",
     "category": "Productivity",
     "capabilities": [
@@ -37,10 +37,11 @@
       "./assets/screenshot-threejs.png"
     ],
     "defaultPrompt": [
-      "Check required capabilities, prompt for missing providers, then create a coherent presentation from my content and template.",
+      "Check required capabilities, prompt for missing providers, then create a ready-to-present, narrative-led, high-fidelity, native-first editable PPTX from my content and template.",
       "Redesign this deck while preserving its template, editability, narrative, and visual consistency.",
       "Recommend visual directions for this brief, let me choose one, then create the deck with traceable references.",
-      "Automatically choose the best-fit visual direction and create a product-launch presentation with original visuals, accurate architecture, and restrained motion."
+      "Automatically choose the best-fit visual direction and create a product-launch presentation with original visuals, accurate architecture, and restrained motion.",
+      "Create a presentation that derives its visual language from my actual content, passes the content-swap test, and avoids generic AI slide aesthetics."
     ]
   }
 }

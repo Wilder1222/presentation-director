@@ -6,7 +6,7 @@ Use this adapter when the host is Gemini CLI.
 
 The repository includes `gemini-extension.json` and the shared `skills/` directory. Install from a GitHub URL or local repository path with `gemini extensions install`, then restart the CLI session.
 
-`PRESENTATION_REFERENCE_CACHE` is declared as an optional extension setting so Gemini can pass it through its environment sanitization layer.
+All persistent presentation artifacts, including raw references, remain under the active `presentation-director` workspace. No cache environment variable is required.
 
 ## Dependency behavior
 

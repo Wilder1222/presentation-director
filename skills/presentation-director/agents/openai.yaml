@@ -1,4 +1,4 @@
 interface:
   display_name: "Presentation Director"
-  short_description: "Direct polished PPTX, visuals, 3D, and motion"
-  default_prompt: "Use $presentation-director to check required capabilities, infer whether my style is specified, automatic, or needs visual candidates, resolve traceable references, and turn my brief into a coherent, validated presentation."
+  short_description: "Create ready-to-use, editable narrative PPTX"
+  default_prompt: "Use $presentation-director to keep all project artifacts under ./presentation-director and turn my brief into a complete, ready-to-present PPTX with a clear narrative, high visual impact, high-fidelity execution, and native-first editability."

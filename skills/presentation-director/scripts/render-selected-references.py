@@ -24,13 +24,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dpi", type=int, default=120)
     parser.add_argument("--company", help="Render one company or role-pack id from catalog.json")
     parser.add_argument("--cache-dir")
+    parser.add_argument("--workspace")
     parser.add_argument("--force", action="store_true")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    cache = resolve_cache_dir(args.cache_dir)
+    cache = resolve_cache_dir(args.cache_dir, args.workspace)
     catalog = json.loads((METADATA / "catalog.json").read_text(encoding="utf-8"))
     sources_doc = json.loads((METADATA / "sources.json").read_text(encoding="utf-8"))
     sources = {item["id"]: item for item in sources_doc["sources"]}

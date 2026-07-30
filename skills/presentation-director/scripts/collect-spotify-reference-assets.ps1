@@ -2,24 +2,36 @@ param(
     [ValidateSet("brand", "principles", "systems")]
     [string]$Group,
     [switch]$All,
+    [string]$Workspace,
     [string]$CacheDir,
     [string]$OutputRoot
 )
 
 $ErrorActionPreference = "Stop"
 
-if ([string]::IsNullOrWhiteSpace($CacheDir)) {
-    $CacheDir = $env:PRESENTATION_REFERENCE_CACHE
+if ([string]::IsNullOrWhiteSpace($Workspace)) {
+    $current = [System.IO.Path]::GetFullPath((Get-Location).Path)
+    if ((Split-Path -Leaf $current) -ieq "presentation-director" -and (Test-Path -LiteralPath (Join-Path $current "presentation.json"))) {
+        $Workspace = $current
+    } else {
+        $Workspace = Join-Path $current "presentation-director"
+    }
+} elseif ((Split-Path -Leaf $Workspace) -ine "presentation-director") {
+    $Workspace = Join-Path $Workspace "presentation-director"
 }
-if ([string]::IsNullOrWhiteSpace($CacheDir)) {
-    $CacheDir = $env:CODEX_PRESENTATION_REFERENCE_CACHE
+$Workspace = [System.IO.Path]::GetFullPath($Workspace)
+$expectedCache = [System.IO.Path]::GetFullPath((Join-Path $Workspace "reference-library"))
+if (-not [string]::IsNullOrWhiteSpace($CacheDir) -and [System.IO.Path]::GetFullPath($CacheDir) -ne $expectedCache) {
+    throw "Reference cache must be workspace-local: expected $expectedCache"
 }
-if ([string]::IsNullOrWhiteSpace($CacheDir)) {
-    $userProfile = [Environment]::GetFolderPath("UserProfile")
-    $CacheDir = Join-Path $userProfile ".codex\cache\presentation-director\reference-library"
-}
+$CacheDir = $expectedCache
 if ([string]::IsNullOrWhiteSpace($OutputRoot)) {
     $OutputRoot = Join-Path $CacheDir "captures\spotify\source-assets"
+}
+$OutputRoot = [System.IO.Path]::GetFullPath($OutputRoot)
+$workspacePrefix = $Workspace.TrimEnd('\') + '\'
+if (-not $OutputRoot.StartsWith($workspacePrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "OutputRoot must stay inside $Workspace"
 }
 
 $assets = @(

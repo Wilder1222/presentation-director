@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the small, distributable provenance index for an external binary cache."""
+"""Build the small provenance index for a workspace-local reference library."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from PIL import Image
 
 sys.dont_write_bytecode = True
 
-from reference_cache import CACHE_ENV, resolve_cache_dir, safe_cache_path
+from reference_cache import resolve_cache_dir, safe_cache_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +25,7 @@ METADATA = ROOT / "assets" / "reference-library"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-dir")
+    parser.add_argument("--workspace")
     return parser.parse_args()
 
 
@@ -38,7 +39,7 @@ def sha256(path: Path) -> str:
 
 def main() -> int:
     options = parse_args()
-    cache = resolve_cache_dir(options.cache_dir)
+    cache = resolve_cache_dir(options.cache_dir, options.workspace)
     sources = json.loads((METADATA / "sources.json").read_text(encoding="utf-8"))["sources"]
     catalog = json.loads((METADATA / "catalog.json").read_text(encoding="utf-8"))["entries"]
 
@@ -97,8 +98,8 @@ def main() -> int:
         "snapshotDate": date.today().isoformat(),
         "cachePolicy": {
             "bundled": False,
-            "environmentVariable": CACHE_ENV,
-            "defaultLocation": "~/.codex/cache/presentation-director/reference-library",
+            "mode": "workspace-local",
+            "defaultLocation": "./presentation-director/reference-library",
         },
         "originals": originals,
         "catalogAssets": assets,

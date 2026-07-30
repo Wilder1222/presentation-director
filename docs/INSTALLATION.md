@@ -15,6 +15,10 @@ Three.js dependencies are optional and should be installed only in presentation 
 
 Browser or web-research capability is required on demand when a selected visual direction is not represented by the bundled Design Atlas.
 
+## Workspace location
+
+Presentation Director creates `./presentation-director/` under the current directory. Copied inputs, raw references, generated assets, browser captures, renderer source projects, temporary records, and final outputs stay inside that workspace. No user-home or system-global reference cache is used.
+
 ## Install in Codex
 
 Add the Presentation Director marketplace:

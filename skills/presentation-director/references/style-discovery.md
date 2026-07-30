@@ -47,6 +47,7 @@ Each candidate must include:
 - `preset` or `custom` kind;
 - one-sentence fit rationale;
 - palette, typography, density, composition, imagery, diagram, and motion cues;
+- a provisional design thesis, content-derived motif, and three rejected defaults;
 - best-fit slide roles and important tradeoffs;
 - 3 representative frames: cover, core content, and the deck's hardest visual role;
 - source or generation status.
@@ -79,9 +80,9 @@ For a selected `preset` Atlas:
 1. Read its `source_ids`.
 2. Resolve those ids through `assets/reference-library/sources.json`.
 3. If one or more entries are `official_pdf`, choose the smallest useful set for the planned slide roles, normally one and never more than three without a clear reason.
-4. Run `collect-reference-library.mjs --source <source-id>` for each chosen source. Add `--include-heavy` when the chosen source is marked heavy.
+4. Run `collect-reference-library.mjs --workspace <project-dir> --source <source-id>` for each chosen source. Add `--include-heavy` when the chosen source is marked heavy.
 5. Use `catalog.json` to identify the relevant pages and render only those pages when higher-resolution inspection is needed.
-6. Record each source id, canonical URL, cache file, selected pages, rights, and `cacheStatus: loaded`.
+6. Record each source id, canonical URL, workspace-relative cache file under `reference-library/raw`, selected pages, rights, and `cacheStatus: loaded`.
 7. Set `rawAvailable: true`, `rawStatus: loaded`, and `referenceDepth: source`.
 
 When no Atlas source resolves to an official raw document, set `rawAvailable: false`, `rawStatus: not-available`, and use bundled previews plus canonical web sources.
@@ -108,7 +109,7 @@ For each source, record:
 - rights and reuse boundary;
 - the slide roles it may influence.
 
-Save temporary captures and notes under `tmp/style-discovery/research/`. Do not add task-specific research to the global Atlas automatically. Set `researchStatus: complete` and `referenceDepth: web-research` only after the source set is sufficient.
+Save temporary captures and notes under `<project-dir>/tmp/style-discovery/research/`. Do not use a browser download folder or user-home cache. Do not add task-specific research to the global Atlas automatically. Set `researchStatus: complete` and `referenceDepth: web-research` only after the source set is sufficient.
 
 Search-result pages are discovery tools, not final citations. Preserve direct official URLs in `presentation.json` and speaker notes when a source materially influences the deck.
 
@@ -135,7 +136,14 @@ Use this shape in `presentation.json`:
     "rawAvailable": true,
     "rawStatus": "loaded",
     "researchStatus": "not-required",
-    "sources": []
+    "sources": [
+      {
+        "sourceId": "openai-enterprise-ai-2025-report",
+        "url": "https://cdn.openai.com/pdf/7ef17d82-96bf-4dd1-9df2-228f7f377a29/the-state-of-enterprise-ai_2025-report.pdf",
+        "cacheFile": "reference-library/raw/openai/state-of-enterprise-ai-2025.pdf",
+        "cacheStatus": "loaded"
+      }
+    ]
   }
 }
 ```
@@ -143,6 +151,8 @@ Use this shape in `presentation.json`:
 For `auto`, candidates and a visual board are optional. For `recommend`, include at least two candidates and a local visual board. For `specified`, record whether the source is a user template, preset Atlas, or researched custom direction.
 
 Mirror the selected direction and reference evidence into `DESIGN.md`. Candidate styles must not leak into the final design contract.
+
+After selection, read `design-taste.md` and translate the reference into a current-project `tasteProfile`. Do not copy the source's signature identity. A preset or custom direction is incomplete until it has a content-specific motif, no more than two signature moves, task-specific anti-defaults, and a passing content-swap test.
 
 ## 8. Rights and failure rules
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate reference metadata and any available external cache objects."""
+"""Validate reference metadata and workspace-local reference objects."""
 
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ METADATA = ROOT / "assets" / "reference-library"
 def args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-dir")
+    parser.add_argument("--workspace")
     parser.add_argument("--require-cache", action="store_true")
     parser.add_argument("--skip-hash", action="store_true")
     return parser.parse_args()
@@ -50,7 +51,7 @@ def safe_metadata_path(relative: str) -> Path:
 
 def main() -> int:
     options = args()
-    cache = resolve_cache_dir(options.cache_dir)
+    cache = resolve_cache_dir(options.cache_dir, options.workspace)
     source_doc = load("sources.json")
     catalog = load("catalog.json")
     provenance = load("provenance.json")

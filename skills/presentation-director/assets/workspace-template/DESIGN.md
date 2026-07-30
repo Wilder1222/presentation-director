@@ -9,6 +9,24 @@
 - Secondary references: none
 - Communication tone: clear, restrained, evidence-led
 
+## Design Thesis
+
+- Thesis: unresolved until the selected references are translated into a content-specific direction.
+- Content-swap test: not run.
+
+## Design DNA
+
+- Content motif: unresolved.
+- Productive tensions: unresolved.
+- Signature moves: select no more than two and state their purpose and slide scope.
+- Grid exception: none until a pivotal narrative moment earns it.
+- Authorship note: explain the most visible non-obvious choice.
+
+## Anti-AI Defaults
+
+- Reject generic AI glow, automatic blue-purple gradients, repeated card grids, fake UI, decorative 3D, and motion without state change unless the content literally requires one.
+- Replace this planning list with task-specific anti-defaults before production.
+
 ## Reference Evidence
 
 - Selection status: pending
@@ -23,7 +41,7 @@
 - Canvas: `#F4F2ED`
 - Primary text: `#171717`
 - Secondary text: `#5C5C58`
-- Accent: `#4F46E5`
+- Accent: unresolved; derive one semantic accent from the selected design thesis rather than defaulting to technology blue or violet.
 - Hairline: `#D6D2C8`
 
 These values are temporary planning defaults only. Replace them after style resolution. A user template overrides this palette.
@@ -63,6 +81,8 @@ These values are temporary planning defaults only. Replace them after style reso
 ## Do Not
 
 - Do not use generic blue gradients, glassmorphism, neon circuitry, or decorative icon grids by default.
+- Do not use a card or bento layout merely because the content contains three or four items; express the actual relationship.
+- Do not ask a renderer to make the work `premium`, `futuristic`, or `cinematic` without concrete material and composition direction.
 - Do not use image generation for exact diagrams, charts, tables, or UI copy.
 - Do not animate every slide.
 - Do not mix multiple company palettes.

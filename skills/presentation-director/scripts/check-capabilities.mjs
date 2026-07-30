@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DEPENDENCY_PATH = path.join(SKILL_DIR, "references", "dependencies.json");
+const WORKSPACE_NAME = "presentation-director";
 const SKIP_DIRECTORIES = new Set([
   ".git",
   "assets",
@@ -29,7 +30,7 @@ function usage() {
 function parseArgs(argv) {
   const options = {
     platform: "auto",
-    projectDir: process.cwd(),
+    projectDir: undefined,
     profile: undefined,
     required: [],
     write: false,
@@ -103,6 +104,20 @@ async function detectPlatform(explicit) {
     if (await exists(target)) candidates.push(platform);
   }
   return candidates.length === 1 ? candidates[0] : "generic";
+}
+
+async function resolveProjectDir(explicit) {
+  if (explicit) {
+    const candidate = path.resolve(explicit);
+    return path.basename(candidate).toLowerCase() === WORKSPACE_NAME
+      ? candidate
+      : path.join(candidate, WORKSPACE_NAME);
+  }
+  const current = path.resolve(process.cwd());
+  if (path.basename(current).toLowerCase() === WORKSPACE_NAME && await exists(path.join(current, "presentation.json"))) {
+    return current;
+  }
+  return path.join(current, WORKSPACE_NAME);
 }
 
 function platformSkillRoots(platform, projectDir) {
@@ -293,7 +308,7 @@ function sameMissingSet(previous, report) {
 
 export async function checkCapabilities(options = {}) {
   const config = await loadDependencyManifest();
-  const projectDir = path.resolve(options.projectDir || process.cwd());
+  const projectDir = await resolveProjectDir(options.projectDir);
   const platform = await detectPlatform(options.platform || "auto");
   const requestedMode = options.profile || config.defaultProfile;
   const requestedProfile = profileById(config, requestedMode);
@@ -341,8 +356,9 @@ export async function checkCapabilities(options = {}) {
 }
 
 export async function writeCapabilityProfile(projectDir, report) {
-  const manifestPath = path.join(path.resolve(projectDir), "presentation.json");
-  if (!(await exists(manifestPath))) throw new Error(`presentation.json not found in ${projectDir}`);
+  const resolvedProjectDir = await resolveProjectDir(projectDir);
+  const manifestPath = path.join(resolvedProjectDir, "presentation.json");
+  if (!(await exists(manifestPath))) throw new Error(`presentation.json not found in ${resolvedProjectDir}`);
   const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
   const {
     evidence: _evidence,
@@ -384,6 +400,7 @@ if (isCli) {
   const options = parseArgs(process.argv.slice(2));
   try {
     const config = await loadDependencyManifest();
+    options.projectDir = await resolveProjectDir(options.projectDir);
     const report = await checkCapabilities(options);
     if (options.write) await writeCapabilityProfile(options.projectDir, report);
     if (options.json) console.log(JSON.stringify(report, null, 2));

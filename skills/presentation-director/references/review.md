@@ -3,7 +3,7 @@
 ## Contents
 
 1. Workspace validation
-2. Style decision and reference review
+2. Style decision, taste, and reference review
 3. Narrative and visual review
 4. PPTX checks
 5. HyperFrames and Remotion checks
@@ -22,7 +22,11 @@ Do not use `--allow-draft` for delivery. Fix every error. Inspect warnings rathe
 
 Confirm that `capabilityProfile.checkedAt` is current, every selected renderer maps to an available capability, and any missing requested capability has an explicit fallback approval plus a corresponding renderer change. A list of installation instructions is not proof that a provider is installed.
 
-## 2. Style decision and reference review
+Confirm the workspace is named `presentation-director`, the Manifest 1.3 storage contract is unchanged, and every persistent local path resolves beneath that directory. Reject raw references, browser captures, renderer projects, temporary records, or final deliverables stored in a user-home or system-global cache.
+
+Confirm the Manifest 1.3 delivery contract is unchanged: PPTX is the primary artifact, the deck is ready to present, narrative is required, visual impact and fidelity are high, editability is native-first, and full-page rasterization is exception-only. Final `deck.outputs` must include `pptx`.
+
+## 2. Style decision, taste, and reference review
 
 - `styleDecision.mode` matches what the user requested: specified, automatic, or recommendation.
 - Recommendation mode includes materially distinct visual options and a readable comparison board.
@@ -32,6 +36,11 @@ Confirm that `capabilityProfile.checkedAt` is current, every selected renderer m
 - A selected custom direction has completed direct-source web research with at least one official or first-party source.
 - Source observations are translated into safe design principles rather than copied assets or exact compositions.
 - Reference depth, raw status, research status, direct URLs, and rights are recorded accurately.
+- `tasteProfile` is locked with one content-specific thesis, one real content motif, one or two productive tensions, and no more than two signature moves.
+- Every signature move has a stated purpose and limited slide scope.
+- The content-swap test passes; the system cannot be relabeled for an unrelated company without meaningful redesign.
+- At least three task-specific anti-defaults are enforced across native slides and specialist providers.
+- The authorship note explains the most visible non-obvious choice without vague claims such as `premium`, `futuristic`, or `cinematic`.
 
 ## 3. Narrative review
 
@@ -41,6 +50,8 @@ Confirm that `capabilityProfile.checkedAt` is current, every selected renderer m
 - Evidence is followed by meaning or consequence.
 - Adjacent slides form a coherent sequence without repeated beats.
 - Visible copy is audience-facing and contains no production language.
+- Read the slide titles alone; they must form a causal argument rather than an agenda or topic list.
+- The closing must answer the decision, belief, or action established at the opening.
 
 ## 4. Visual review
 
@@ -52,6 +63,10 @@ Confirm that `capabilityProfile.checkedAt` is current, every selected renderer m
 - Crops, focal positions, image resolution, and color grading are consistent.
 - The same image is not reused without a deliberate system reason.
 - Architecture labels, charts, tables, and exact UI copy are not raster hallucinations.
+- Generic AI glow, automatic blue-purple gradients, card walls, fake UI, decorative 3D, and unearned motion do not appear unless explicitly justified by the design thesis.
+- Full-size inspection confirms intentional line breaks, optical centering, crops, edge joins, label offsets, and negative space.
+- A typical 10-15 slide deck has two to four visual peaks, with quieter slides creating pacing and contrast.
+- Visual impact comes from hierarchy, scale, composition, evidence, and reveal—not from applying maximum decoration to every page.
 
 ## 5. PPTX checks
 
@@ -64,6 +79,9 @@ Follow the presentation provider recorded by capability preflight. At minimum:
 5. Fix unintended overlaps, clipping, wrapping, broken connectors, unresolved placeholders, chart/data mismatches, and inconsistent footers.
 6. Confirm `[Sources]` blocks exist in speaker notes where required.
 7. Open representative slides that use media and verify their poster frames and crop behavior.
+8. Open the final PPTX in the target presentation application and verify fonts, media, masters, charts, notes, and editing behavior.
+9. Confirm all slides are complete, no placeholders remain, and the deck can be presented without repair.
+10. Verify native editability for text, data, tables, charts, and simple diagrams. For every `image_slide`, inspect its `rasterExceptionReason` and confirm a replaceable source asset remains in the workspace.
 
 ## 6. HyperFrames checks
 
@@ -119,6 +137,7 @@ State concisely:
 - delivered formats;
 - which slides contain replaceable images or video;
 - which slides are flattened, if any;
+- why each full-page raster exception was necessary;
 - whether animation is native, embedded video, or a separate HTML/video deliverable;
 - which embedded videos contain Three.js-rendered 3D and which poster is used as fallback;
 - any verified compatibility limitation.

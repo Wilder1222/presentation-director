@@ -4,11 +4,11 @@
 
 # Presentation Director
 
-**Design the story. Direct the tools. Deliver a coherent presentation.**
+**Design the story. Direct the tools. Deliver a presentation you can use immediately.**
 
-Turn a brief, document, or reference deck into a presentation with a locked visual system, the right renderer for every slide, purposeful motion, and a final quality review.
+Turn a brief, document, or reference deck into a ready-to-present PPTX with a clear narrative, high visual impact, high-fidelity execution, and native-first editability.
 
-![Version](https://img.shields.io/badge/version-0.5.0-4F46E5)
+![Version](https://img.shields.io/badge/version-0.7.0-4F46E5)
 ![Codex Plugin](https://img.shields.io/badge/Codex-standard_plugin-111111)
 ![Agent Skills](https://img.shields.io/badge/agents-Codex%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Gemini%20%7C%20Cursor-2563EB)
 ![Presentation](https://img.shields.io/badge/output-PPTX%20%7C%20PDF%20%7C%20HTML%20%7C%20MP4-0A7D55)
@@ -44,24 +44,30 @@ AI can generate slides. Presentation Director coordinates the decisions that mak
 
 | | What changes |
 |---|---|
+| **A finished PPTX—not a draft** | The primary artifact opens in PowerPoint, contains every completed slide, and is ready to present without repair. Source files and previews support the deck; they do not replace it. |
+| **A narrative, not an agenda** | Every slide advances one causal argument, titles state takeaways, and the closing resolves the audience decision established at the opening. |
 | **One visual system** | `DESIGN.md` locks typography, color, spacing, imagery, diagram language, and motion before production begins. |
+| **Authored, not generic** | A design thesis, content-derived motif, signature moves, anti-defaults, and content-swap test prevent interchangeable AI slide aesthetics. |
 | **The right tool per slide** | Native PowerPoint, image generation, SVG, browser UI, HyperFrames, Remotion, and optional Three.js are selected by purpose rather than novelty. |
 | **Reusable design intelligence** | The built-in Design Atlas abstracts proven patterns from product launches, editorial technology stories, technical platforms, developer ecosystems, and enterprise communication. |
-| **Honest deliverables** | Native, mixed, flattened, and replaceable-media content is declared clearly instead of calling every deck “fully editable.” |
+| **Native-first editability** | Text, data, tables, charts, and simple diagrams stay editable; images and motion remain replaceable; full-page raster slides require an explicit exception. |
 | **Quality before delivery** | Slides are rendered and reviewed for hierarchy, consistency, readability, overflow, provenance, and motion restraint. |
 
 ## Core capabilities
 
-- Turn a topic, document, reference deck, or company template into a complete presentation narrative.
+- Turn a topic, document, reference deck, or company template into a complete, ready-to-present PPTX—not only an outline, source project, preview, or PDF.
+- Build a causal narrative with one communication job, one claim per slide, takeaway titles, evidence, implications, and a resolved close.
 - When style is unspecified, either auto-select the best-fit direction or present visual candidates for the user to choose.
 - Preserve enterprise masters and brand rules, or establish an original design direction from the Design Atlas.
+- Translate references into project-specific Design DNA instead of copying a company style or accepting generic AI defaults.
 - Generate hero visuals, product concepts, realistic UI, precise technical diagrams, and data-led slides within one system.
 - Create short progressive animations with HyperFrames and multi-scene product demos with Remotion.
 - Add Three.js only when depth communicates product structure or spatial relationships.
-- Produce PPTX, PDF, HTML, MP4, slide previews, and replaceable media assets from a shared presentation manifest.
+- Produce a high-fidelity, native-first PPTX as the primary artifact, with PDF, HTML, MP4, slide previews, and replaceable media assets as optional supporting outputs.
 - Keep source provenance and usage boundaries attached to external references and generated assets.
 - Detect missing specialist capabilities before production and explain what must be installed for the requested result.
 - Load selected preset raw references on demand, or research official web sources for a custom direction.
+- Keep copied inputs, raw references, generated assets, process records, and final outputs together in `./presentation-director/`.
 
 ## Quick start
 
@@ -88,6 +94,8 @@ product slides.
 ```
 
 Presentation Director will plan the story, establish the design system, check the required capabilities, generate the necessary assets, assemble the deck, and review the rendered output.
+
+All project-owned files are created under the current directory's `presentation-director/` folder. The plugin does not use a user-home or system-global reference cache.
 
 For capability profiles, provider setup, other Agent hosts, and fallback behavior, see the [Installation and Capabilities Guide](docs/INSTALLATION.md).
 

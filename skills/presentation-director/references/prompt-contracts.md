@@ -43,8 +43,13 @@ Every specialist handoff must include:
 - required output path and format;
 - acceptance checks;
 - prohibited content and rights constraints.
+- design thesis, content motif, allowed signature move, and task-specific anti-defaults from `tasteProfile`.
 
-Do not ask a renderer to invent the deck's style. The director has already locked it.
+Every input copy, source project, temporary record, and output path must resolve inside the active `presentation-director` workspace. Configure provider output and project directories explicitly; do not accept a provider's user-home or global-cache default for persistent artifacts.
+
+Every provider output must be insertable into, or replaceable within, the final PPTX. A specialist preview, generated image, SVG, HTML page, or video is never the final presentation by itself. If a route flattens a full slide, the handoff must include the manifest's `rasterExceptionReason` and a project-local replaceable source.
+
+Do not ask a renderer to invent the deck's style or add visual interest. The director has already locked the taste profile and visual system. Reject provider defaults that are not explicitly allowed.
 
 ## Image generation
 
@@ -60,12 +65,16 @@ Material and lighting: [concrete treatment]
 Palette: [roles and hex values from DESIGN.md]
 Continuity: [how it relates to other deck visuals]
 Exclude: text, logos, watermarks, UI labels, and [task-specific clichés]
+Avoid defaults: [tasteProfile.antiDefaults]
+Earned signature move: [name, purpose, slide scope]
 Output: [project-relative path]
 ```
 
 Generate original assets. Do not prompt for direct replicas of company campaigns, identifiable protected characters, logos, or official product renders.
 
 For a slide with left-side copy, place the subject toward the right and preserve clean negative space on the left. Ask for the final crop, not a generic image that will be cropped later.
+
+Do not request `premium`, `futuristic`, `cinematic`, `beautiful`, or `high-end` without translating the word into concrete composition, material, light, crop, palette, and subject constraints. Such adjectives alone amplify generic model defaults.
 
 ## Product UI capture
 
@@ -175,5 +184,7 @@ Provide the detected presentation provider with:
 - output path;
 - source notes path;
 - explicit editability expectations.
+
+The handoff must require a complete, ready-to-present PPTX rather than a code sample or partial deck. Keep audience-facing text, data, tables, charts, and simple diagrams native whenever feasible; preserve SVG, image, UI, and video assets as replaceable media with their source projects. Render every slide, run overflow checks, and open the completed PPTX in the target presentation application before delivery.
 
 Follow the detected provider's visual route and implementation engine. Do not substitute PptxGenJS, python-pptx, or direct XML manipulation when the installed provider requires another engine.

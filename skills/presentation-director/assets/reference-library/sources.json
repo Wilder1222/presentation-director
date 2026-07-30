@@ -1,13 +1,11 @@
 {
-  "version": "2.0",
+  "version": "2.1",
   "snapshotDate": "2026-07-29",
   "maintenance": "manual-only",
   "cachePolicy": {
-    "mode": "on-demand",
+    "mode": "workspace-local-on-demand",
     "bundledRaw": false,
-    "environmentVariable": "PRESENTATION_REFERENCE_CACHE",
-    "legacyEnvironmentVariable": "CODEX_PRESENTATION_REFERENCE_CACHE",
-    "defaultLocation": "~/.codex/cache/presentation-director/reference-library"
+    "defaultLocation": "./presentation-director/reference-library"
   },
   "sources": [
     {

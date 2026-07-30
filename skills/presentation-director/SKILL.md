@@ -1,32 +1,35 @@
 ---
 name: presentation-director
-description: Direct high-quality presentations from a brief, source material, a reference deck, or a named visual direction; recommend or automatically select a traceable style when none is supplied. Use when an AI agent needs to plan, create, revise, or review PPT/PPTX decks, presentation visuals, product demos, architecture slides, optional Three.js scenes, or motion-enhanced presentations while checking and coordinating installed specialist capabilities.
+description: Create ready-to-present, narrative-led, visually impactful, high-fidelity, modifiable PowerPoint decks from a brief, source material, template, or named visual direction; recommend or automatically select a traceable style when none is supplied. Use when an AI agent needs to plan, create, revise, or review PPT/PPTX decks, presentation visuals, product demos, architecture slides, optional Three.js scenes, or motion-enhanced presentations while coordinating installed specialist capabilities.
 ---
 
 # Presentation Director
 
-Act as the presentation director. Own the communication job, narrative, visual contract, renderer choices, motion budget, provenance, dependency readiness, and final quality. Delegate rendering to installed specialist capabilities instead of reimplementing their engines.
+Act as the presentation director. Deliver a PowerPoint file the user can present and modify immediately. Own the communication job, narrative, visual impact, fidelity, editability, renderer choices, motion budget, provenance, dependency readiness, and final quality. Delegate rendering to installed specialist capabilities instead of reimplementing their engines.
 
 ## Apply the hard gates
 
-1. Run capability preflight before creating `DESIGN.md` or generating assets. Read [references/dependencies.json](references/dependencies.json), select the requested profile, and write `capabilityProfile` to `presentation.json`.
-2. If a required capability is missing, show the user its platform-specific installation guidance and fallback impact. Stop until the capability is installed or the user explicitly approves a fallback. Never silently downgrade or claim Full Studio.
-3. Define the communication job before choosing layouts:
+0. Resolve the workspace to `<current-directory>/presentation-director`. If the current directory is already an initialized workspace with that name, use it directly. Keep every project-owned persistent source copy, raw reference, generated asset, renderer project, temporary record, and final output inside it. Never use a user-home or system-global cache.
+1. Read [references/delivery-contract.md](references/delivery-contract.md). Treat the final PPTX—not an outline, code project, PDF, preview, or image folder—as the default primary artifact.
+2. Run capability preflight before creating `DESIGN.md` or generating assets. Read [references/dependencies.json](references/dependencies.json), select the requested profile, and write `capabilityProfile` to `presentation.json`.
+3. If a required capability is missing, show the user its platform-specific installation guidance and fallback impact. Stop until the capability is installed or the user explicitly approves a fallback. Never silently downgrade or claim Full Studio.
+4. Define the communication job before choosing layouts:
    `By the end, [audience] should [outcome] because [central takeaway].`
-4. Select exactly one style-decision mode:
+5. Select exactly one style-decision mode:
    - `specified` when the user supplies a template, brand system, named style, or visual reference.
    - `auto` when the user delegates the choice or requests no intermediate confirmation.
    - `recommend` when the user requests options or gives no style direction; this is the default for an unspecified style.
-5. Resolve exactly one visual route:
+6. Resolve exactly one visual route:
    - Use a supplied PPTX/template as the source of truth.
    - Use an explicit custom direction or one selected primary Atlas reference.
    - For `recommend`, show a visual comparison board and wait for selection.
    - For `auto`, record the fit rationale and continue without a selection checkpoint.
-6. Resolve reference depth after selection. Load relevant raw sources for a preset that has them; research official and first-party web references for a custom direction.
-7. Create the final `DESIGN.md` only after style and reference resolution. Style-selection boards are temporary decision artifacts, not production assets.
-8. Create `presentation.json` before rendering slides and preserve its `styleDecision` record.
-9. Build the most-visible static frame before adding animation.
-10. Render and inspect every final slide or motion composition before delivery.
+7. Resolve reference depth after selection. Load relevant raw sources for a preset that has them; research official and first-party web references for a custom direction.
+8. Read [references/design-taste.md](references/design-taste.md), derive a content-specific design thesis, motif, tensions, signature moves, and anti-defaults, then lock `tasteProfile`. A direction that fails the content-swap test is not ready.
+9. Create the final `DESIGN.md` only after style, reference, and taste resolution. Style-selection boards are temporary decision artifacts, not production assets.
+10. Create `presentation.json` before rendering slides and preserve its `deliveryContract`, `styleDecision`, and `tasteProfile` records.
+11. Build the most-visible static frame before adding animation.
+12. Render, inspect, assemble, and open-check the final PPTX before delivery. Do not stop at source files or intermediate renders.
 
 Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments as audience-facing slide copy.
 
@@ -35,8 +38,10 @@ Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments a
 Run:
 
 ```text
-node <skill-dir>/scripts/init-workspace.mjs <project-dir> --title "<deck title>" --language zh-CN --platform <platform> --profile full-studio
+node <skill-dir>/scripts/init-workspace.mjs --title "<deck title>" --language zh-CN --platform <platform> --profile full-studio
 ```
+
+The default target is `<current-directory>/presentation-director`. Treat that directory as `<project-dir>` for every later command.
 
 For an existing workspace, run:
 
@@ -44,13 +49,15 @@ For an existing workspace, run:
 node <skill-dir>/scripts/check-capabilities.mjs --platform <platform> --project <project-dir> --profile <requested-mode> --write
 ```
 
-Keep reusable project truth in `DESIGN.md` and `presentation.json`. Keep disposable build notes, source notes, prompt records, and QA ledgers under `tmp/` as `.txt` files. Put final deliverables under `output/` unless the user gives another destination.
+Keep reusable project truth in `DESIGN.md` and `presentation.json`. Copy user-supplied inputs needed for reproducibility into `sources/input/`. Keep downloaded originals and high-resolution reference work under `reference-library/`, disposable build notes under `tmp/`, generated assets in their declared workspace folders, and final deliverables under `output/`. Do not create persistent project files outside the workspace.
 
 For a requested Three.js scene, add `--require three_d`. Rerun `check-capabilities.mjs --write` after installing, enabling, or changing any provider. Use `--approve-fallbacks` only after the user explicitly accepts the reported loss of capability.
 
 ## Load only the required references
 
 - Read [references/workflow.md](references/workflow.md) for every deck build or major revision.
+- Read [references/delivery-contract.md](references/delivery-contract.md) before planning outputs, choosing flattening, or declaring completion.
+- Read [references/design-taste.md](references/design-taste.md) for every new deck, visual redesign, style recommendation, or quality review.
 - Read [references/dependencies.json](references/dependencies.json) before capability preflight or installation guidance.
 - Read exactly one host adapter before invoking providers:
   - [references/platforms/codex.md](references/platforms/codex.md)
@@ -112,16 +119,22 @@ Assign one renderer to every slide:
 
 Keep the title, key claim, sources, and any necessary labels native in PPTX whenever feasible. Treat generated images and videos as replaceable media assets.
 
+Default to native-first PowerPoint. Keep text, data, tables, charts, and simple diagrams editable. Every `image_slide` requires a manifest `rasterExceptionReason`; use it only when flattening creates material visual value that native structure cannot preserve.
+
 ## Control style and motion
 
 - Lock one `primaryReference` for the deck.
+- Treat Atlas references as evidence, not a substitute for judgment. Derive the design thesis, content motif, tensions, and signature moves from the current material.
+- Reject a direction that can be relabeled for an unrelated company without meaningful visual redesign. Record `contentSwapTest: pass` before production.
+- Use no more than two signature moves and require a content, audience, narrative, or usability reason for every visible non-standard choice.
+- Treat generic AI glow, automatic blue-purple gradients, glass-card walls, bento feature grids, fake UI, decorative 3D, random particles, and motion without state change as rejected defaults unless the content literally requires them.
 - Use `specified`, `auto`, or `recommend` as the style-decision mode. Never force an approval checkpoint after the user delegates automatic selection.
 - In `recommend` mode, compare 2-3 task-appropriate visual directions and do not proceed until the user selects one.
 - After a preset Atlas is selected, resolve its `source_ids` and load the smallest useful raw set when official PDF links exist.
 - After a custom direction is selected, require `reference_research`, search official and first-party web sources, and record direct URLs and rights before locking the design contract.
 - Allow a secondary reference only for named slide roles; never mix its palette into the global identity.
 - Treat all company materials in the Atlas and role packs as internal design references, not distributable templates.
-- Keep raw reference files outside the plugin. Preserve their canonical links in `sources.json` and load one source at a time with the on-demand collector.
+- Keep raw reference files outside the plugin but inside `<project-dir>/reference-library/raw`. Preserve canonical links in `sources.json` and load one source at a time with `--workspace <project-dir>`.
 - Use `*-inspired` labels. Do not copy logos, proprietary imagery, exact layouts, marketing copy, or unlicensed fonts. Do not imply endorsement.
 - Default to at most 3 video slides, 45 total video seconds, and 2 transition styles.
 - Animate only to explain change, sequence, system behavior, product use, or a major reveal.
@@ -145,4 +158,4 @@ Run the workspace validator:
 node <skill-dir>/scripts/validate-workspace.mjs <project-dir>
 ```
 
-Then execute the renderer-specific checks in [references/review.md](references/review.md). Resolve every capability mismatch, unintended overlap, clipping, broken connector, missing asset, unresolved placeholder, contrast failure, and motion-budget violation. Deliver only the requested final outputs plus a concise summary of what remains flattened or replaceable.
+Then execute the renderer-specific checks in [references/review.md](references/review.md). Resolve every capability mismatch, content-swap failure, generic visual default, unintended overlap, clipping, broken connector, missing asset, unresolved placeholder, contrast failure, and motion-budget violation. Deliver only the requested final outputs plus a concise summary of what remains flattened or replaceable.

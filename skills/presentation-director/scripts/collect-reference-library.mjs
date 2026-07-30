@@ -3,7 +3,6 @@
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream } from "node:fs";
 import { access, mkdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
-import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -12,8 +11,8 @@ import { fileURLToPath } from "node:url";
 const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const METADATA_DIR = path.join(SKILL_DIR, "assets", "reference-library");
 const SOURCES_PATH = path.join(METADATA_DIR, "sources.json");
-const PRIMARY_CACHE_ENV = "PRESENTATION_REFERENCE_CACHE";
-const LEGACY_CACHE_ENV = "CODEX_PRESENTATION_REFERENCE_CACHE";
+const WORKSPACE_NAME = "presentation-director";
+const REFERENCE_LIBRARY_NAME = "reference-library";
 
 function valueAfter(argv, flag) {
   const index = argv.indexOf(flag);
@@ -31,16 +30,31 @@ function parseArgs(argv) {
     company: valueAfter(argv, "--company"),
     source: valueAfter(argv, "--source"),
     cacheDir: valueAfter(argv, "--cache-dir"),
+    workspace: valueAfter(argv, "--workspace"),
   };
 }
 
-function resolveCacheDir(explicit) {
-  return path.resolve(
-    explicit ||
-      process.env[PRIMARY_CACHE_ENV] ||
-      process.env[LEGACY_CACHE_ENV] ||
-      path.join(os.homedir(), ".codex", "cache", "presentation-director", "reference-library"),
-  );
+async function resolveWorkspaceDir(explicit) {
+  if (explicit) {
+    const candidate = path.resolve(explicit);
+    return path.basename(candidate).toLowerCase() === WORKSPACE_NAME
+      ? candidate
+      : path.join(candidate, WORKSPACE_NAME);
+  }
+  const current = path.resolve(process.cwd());
+  if (path.basename(current).toLowerCase() === WORKSPACE_NAME && await exists(path.join(current, "presentation.json"))) {
+    return current;
+  }
+  return path.join(current, WORKSPACE_NAME);
+}
+
+async function resolveCacheDir(explicit, workspace) {
+  const workspaceDir = await resolveWorkspaceDir(workspace);
+  const expected = path.resolve(workspaceDir, REFERENCE_LIBRARY_NAME);
+  if (explicit && path.resolve(explicit) !== expected) {
+    throw new Error(`Reference cache must be workspace-local: expected ${expected}, got ${path.resolve(explicit)}`);
+  }
+  return expected;
 }
 
 function safeCachePath(cacheDir, relative) {
@@ -124,7 +138,7 @@ async function updateCacheManifest(cacheDir, newResults) {
 }
 
 const options = parseArgs(process.argv.slice(2));
-const cacheDir = resolveCacheDir(options.cacheDir);
+const cacheDir = await resolveCacheDir(options.cacheDir, options.workspace);
 const config = JSON.parse(await readFile(SOURCES_PATH, "utf8"));
 const pdfSources = config.sources.filter((source) => source.kind === "official_pdf");
 

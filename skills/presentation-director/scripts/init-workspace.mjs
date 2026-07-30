@@ -7,7 +7,9 @@ import { checkCapabilities, writeCapabilityProfile } from "./check-capabilities.
 
 const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const TEMPLATE_DIR = path.join(SKILL_DIR, "assets", "workspace-template");
+const WORKSPACE_NAME = "presentation-director";
 const PROJECT_DIRS = [
+  "sources/input",
   "assets/generated/images",
   "assets/generated/ui",
   "assets/models",
@@ -17,6 +19,11 @@ const PROJECT_DIRS = [
   "motion/remotion",
   "motion/remotion/three",
   "output",
+  "reference-library/raw",
+  "reference-library/selected",
+  "reference-library/captures",
+  "reference-library/review",
+  "reference-library/contact-sheets",
   "tmp",
   "tmp/style-discovery",
   "tmp/style-discovery/research",
@@ -24,14 +31,14 @@ const PROJECT_DIRS = [
 
 function usage() {
   console.error(
-    "Usage: node scripts/init-workspace.mjs <project-dir> [--title <title>] [--language <tag>] " +
+    "Usage: node scripts/init-workspace.mjs [parent-dir|presentation-director] [--title <title>] [--language <tag>] " +
       "[--platform <name>] [--profile <id>] [--require <capability[,capability]>] [--refresh-capabilities]",
   );
 }
 
 function parseArgs(argv) {
   const args = [...argv];
-  const target = args.shift();
+  const target = args[0] && !args[0].startsWith("--") ? args.shift() : undefined;
   const options = {
     title: "Untitled presentation",
     language: "zh-CN",
@@ -81,9 +88,10 @@ async function copyIfMissing(source, destination) {
 }
 
 export async function initWorkspace(targetDir, options = {}) {
-  if (!targetDir) throw new Error("A project directory is required.");
-
-  const projectDir = path.resolve(targetDir);
+  const requested = path.resolve(targetDir || process.cwd());
+  const projectDir = path.basename(requested).toLowerCase() === WORKSPACE_NAME
+    ? requested
+    : path.join(requested, WORKSPACE_NAME);
   if (projectDir === path.parse(projectDir).root) {
     throw new Error("Refusing to initialize a filesystem root.");
   }
@@ -131,13 +139,8 @@ export async function initWorkspace(targetDir, options = {}) {
 const isCli = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCli) {
   const { target, options } = parseArgs(process.argv.slice(2));
-  if (!target) {
-    usage();
-    process.exit(2);
-  }
-
   try {
-    const result = await initWorkspace(target, options);
+    const result = await initWorkspace(target || process.cwd(), options);
     console.log(`Presentation workspace ready: ${result.projectDir}`);
     console.log(result.created.length ? `Created: ${result.created.join(", ")}` : "No files overwritten.");
     if (result.capabilityReport) {

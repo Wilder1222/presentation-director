@@ -40,18 +40,21 @@ presentation-director/
 
 ```powershell
 node .\skills\presentation-director\scripts\init-workspace.mjs `
-  D:\presentations\agent-platform `
   --title "AI Agent Platform" `
   --language en-US `
   --platform codex `
   --profile full-studio
 ```
 
-The generated workspace contains:
+The command creates `<current-directory>/presentation-director/`:
 
 ```text
 DESIGN.md
 presentation.json
+sources/input/
+reference-library/raw/
+reference-library/selected/
+reference-library/captures/
 assets/generated/images/
 assets/generated/ui/
 assets/models/
@@ -67,8 +70,26 @@ tmp/
 
 ```json
 {
-  "version": "1.1",
+  "version": "1.3",
   "status": "planning",
+  "storage": {
+    "policy": "workspace-local",
+    "workspace": ".",
+    "sources": "sources",
+    "referenceLibrary": "reference-library",
+    "raw": "reference-library/raw",
+    "temporary": "tmp",
+    "output": "output"
+  },
+  "deliveryContract": {
+    "primaryArtifact": "pptx",
+    "readyToPresent": true,
+    "narrativeRequired": true,
+    "visualImpact": "high",
+    "fidelity": "high",
+    "editability": "native-first",
+    "fullPageRaster": "exception-only"
+  },
   "capabilityProfile": {
     "platform": "codex",
     "requestedMode": "full-studio",
@@ -108,11 +129,27 @@ tmp/
       {
         "sourceId": "openai-enterprise-ai-2025-report",
         "url": "https://cdn.openai.com/pdf/7ef17d82-96bf-4dd1-9df2-228f7f377a29/the-state-of-enterprise-ai_2025-report.pdf",
-        "cacheFile": "raw/openai/state-of-enterprise-ai-2025.pdf",
+        "cacheFile": "reference-library/raw/openai/state-of-enterprise-ai-2025.pdf",
         "cacheStatus": "loaded",
         "usage": "Design reference only"
       }
     ]
+  },
+  "tasteProfile": {
+    "status": "locked",
+    "designThesis": "Clinical but humane, using evaluation traces to make governance inspectable.",
+    "contentMotif": "Evaluation traces and review checkpoints",
+    "tensions": ["clinical/humane", "dense/calm"],
+    "signatureMoves": [
+      {
+        "name": "Evidence margin",
+        "purpose": "Keep source confidence visible beside major claims.",
+        "scope": "Evidence and recommendation slides"
+      }
+    ],
+    "antiDefaults": ["generic-ai-glow", "feature-card-wall", "decorative-neural-mesh"],
+    "contentSwapTest": "pass",
+    "authorshipNote": "Governance provenance becomes the recurring composition device."
   },
   "motionBudget": {
     "maxVideoSlides": 3,
@@ -186,7 +223,8 @@ node .\skills\presentation-director\scripts\validate-skill-structure.mjs
 Validate reference metadata and previews:
 
 ```powershell
-python .\skills\presentation-director\scripts\validate-reference-library.py
+python .\skills\presentation-director\scripts\validate-reference-library.py `
+  --workspace .\presentation-director
 ```
 
 Validate a presentation workspace:
