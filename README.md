@@ -4,7 +4,9 @@
 
 # Presentation Director
 
-**Turn content, reference decks, and design intent into coherent, verifiable, delivery-ready presentations.**
+**Design the story. Direct the tools. Deliver a coherent presentation.**
+
+Turn a brief, document, or reference deck into a presentation with a locked visual system, the right renderer for every slide, purposeful motion, and a final quality review.
 
 ![Version](https://img.shields.io/badge/version-0.4.0-4F46E5)
 ![Codex Plugin](https://img.shields.io/badge/Codex-standard_plugin-111111)
@@ -12,138 +14,68 @@
 ![Presentation](https://img.shields.io/badge/output-PPTX%20%7C%20PDF%20%7C%20HTML%20%7C%20MP4-0A7D55)
 [![License: MIT](https://img.shields.io/badge/license-MIT-F5F0E6)](LICENSE)
 
-[Showcase](#showcase) · [Quick start](#quick-start) · [Examples](#usage-examples) · [Capabilities](#capabilities-and-boundaries) · [Developer guide](#developer-guide)
+[Showcase](#showcase) · [Why Presentation Director](#why-presentation-director) · [Quick start](#quick-start) · [Examples](#example-prompts) · [Documentation](#documentation)
 
 </div>
-
-## Why this plugin exists
-
-Codex can already create images, presentations, websites, and videos. A professional deck still needs one system to coordinate narrative, visual direction, source provenance, renderer choice, editability, motion, and final review.
-
-Presentation Director is a lightweight presentation-director plugin. It does not reimplement image models, video engines, or PowerPoint XML. Instead, it establishes a shared design and content contract, then routes each slide to the capability best suited to the job:
-
-- **Presentations** for editable PPTX, template reuse, charts, and native objects.
-- **Image Generation** for hero visuals, product concepts, and backgrounds.
-- **SVG / Graphviz** for accurate architecture, process, and topology diagrams.
-- **HTML / React** for realistic product UI and browser captures.
-- **HyperFrames** for 3–15 second motion pieces and progressive architecture builds.
-- **Remotion** for multi-scene product demos, narration, subtitles, and video.
-- **Three.js** as an optional Remotion component for turntables, exploded views, and spatial storytelling.
-
-The operating principle is simple: **keep the Skill lightweight, delegate generation to specialist capabilities, preserve design knowledge as reusable assets, and validate every deliverable.**
 
 ## Showcase
 
 ### From brief to final QA
 
-Convert the brief into a shared design contract, route assets to the right renderers, assemble the deck, and run a visual review before delivery.
+Shape the narrative, lock a shared design contract, route every slide to the right specialist capability, and review the rendered result before delivery.
 
 ![Presentation Director workflow from brief to QA](assets/screenshot-workflow.png)
 
 ### One design contract, multiple controlled outputs
 
-The Director can combine native PowerPoint objects, precise vector diagrams, generated visuals, product UI, and replaceable motion media while declaring editability honestly.
+Combine editable PowerPoint content, precise vector diagrams, generated visuals, realistic product UI, and replaceable motion media without losing visual consistency.
 
 ![Native, vector, and motion renderer routing](assets/screenshot-renderer-routing.png)
 
-### Optional Three.js product sequences
+### Spatial product storytelling when it adds meaning
 
-When spatial depth carries meaning, Three.js can run inside Remotion to produce deterministic 3D video plus a static poster for PowerPoint preview and fallback playback.
+Use optional Three.js scenes inside Remotion for deterministic turntables, exploded views, and spatial sequences, with a static poster for preview and fallback playback.
 
 ![Three.js and Remotion product animation workflow](assets/screenshot-threejs.png)
 
-## Who it is for
+## Why Presentation Director
 
-| Audience | What they can do |
+AI can generate slides. Presentation Director coordinates the decisions that make a deck feel intentionally designed.
+
+| | What changes |
 |---|---|
-| Business users | Create product decks, technical proposals, investor materials, and executive presentations in natural language. |
-| Presentation authors | Keep reference templates, generated visuals, diagrams, UI, and motion inside one coherent visual system. |
-| Developers | Extend the Design Atlas, slide patterns, motion patterns, routing rules, intermediate contracts, and automated checks. |
+| **One visual system** | `DESIGN.md` locks typography, color, spacing, imagery, diagram language, and motion before production begins. |
+| **The right tool per slide** | Native PowerPoint, image generation, SVG, browser UI, HyperFrames, Remotion, and optional Three.js are selected by purpose rather than novelty. |
+| **Reusable design intelligence** | The built-in Design Atlas abstracts proven patterns from product launches, editorial technology stories, technical platforms, developer ecosystems, and enterprise communication. |
+| **Honest deliverables** | Native, mixed, flattened, and replaceable-media content is declared clearly instead of calling every deck “fully editable.” |
+| **Quality before delivery** | Slides are rendered and reviewed for hierarchy, consistency, readability, overflow, provenance, and motion restraint. |
 
 ## Core capabilities
 
-- Plan a complete presentation from a topic, document, reference PPTX, or named visual direction.
-- Lock `DESIGN.md` before generating visual assets to reduce cross-slide style drift.
-- Use `presentation.json` as the source of truth for narrative, renderer routing, assets, motion, editability, and provenance.
-- Select native PowerPoint, image, SVG, UI, HyperFrames, or Remotion per slide.
-- Reuse abstracted design principles from Apple, OpenAI, NVIDIA, Spotify, and other reference systems.
-- Prioritize local enterprise templates and restrict external references to explicitly assigned slide roles.
-- Load original reference files on demand instead of shipping large raw PDFs in the plugin repository.
-- Enforce posters, provenance, copyright boundaries, a motion budget, and final visual QA.
-- Use optional Three.js 3D sequences without adding a 3D runtime dependency to the plugin itself.
-- Detect installed providers before work begins, show platform-specific installation guidance for missing capabilities, and block silent downgrade.
-
-## Capability profiles and install prompts
-
-The Director is useful on its own for narrative, Design Atlas selection, manifests, and review. Its complete production workflow depends on specialist providers. A preflight check records what is actually installed instead of assuming that a documented integration is available. Skills must be discoverable in a supported skills directory, project packages must exist under `node_modules`, and command providers must be available on `PATH`; a dependency declaration by itself is not treated as an installation.
-
-| Profile | Required capabilities |
-|---|---|
-| `director-core` | Planning, reference selection, routing, and review contracts. |
-| `static-studio` | Editable presentation output. |
-| `visual-studio` | Static Studio, image generation, and browser-based UI capture. |
-| `motion-studio` | Visual Studio, short motion, and multi-scene video. |
-| `full-studio` | The complete general workflow; 3D remains on demand. |
-| `spatial-studio` | Full Studio plus Three.js, React Three Fiber, and `@remotion/three`. |
-
-Run preflight for an existing project:
-
-```powershell
-node .\skills\presentation-director\scripts\check-capabilities.mjs `
-  --platform codex `
-  --project D:\presentations\agent-platform `
-  --profile full-studio `
-  --write
-```
-
-When a required capability is missing, the checker prints:
-
-- the requested and currently resolved profiles;
-- the missing capability and the output it blocks;
-- installation guidance for the active Agent platform;
-- the exact fallback impact.
-
-The Skill must stop at that point. It may continue with a fallback only after the user explicitly approves the loss of capability and preflight is rerun with `--approve-fallbacks --write`. Unsupported renderers must then be replaced in `presentation.json`. A partial installation is never described as Full Studio.
-
-The dependency registry intentionally stores detectable provider contracts rather than fabricated marketplace IDs. When a host exposes a verified native install action, the Agent should use it. Otherwise it presents the registry's platform-specific installation instructions.
+- Turn a topic, document, reference deck, or company template into a complete presentation narrative.
+- Preserve enterprise masters and brand rules, or establish an original design direction from the Design Atlas.
+- Generate hero visuals, product concepts, realistic UI, precise technical diagrams, and data-led slides within one system.
+- Create short progressive animations with HyperFrames and multi-scene product demos with Remotion.
+- Add Three.js only when depth communicates product structure or spatial relationships.
+- Produce PPTX, PDF, HTML, MP4, slide previews, and replaceable media assets from a shared presentation manifest.
+- Keep source provenance and usage boundaries attached to external references and generated assets.
+- Detect missing specialist capabilities before production and explain what must be installed for the requested result.
 
 ## Quick start
 
-### Requirements
-
-- Codex Desktop/CLI, Claude Code, GitHub Copilot, Gemini CLI, Cursor, or another Agent Skills-compatible host.
-- Node.js 18 or newer for workspace and capability validation scripts.
-- Access to this GitHub repository from the environment where the Agent runs.
-- The specialist capabilities required by your chosen profile. Three.js dependencies are only needed in presentation projects that actually use 3D.
-
-### Codex: add the plugin marketplace
+Add the marketplace:
 
 ```powershell
 codex plugin marketplace add Wilder1222/presentation-director --ref main
 ```
 
-### Codex: install the plugin
+Install the plugin:
 
 ```powershell
 codex plugin add presentation-director@wilder1222-plugins
 ```
 
-Open a new Codex task after installation so the Skill can be discovered.
-
-### Other Agent hosts
-
-This repository also includes a Claude Code plugin manifest, a Gemini extension manifest, and a standards-based `SKILL.md` that GitHub Copilot and Cursor can discover from a supported skills directory.
-
-| Host | Adapter | Installation approach |
-|---|---|---|
-| Claude Code | `.claude-plugin/plugin.json` | Add this repository as a trusted plugin source or copy the Skill into a configured Claude skills directory. |
-| Gemini CLI | `gemini-extension.json` | Install or link this repository as an extension so the root `skills/` directory is visible. |
-| GitHub Copilot | `SKILL.md` | Copy or link `skills/presentation-director` into a Copilot-supported Agent Skills directory. |
-| Cursor | `SKILL.md` | Copy or link `skills/presentation-director` into a Cursor-supported Agent Skills directory. |
-
-The canonical Skill stays under `skills/presentation-director`; platform adapters do not fork its behavior. Run preflight with `--platform claude-code`, `copilot`, `gemini`, or `cursor` after installation.
-
-### Create a presentation
+Open a new Codex task, then describe the presentation you want:
 
 ```text
 Use $presentation-director to create a 12-slide AI agent product deck
@@ -153,20 +85,13 @@ architecture slide accurate and editable; generated visuals are allowed on
 product slides.
 ```
 
-The plugin will:
+Presentation Director will plan the story, establish the design system, check the required capabilities, generate the necessary assets, assemble the deck, and review the rendered output.
 
-1. Check installed capabilities and prompt for any required provider.
-2. Define the audience, desired action, and central takeaway.
-3. Select one primary design direction.
-4. Create `DESIGN.md` and `presentation.json`.
-5. Generate images, UI, diagrams, motion, or 3D assets as required.
-6. Assemble the presentation.
-7. Render and review every slide.
-8. Deliver PPTX, PDF, HTML, or MP4 outputs with honest editability disclosure.
+For capability profiles, provider setup, other Agent hosts, and fallback behavior, see the [Installation and Capabilities Guide](docs/INSTALLATION.md).
 
-## Usage examples
+## Example prompts
 
-### Enterprise template mode
+### Preserve a company template
 
 ```text
 Use $presentation-director to update this quarterly business review.
@@ -174,7 +99,7 @@ Strictly preserve the uploaded PPTX master, typography, colors, and footer.
 Keep every chart and text block editable.
 ```
 
-### Product launch mode
+### Launch a product
 
 ```text
 Use $presentation-director to create a launch deck for an AI hardware
@@ -182,7 +107,7 @@ product. Use a restrained product-reveal language, create an original hero
 visual, and produce a 10-second exploded-view sequence for slide 6.
 ```
 
-### Technical architecture mode
+### Explain a technical system
 
 ```text
 Use $presentation-director to turn this technical proposal into an
@@ -191,7 +116,7 @@ native PowerPoint shapes. Do not use an image model for nodes, connectors,
 or labels.
 ```
 
-### Three.js 3D mode
+### Build a spatial product sequence
 
 ```text
 Use $presentation-director to create a Three.js turntable and exploded
@@ -200,335 +125,36 @@ MP4, keep a static poster in the deck, and record the source and license for
 every model, texture, and environment asset.
 ```
 
-## How it works
+## Designed for the work behind great decks
 
-```mermaid
-flowchart LR
-    A["Brief / document / reference deck"] --> B["Presentation Director"]
-    B --> C["Narrative + DESIGN.md"]
-    C --> D["presentation.json"]
-    D --> E{"Renderer router"}
-    E --> F["Native PPTX"]
-    E --> G["Image / UI / SVG"]
-    E --> H["HyperFrames"]
-    E --> I["Remotion"]
-    I --> J["Optional Three.js"]
-    F --> K["Render + QA"]
-    G --> K
-    H --> K
-    I --> K
-    K --> L["PPTX / PDF / HTML / MP4"]
-```
+Presentation Director supports the full range between strict enterprise delivery and high-impact product storytelling:
 
-The Director owns decisions, contracts, and acceptance criteria. Specialist capabilities own generation. `DESIGN.md` and `presentation.json` are the shared source of truth for every executor.
+- **Executive and enterprise decks** with editable content and faithful template reuse.
+- **Product launches** with original hero imagery, controlled reveals, UI demonstrations, and motion.
+- **Technical presentations** with accurate architecture, topology, workflow, and platform diagrams.
+- **Investor and strategy narratives** with clear pacing, evidence, metrics, and a decisive takeaway.
+- **Multi-format delivery** when the same story must become a PowerPoint deck, web presentation, PDF, or video.
 
-## Renderer routing
+The plugin remains lightweight: it directs specialist capabilities instead of duplicating image models, video engines, browser tooling, or PowerPoint internals.
 
-| Slide task | Default route | Editability |
-|---|---|---|
-| Titles, body text, charts, and tables | Native PowerPoint | `native` |
-| Simple architecture and process diagrams | Native PowerPoint shapes | `native` |
-| Complex architecture, topology, and roadmaps | SVG / Graphviz | `mixed` |
-| Hero, concept, and emotional visuals | Image Generation | `flattened` or `mixed` |
-| Product interfaces | HTML / React + browser capture | `mixed` |
-| 3–15 second motion pieces | HyperFrames | `replaceable-media` |
-| 15–90 second demos | Remotion | `replaceable-media` |
-| Product turntables, exploded views, spatial layers | Three.js + `@remotion/three` | `replaceable-media` |
+## Documentation
 
-Images and videos are replaceable media, not native PowerPoint objects. A deck containing `replaceable-media` or `flattened` slides must never be described as fully editable.
-
-## Three.js as an optional 3D component
-
-Three.js is not a standalone renderer in this project. It is an optional component inside the `remotion_video` route.
-
-Good uses:
-
-- Product turntables.
-- Exploded assemblies.
-- Spatial hierarchy.
-- A small number of deliberate camera moves.
-- Visualizations where depth carries meaning.
-
-Poor uses:
-
-- Conventional architecture diagrams.
-- Charts, tables, and roadmaps.
-- Dense labels or explanatory copy.
-- Decorative particles, glowing tunnels, globes, or grids added only to imply “technology.”
-
-Implementation constraints:
-
-- Install Three.js, React Three Fiber, and `@remotion/three` only in presentation projects that use them.
-- Drive models, cameras, materials, and shader parameters from the deterministic Remotion frame timeline.
-- Export both MP4/WebM and a static poster for every 3D video.
-- Record the source and license for GLB/glTF models, textures, and environment maps.
-- HyperFrames may composite a finished 3D video, but it must not manage an independent WebGL animation loop.
-
-See [`renderers/threejs.md`](skills/presentation-director/references/renderers/threejs.md) for the full contract.
-
-## Design Atlas
-
-The Atlas stores abstracted design principles. It does not redistribute company templates, logos, or proprietary assets.
-
-Built-in Design DNA:
-
-| Atlas | Best suited to |
+| Guide | Use it for |
 |---|---|
-| Apple | Product reveals, minimal narrative, and cinematic pacing. |
-| OpenAI | Editorial technology storytelling, concept explanation, and restrained visuals. |
-| NVIDIA | Platform architecture, ecosystems, performance, and technical evidence. |
-| GitHub | Developer collaboration, community, and state change. |
-| IBM | Engineering grids, enterprise systems, and evidence-led data. |
-| Google | Multi-product narratives, expressive shapes, and state transitions. |
-| Spotify | Cultural rhythm, design principles, and modular systems. |
-| Figma | Modular recomposition, collaboration, and creative activity. |
-| Human Marketplace | Human-centered markets, trust, and two-sided journeys. |
+| [Installation and Capabilities](docs/INSTALLATION.md) | Codex installation, other Agent hosts, capability profiles, provider checks, and fallback rules. |
+| [Architecture](docs/ARCHITECTURE.md) | Workflow, source-of-truth contracts, renderer routing, editability, motion, and Three.js integration. |
+| [Design Atlas and Reference Library](docs/DESIGN-ATLAS.md) | Design DNA, role packs, on-demand source loading, provenance, and copyright boundaries. |
+| [Development and Contribution](docs/DEVELOPMENT.md) | Repository structure, workspace initialization, manifests, extension points, validation, and contribution workflow. |
+| [Skill source](skills/presentation-director/SKILL.md) | The canonical orchestration rules used by compatible Agent hosts. |
 
-Role-specific reference packs influence only assigned slides and never replace the global brand system. Included role packs cover Cloudflare, Stripe, Vercel, Snowflake, Adobe, Salesforce, and BCG.
+## License and responsible use
 
-## Reference library and provenance
-
-The plugin packages 104 compressed previews backed by 38 source records. Raw PDFs and high-resolution assets live in an optional external cache and are excluded from Git.
-
-Default cache location:
-
-```text
-~/.codex/cache/presentation-director/reference-library
-```
-
-Override it with an environment variable:
-
-```powershell
-$env:PRESENTATION_REFERENCE_CACHE = "D:\presentation-reference-cache"
-```
-
-`CODEX_PRESENTATION_REFERENCE_CACHE` remains supported as a legacy alias.
-
-List sources without downloading anything:
-
-```powershell
-node .\skills\presentation-director\scripts\collect-reference-library.mjs --list
-```
-
-Load one source on demand:
-
-```powershell
-node .\skills\presentation-director\scripts\collect-reference-library.mjs --source <source-id>
-```
-
-Add `--include-heavy` explicitly for a source marked `heavy`. Use `--all` only when intentionally rebuilding the complete local reference cache.
-
-## Capabilities and boundaries
-
-### The plugin is responsible for
-
-- Narrative planning and slide roles.
-- Design direction and reference selection.
-- Renderer and motion routing.
-- Asset planning and editability declarations.
-- Source, copyright, and brand boundaries.
-- Screenshot, structure, and motion quality review.
-
-### The plugin is not responsible for
-
-- Reimplementing image models, video engines, or PowerPoint XML.
-- Automatically monitoring or continuously downloading external design materials.
-- Redistributing public company materials as commercially reusable templates.
-- Turning image or video slides into native editable PowerPoint objects.
-- Adding motion or 3D when it does not improve understanding.
-
-## Developer guide
-
-### Repository structure
-
-```text
-presentation-director/
-├── .agents/plugins/marketplace.json       # Marketplace catalog
-├── .codex-plugin/plugin.json              # Standard plugin metadata
-├── .claude-plugin/plugin.json             # Claude Code adapter
-├── gemini-extension.json                  # Gemini CLI adapter
-├── assets/                                # Marketplace icon and screenshots
-├── LICENSE                                # MIT License
-├── skills/presentation-director/
-│   ├── SKILL.md                           # Director entry point and hard gates
-│   ├── agents/openai.yaml                 # Codex UI metadata
-│   ├── assets/
-│   │   ├── reference-library/             # Sources, catalog, provenance, previews
-│   │   └── workspace-template/            # New presentation workspace template
-│   ├── references/
-│   │   ├── atlas/                         # Design DNA
-│   │   ├── platforms/                     # Host-specific install and fallback behavior
-│   │   ├── role-packs/                    # Slide-role reference packs
-│   │   ├── patterns/                      # Layout and motion patterns
-│   │   ├── renderers/                     # Specialized renderer contracts
-│   │   ├── library/                       # Reference operations and registry
-│   │   ├── routing.md                     # Renderer routing
-│   │   ├── dependencies.json              # Capability profiles and provider detection
-│   │   ├── manifest.md                    # Intermediate manifest contract
-│   │   └── review.md                      # Delivery acceptance criteria
-│   └── scripts/                           # Initialization, collection, validation
-└── README.md
-```
-
-### Initialize a presentation workspace
-
-```powershell
-node .\skills\presentation-director\scripts\init-workspace.mjs `
-  D:\presentations\agent-platform `
-  --title "AI Agent Platform" `
-  --language en-US `
-  --platform codex `
-  --profile full-studio
-```
-
-The generated workspace contains:
-
-```text
-DESIGN.md
-presentation.json
-assets/generated/images/
-assets/generated/ui/
-assets/models/
-assets/textures/
-diagrams/
-motion/hyperframes/
-motion/remotion/three/
-output/
-tmp/
-```
-
-### Minimal manifest
-
-```json
-{
-  "version": "1.0",
-  "status": "planning",
-  "capabilityProfile": {
-    "platform": "codex",
-    "requestedMode": "full-studio",
-    "resolvedMode": "full-studio",
-    "checkedAt": "2026-07-30T08:00:00.000Z",
-    "required": ["presentation", "image_generation", "ui_capture", "short_motion", "video"],
-    "available": ["presentation", "image_generation", "ui_capture", "short_motion", "video"],
-    "missing": [],
-    "taskReady": true,
-    "fallbacksApproved": false
-  },
-  "deck": {
-    "title": "AI Agent Platform",
-    "audience": "Enterprise technology leaders",
-    "objective": "Approve a pilot",
-    "centralTakeaway": "A governed runtime makes agent automation controllable.",
-    "language": "en-US",
-    "aspectRatio": "16:9",
-    "primaryReference": "openai-editorial-inspired",
-    "secondaryReferences": [],
-    "outputs": ["pptx", "pdf"]
-  },
-  "motionBudget": {
-    "maxVideoSlides": 3,
-    "maxTotalVideoSeconds": 45,
-    "maxTransitionStyles": 2
-  },
-  "slides": []
-}
-```
-
-See [`manifest.md`](skills/presentation-director/references/manifest.md) for the complete schema and 3D examples.
-
-### Add a Design Atlas entry
-
-1. Create `references/atlas/<name>.yaml`.
-2. Store abstract design principles, not redistributable proprietary assets.
-3. Register the entry in the on-demand loading table in `SKILL.md`.
-4. Update the source registry and reference catalog when external material is involved.
-5. Update the Atlas table in this README and run the complete validation suite.
-
-### Add a role pack
-
-1. Create `references/role-packs/<name>.yaml`.
-2. Limit it to explicit slide roles.
-3. Do not let it override global typography, color, or brand rules.
-4. Register it in `SKILL.md` and `routing.md`.
-
-### Add a renderer or motion capability
-
-1. Define use conditions and fallback behavior in `routing.md`.
-2. Define the intermediate data contract in `manifest.md`.
-3. Define handoff fields in `prompt-contracts.md`.
-4. Define acceptance criteria in `review.md`.
-5. Update `validate-workspace.mjs` so invalid routing is rejected automatically.
-
-### Validation
-
-Check installed capabilities and update the workspace profile:
-
-```powershell
-node .\skills\presentation-director\scripts\check-capabilities.mjs `
-  --platform codex `
-  --project <project-directory> `
-  --profile full-studio `
-  --write
-```
-
-Validate the standard plugin structure:
-
-```powershell
-python "$env:USERPROFILE\.codex\skills\.system\plugin-creator\scripts\validate_plugin.py" .
-```
-
-Validate the Skill:
-
-```powershell
-python "$env:USERPROFILE\.codex\skills\.system\skill-creator\scripts\quick_validate.py" `
-  ".\skills\presentation-director"
-```
-
-Validate progressive loading, reference links, and internal Skill structure:
-
-```powershell
-node .\skills\presentation-director\scripts\validate-skill-structure.mjs
-```
-
-Validate reference metadata and previews:
-
-```powershell
-python .\skills\presentation-director\scripts\validate-reference-library.py
-```
-
-Validate a presentation workspace:
-
-```powershell
-node .\skills\presentation-director\scripts\validate-workspace.mjs <project-directory>
-```
-
-Use `--allow-draft` during development. Final delivery must pass without it.
-
-### Contribution workflow
-
-1. Create a `codex/<feature-name>` branch from `main`.
-2. Update the Skill, contracts, validators, and README as required.
-3. Run plugin, Skill, reference-library, and workspace validation.
-4. Confirm that raw PDFs, models, textures, caches, and `node_modules` are not included in the commit.
-5. Open a pull request describing user-visible behavior changes and compatibility impact.
-
-## Copyright and license
-
-- Source code and original documentation in this repository are available under the [MIT License](LICENSE).
-- Apple, OpenAI, NVIDIA, and other third-party materials are used only for internal design analysis and source indexing.
-- Do not copy third-party logos, official marketing copy, proprietary fonts, proprietary product assets, or exact page compositions.
-- Public outputs should use `*-inspired` or abstract role names and must not imply endorsement.
-- When an external reference, fact, or asset materially influences a slide, preserve its source in speaker notes.
-- Remotion, Three.js, and other specialist capabilities remain subject to their own licenses.
-- The MIT License does not alter the rights attached to external references, brand names, screenshots, fonts, models, or other third-party assets recorded by the Design Atlas.
-
-## Design and engineering references
-
-- [OpenAI Agent Skills](https://github.com/openai/skills) for discoverable, installable, progressively loaded Skills.
-- [Remotion](https://github.com/remotion-dev/remotion) for deterministic React-driven video composition.
-- [Three.js](https://threejs.org/) for Web 3D scenes, cameras, materials, and model rendering.
-- [PptxGenJS](https://github.com/gitbrent/PptxGenJS) for the capabilities and boundaries of programmatic PowerPoint generation.
+Presentation Director is available under the [MIT License](LICENSE). The Design Atlas stores abstract design principles, not redistributable company templates or brand assets. Third-party references remain subject to their original rights and must be used for analysis and inspiration only.
 
 ---
 
-If you remember one rule, make it this: **define the narrative and design contract before selecting renderers; never let a tool's capabilities decide what the presentation should become.**
+<div align="center">
+
+**A presentation should be directed as one story, not generated as a pile of slides.**
+
+</div>
