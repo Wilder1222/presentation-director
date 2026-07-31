@@ -3,12 +3,13 @@
 ## Contents
 
 1. Style candidate board
-2. Shared contract
-3. Image generation and product UI
-4. Diagrams
-5. HyperFrames
-6. Remotion and optional Three.js
-7. PPTX
+2. Compiled provider brief
+3. Shared contract
+4. Image generation and product UI
+5. Diagrams
+6. HyperFrames
+7. Remotion and optional Three.js
+8. PPTX
 
 ## Style candidate board
 
@@ -28,9 +29,23 @@ Output: tmp/style-discovery/options.webp or options.png
 
 Do not use rejected candidate traits in production. After selection, resolve references and write the final design contract before invoking production providers.
 
+## Compiled provider brief
+
+Manifest 1.5 production handoffs originate in `presentation.json`, not an improvised provider prompt. After the narrative, storyboard, and asset briefs are complete, run `prepare-creative.mjs --strict`. Use the generated file at `tmp/provider-briefs/<slide-id>/<asset-id>.json` as the provider's task contract.
+
+The compiled brief carries:
+
+- the deck communication job and current audience state;
+- the slide question, claim, consequence, and bridge;
+- silhouette, density, focal mode, visual peak, and continuity cue;
+- asset method, placement, continuity family, reuse policy, variants, dependencies, and acceptance checks;
+- Design DNA, allowed signature moves, anti-defaults, and canonical output path.
+
+Pass the JSON brief and `DESIGN.md` without deleting constraints. Provider-specific syntax may be added, but it must not change the communication job, visual system, output contract, or acceptance criteria. If the source manifest changes, regenerate the brief instead of editing the generated file.
+
 ## Shared contract
 
-Create a specialist handoff only after capability preflight records the required capability as available. If it is missing, show installation guidance and stop; do not write a prompt that implies the provider ran. Use the provider identified by preflight rather than assuming a platform-specific skill name.
+Create a specialist handoff only after capability preflight records the required capability as available and the creative plan is current. If it is missing, show installation guidance and stop; do not write a prompt that implies the provider ran. Use the provider identified by preflight rather than assuming a platform-specific skill name.
 
 Every specialist handoff must include:
 
@@ -71,6 +86,8 @@ Output: [project-relative path]
 ```
 
 Generate original assets. Do not prompt for direct replicas of company campaigns, identifiable protected characters, logos, or official product renders.
+
+For a high-impact generative asset, render the `variantCount` declared in the compiled brief. Change composition, viewpoint, material emphasis, or focal balance meaningfully; do not treat near-identical seeds as real alternatives. Inspect candidates at the intended slide crop, then use `record-asset-selection.mjs` to preserve the candidate hashes, selected output, reviewer, and communication rationale.
 
 For a slide with left-side copy, place the subject toward the right and preserve clean negative space on the left. Ask for the final crop, not a generic image that will be cropped later.
 

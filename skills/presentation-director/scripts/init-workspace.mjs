@@ -25,6 +25,12 @@ const PROJECT_DIRS = [
   "reference-library/review",
   "reference-library/contact-sheets",
   "tmp",
+  "tmp/build-cache",
+  "tmp/creative",
+  "tmp/design-lock",
+  "tmp/provider-briefs",
+  "tmp/qa",
+  "tmp/slide-builds",
   "tmp/style-discovery",
   "tmp/style-discovery/research",
 ];

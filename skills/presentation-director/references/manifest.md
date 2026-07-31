@@ -8,10 +8,12 @@
 4. Capability profile
 5. Style decision
 6. Design taste profile
-7. Deck and slide objects
-8. Assets and motion
-9. Optional Three.js component
-10. Sources and validation
+7. Creative planning
+8. Production optimization
+9. Deck and slide objects
+10. Assets and motion
+11. Optional Three.js component
+12. Sources and validation
 
 ## Purpose
 
@@ -21,13 +23,15 @@ Use `presentation.json` as the source of truth for narrative, renderer routing, 
 
 ```json
 {
-  "version": "1.3",
+  "version": "1.5",
   "status": "planning",
   "storage": {},
   "deliveryContract": {},
+  "narrative": {},
   "capabilityProfile": {},
   "styleDecision": {},
   "tasteProfile": {},
+  "production": {},
   "deck": {},
   "motionBudget": {},
   "slides": []
@@ -201,6 +205,114 @@ Rules:
 
 Read `design-taste.md` before authoring this object.
 
+## Creative planning
+
+Manifest 1.5 locks the causal story and compiles the visual and material plan before representative samples or production assets:
+
+```json
+{
+  "narrative": {
+    "status": "locked",
+    "communicationJob": "By the end, technology leaders should approve a governed pilot because the runtime makes agent work observable and reversible.",
+    "audienceStartingPoint": "Interested in agents but concerned about control and proof.",
+    "audienceEndState": "Confident that a bounded pilot is both valuable and governable.",
+    "stakes": "Without a governed path, teams either block useful automation or deploy it without sufficient control.",
+    "arc": "Uncontrolled opportunity -> visible control system -> evidence -> bounded decision",
+    "turningPointSlideId": "s05",
+    "resolution": "Approve a six-week pilot with explicit success and governance gates."
+  },
+  "production": {
+    "creativePlan": {
+      "status": "prepared",
+      "contractVersion": "1.0",
+      "preparedAt": "2026-07-31T07:30:00.000Z",
+      "digest": "<sha256>",
+      "narrativeMap": "tmp/creative/narrative-map.json",
+      "storyboard": "tmp/creative/storyboard.json",
+      "assetPlan": "tmp/creative/asset-plan.json",
+      "report": "tmp/creative/report.json",
+      "providerBriefsRoot": "tmp/provider-briefs",
+      "providerIndex": "tmp/provider-briefs/index.json",
+      "artifactHashes": {},
+      "warnings": 0
+    }
+  }
+}
+```
+
+Use `prepare-creative.mjs --strict` to write these records; never author their digests or generated artifacts manually. Any change to narrative, slide titles, claims or content, renderer routing, visual plans, asset briefs, motion intent, or 3D intent invalidates the plan. Read `creative-planning.md` for the full contract.
+
+## Production optimization
+
+Manifest 1.5 carries forward Manifest 1.4 production optimization and binds it to the compiled creative plan:
+
+```json
+{
+  "designLock": {
+    "status": "locked",
+    "requiredSampleCount": 4,
+    "lockedAt": "2026-07-31T08:00:00.000Z",
+    "approvedBy": "user",
+    "creativeDigest": "<sha256>",
+    "designDigest": "<sha256>",
+    "samples": [
+      {
+        "slideId": "s01",
+        "role": "opening",
+        "renderer": "native_ppt",
+        "artifact": "tmp/design-lock/s01.png",
+        "artifactHash": "<sha256>",
+        "approvedAt": "2026-07-31T08:00:00.000Z"
+      }
+    ]
+  },
+  "build": {
+    "strategy": "incremental-content-addressed",
+    "cacheState": "tmp/build-cache/state.json",
+    "plan": "tmp/build-plan.json",
+    "taskGraph": "tmp/task-graph.json",
+    "maxParallelWorkers": 4,
+    "lastPreparedAt": "2026-07-31T08:05:00.000Z",
+    "lastRecordedAt": "2026-07-31T08:45:00.000Z"
+  },
+  "qa": {
+    "strategy": "risk-based-plus-final-full",
+    "plan": "tmp/qa-plan.json",
+    "results": "tmp/qa-results.json",
+    "ledger": "tmp/qa-ledger.txt",
+    "finalFullReviewRequired": true,
+    "finalFullReview": {
+      "status": "passed",
+      "completedAt": "2026-07-31T09:30:00.000Z",
+      "reviewer": "director"
+    }
+  }
+}
+```
+
+Each slide owns an isolated build capsule. Omit `buildCapsule` to use
+`tmp/slide-builds/<slide-id>` automatically, or declare another workspace-local directory when a
+renderer needs a different capsule location:
+
+```json
+{
+  "id": "s03",
+  "role": "architecture",
+  "renderer": "svg",
+  "buildCapsule": "tmp/slide-builds/s03"
+}
+```
+
+The capsule is the renderer-neutral assembly handoff. It contains the slide's source or assembly
+instructions, a preview when available, and a `receipt.json` whose slide id, renderer, and input
+hash match the current build task.
+
+Use `lock-design.mjs` to create the digest and sample records. Do not author hashes manually. Use `prepare-build.mjs` to write build, task, and QA plans; use `record-build.mjs` only after declared outputs and the current capsule receipt exist; use `record-qa.mjs` to merge slide reviews and final review evidence.
+
+The task graph gives workers exclusive output paths and rejects nested path ownership. Only the Director may modify `DESIGN.md`, `presentation.json`, cache state, shared QA results, or final assembly. A final Manifest 1.5 fails when its creative, design, or manifest digest is stale; a generated creative artifact or provider brief changed; any slide build is incomplete or changed after recording; an approved sample changed; or any slide lacks a passing final review.
+
+Read `production-optimization.md` for the complete execution contract.
+
 ## Deck object
 
 ```json
@@ -236,6 +348,19 @@ Use one primary reference. It must match `styleDecision.selectedId` or the suppl
   "layoutPattern": "layered-architecture",
   "renderer": "svg",
   "editability": "mixed",
+  "narrativeBeat": {
+    "question": "Can control be built into execution rather than added afterward?",
+    "evidenceType": "reasoning",
+    "consequence": "Governance becomes an operating property instead of an audit exercise.",
+    "bridgeToNext": "The next slide shows how that design changes measurable pilot risk."
+  },
+  "visualPlan": {
+    "silhouette": "layered-control-field",
+    "density": "medium",
+    "focalMode": "diagram",
+    "visualPeak": true,
+    "continuityCue": "The evidence margin becomes a control rail around every layer."
+  },
   "content": {
     "layers": ["Experience", "Agent runtime", "Models and tools", "Governance and observability"]
   },
@@ -260,6 +385,8 @@ Required fields:
 - `layoutPattern`: an approved pattern or an explicitly named custom pattern.
 - `renderer`: one of the supported renderer values.
 - `editability`: one of `native`, `mixed`, `replaceable-media`, or `flattened`.
+- `narrativeBeat`: the live audience question, evidence type, consequence, and non-closing bridge.
+- `visualPlan`: the slide silhouette, density, focal mode, visual-peak flag, and continuity cue.
 
 For `image_slide`, set `editability` to `flattened` and add a non-empty `rasterExceptionReason`. Do not use `image_slide` for architecture, diagrams, data, charts, tables, or any slide whose facts need native correction.
 
@@ -275,14 +402,49 @@ Use `claimKind: external` when the central claim depends on an external non-triv
   "status": "planned",
   "brief": {
     "purpose": "Create the single visual focus of the cover",
+    "method": "image-generation",
+    "role": "hero",
     "placement": "right 58%, subject biased to the right",
     "aspectRatio": "4:3",
+    "continuityKey": "governed-runtime-material",
+    "reusePolicy": "derived-variant",
+    "selectionMode": "variants",
+    "variantCount": 3,
+    "dependencies": [],
+    "acceptance": [
+      "The product mechanism reads clearly at slide size",
+      "The left title safe zone remains visually quiet"
+    ],
     "mustAvoid": ["text", "logos", "neon circuit cliché"]
   }
 }
 ```
 
 Allowed status values are `planned`, `ready`, and `rejected`. A final manifest must not reference planned or rejected assets.
+
+Allowed production methods are `image-generation`, `sourced-image`, `ui-capture`, `diagram`, `short-motion`, `video`, `3d-model`, `3d-material`, and `native`. `reusePolicy` is `single-use`, `system-reuse`, or `derived-variant`. `selectionMode` is `deterministic`, `single`, or `variants`; only `variants` may declare two to four candidates.
+
+After inspecting the declared candidates, use `record-asset-selection.mjs` to populate `selection`:
+
+```json
+{
+  "status": "selected",
+  "selectedAt": "2026-07-31T08:20:00.000Z",
+  "reviewer": "director",
+  "rationale": "Candidate B preserves the title safe zone and best explains the mechanism.",
+  "selectedCandidateId": "b",
+  "selectedPath": "assets/generated/images/hero-product.webp",
+  "selectedHash": "<sha256>",
+  "providerBrief": "tmp/provider-briefs/s01/hero-product.json",
+  "providerBriefHash": "<sha256>",
+  "candidates": [
+    { "id": "a", "path": "assets/generated/images/candidates/hero-a.webp", "hash": "<sha256>" },
+    { "id": "b", "path": "assets/generated/images/candidates/hero-b.webp", "hash": "<sha256>" }
+  ]
+}
+```
+
+A final Manifest 1.5 requires a current selection record for every asset using `selectionMode: variants`. The canonical asset, candidates, and provider brief must still match their recorded hashes. Recording a reviewed `single` or `deterministic` asset is optional.
 
 Use project-relative paths. Never use paths outside the presentation workspace.
 

@@ -17,35 +17,35 @@
     {
       "id": "visual-studio",
       "label": "Visual Studio",
-      "description": "Static presentation output plus original imagery and product UI capture.",
-      "requires": ["presentation", "image_generation", "ui_capture"]
+      "description": "Static presentation output plus original imagery, product UI capture, and deterministic raster processing.",
+      "requires": ["presentation", "image_generation", "ui_capture", "raster_processing"]
     },
     {
       "id": "motion-studio",
       "label": "Motion Studio",
-      "description": "Visual Studio plus short motion and multi-scene video.",
-      "requires": ["presentation", "image_generation", "ui_capture", "short_motion", "video"]
+      "description": "Visual Studio plus short motion, multi-scene video, and media inspection/transcoding.",
+      "requires": ["presentation", "image_generation", "ui_capture", "raster_processing", "short_motion", "video", "media_tooling"]
     },
     {
       "id": "full-studio",
       "label": "Full Studio",
-      "description": "All general presentation capabilities. Spatial 3D remains an on-demand module.",
-      "requires": ["presentation", "image_generation", "ui_capture", "short_motion", "video"]
+      "description": "All general presentation capabilities plus production-grade raster, SVG, diagram, and media tooling. Spatial 3D remains on demand.",
+      "requires": ["presentation", "image_generation", "ui_capture", "raster_processing", "svg_optimization", "diagram_graph", "short_motion", "video", "media_tooling"]
     },
     {
       "id": "spatial-studio",
       "label": "Spatial Studio",
       "description": "Full Studio plus deterministic Three.js scenes inside Remotion.",
-      "requires": ["presentation", "image_generation", "ui_capture", "short_motion", "video", "three_d"]
+      "requires": ["presentation", "image_generation", "ui_capture", "raster_processing", "svg_optimization", "diagram_graph", "short_motion", "video", "media_tooling", "three_d"]
     }
   ],
   "rendererCapabilities": {
     "native_ppt": ["presentation"],
-    "image_slide": ["image_generation"],
-    "svg": [],
-    "ui_capture": ["ui_capture"],
-    "hyperframes_video": ["short_motion"],
-    "remotion_video": ["video"],
+    "image_slide": ["image_generation", "raster_processing"],
+    "svg": ["svg_optimization"],
+    "ui_capture": ["ui_capture", "raster_processing"],
+    "hyperframes_video": ["short_motion", "media_tooling"],
+    "remotion_video": ["video", "media_tooling"],
     "threeD": ["three_d"]
   },
   "capabilities": {
@@ -147,19 +147,80 @@
         "generic": "Install a trusted browser or web-research capability, or configure Playwright."
       }
     },
+    "raster_processing": {
+      "label": "Deterministic raster processing",
+      "fallback": "Keep provider outputs unchanged; automatic crop, resize, alpha, and format normalization are unavailable.",
+      "providers": [
+        { "kind": "package-any", "values": ["sharp"] }
+      ],
+      "install": {
+        "codex": "In the presentation workspace, install: npm install sharp",
+        "claude-code": "In the presentation workspace, install: npm install sharp",
+        "copilot": "In the presentation workspace, install: npm install sharp",
+        "gemini": "In the presentation workspace, install: npm install sharp",
+        "cursor": "In the presentation workspace, install: npm install sharp",
+        "generic": "In the presentation workspace, install: npm install sharp"
+      }
+    },
+    "svg_optimization": {
+      "label": "SVG cleanup and optimization",
+      "fallback": "Use the original SVG; file size and cross-renderer cleanup are not guaranteed.",
+      "providers": [
+        { "kind": "package-any", "values": ["svgo"] },
+        { "kind": "command-any", "values": ["svgo"] }
+      ],
+      "install": {
+        "codex": "In the presentation workspace, install: npm install svgo",
+        "claude-code": "In the presentation workspace, install: npm install svgo",
+        "copilot": "In the presentation workspace, install: npm install svgo",
+        "gemini": "In the presentation workspace, install: npm install svgo",
+        "cursor": "In the presentation workspace, install: npm install svgo",
+        "generic": "In the presentation workspace, install: npm install svgo"
+      }
+    },
+    "diagram_graph": {
+      "label": "Deterministic graph layout",
+      "fallback": "Use native PowerPoint shapes or a simpler manually positioned SVG for complex topology.",
+      "providers": [
+        { "kind": "command-any", "values": ["dot"] }
+      ],
+      "install": {
+        "codex": "Install Graphviz on PATH, or place a portable dot executable anywhere under presentation-director/tools for workspace-local discovery.",
+        "claude-code": "Install Graphviz on PATH, or place a portable dot executable anywhere under presentation-director/tools for workspace-local discovery.",
+        "copilot": "Install Graphviz on PATH, or place a portable dot executable anywhere under presentation-director/tools for workspace-local discovery.",
+        "gemini": "Install Graphviz on PATH, or place a portable dot executable anywhere under presentation-director/tools for workspace-local discovery.",
+        "cursor": "Install Graphviz on PATH, or place a portable dot executable anywhere under presentation-director/tools for workspace-local discovery.",
+        "generic": "Install Graphviz on PATH, or place a portable dot executable anywhere under presentation-director/tools for workspace-local discovery."
+      }
+    },
+    "media_tooling": {
+      "label": "Media inspection and transcoding",
+      "fallback": "Use renderer output as-is; codec, duration, poster extraction, and PowerPoint compatibility checks are limited.",
+      "providers": [
+        { "kind": "command-all", "values": ["ffmpeg", "ffprobe"] }
+      ],
+      "install": {
+        "codex": "Install FFmpeg on PATH, or place portable ffmpeg and ffprobe executables anywhere under presentation-director/tools for workspace-local discovery.",
+        "claude-code": "Install FFmpeg on PATH, or place portable ffmpeg and ffprobe executables anywhere under presentation-director/tools for workspace-local discovery.",
+        "copilot": "Install FFmpeg on PATH, or place portable ffmpeg and ffprobe executables anywhere under presentation-director/tools for workspace-local discovery.",
+        "gemini": "Install FFmpeg on PATH, or place portable ffmpeg and ffprobe executables anywhere under presentation-director/tools for workspace-local discovery.",
+        "cursor": "Install FFmpeg on PATH, or place portable ffmpeg and ffprobe executables anywhere under presentation-director/tools for workspace-local discovery.",
+        "generic": "Install FFmpeg on PATH, or place portable ffmpeg and ffprobe executables anywhere under presentation-director/tools for workspace-local discovery."
+      }
+    },
     "three_d": {
       "label": "Three.js spatial video",
       "fallback": "Use a static product render or non-3D motion composition.",
       "providers": [
-        { "kind": "package-all", "values": ["three", "@react-three/fiber", "@remotion/three"] }
+        { "kind": "package-all", "values": ["three", "@types/three", "@react-three/fiber", "@remotion/three"] }
       ],
       "install": {
-        "codex": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
-        "claude-code": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
-        "copilot": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
-        "gemini": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
-        "cursor": "In the presentation project, install: npm install three @react-three/fiber @remotion/three",
-        "generic": "In the presentation project, install: npm install three @react-three/fiber @remotion/three"
+        "codex": "In the presentation workspace, install: npm install three @types/three @react-three/fiber @remotion/three",
+        "claude-code": "In the presentation workspace, install: npm install three @types/three @react-three/fiber @remotion/three",
+        "copilot": "In the presentation workspace, install: npm install three @types/three @react-three/fiber @remotion/three",
+        "gemini": "In the presentation workspace, install: npm install three @types/three @react-three/fiber @remotion/three",
+        "cursor": "In the presentation workspace, install: npm install three @types/three @react-three/fiber @remotion/three",
+        "generic": "In the presentation workspace, install: npm install three @types/three @react-three/fiber @remotion/three"
       }
     }
   }

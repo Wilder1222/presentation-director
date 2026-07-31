@@ -16,12 +16,12 @@ Use `dependencies.json` and the current `capabilityProfile` as the source of tru
 | Renderer | Required capability |
 |---|---|
 | `native_ppt` | `presentation` |
-| `image_slide` | `image_generation` |
-| `svg` | Director core only |
-| `ui_capture` | `ui_capture` |
-| `hyperframes_video` | `short_motion` |
-| `remotion_video` | `video` |
-| `remotion_video` with `threeD` | `video` and `three_d` |
+| `image_slide` | `image_generation` and `raster_processing` |
+| `svg` | `svg_optimization` for production output |
+| `ui_capture` | `ui_capture` and `raster_processing` |
+| `hyperframes_video` | `short_motion` and `media_tooling` |
+| `remotion_video` | `video` and `media_tooling` |
+| `remotion_video` with `threeD` | `video`, `media_tooling`, and `three_d` |
 
 If a capability is missing, present its installation guidance and stop. A fallback is a user decision, not an automatic renderer choice. After explicit approval, rerun capability preflight with `--approve-fallbacks --write` and replace every unsupported renderer in `presentation.json` before asset generation.
 
@@ -33,11 +33,11 @@ If a capability is missing, present its installation guidance and stop. A fallba
 | Existing company template | Duplicate and edit source layouts | `presentation` provider with template support | Ask for a usable PPTX/POTX if parsing fails |
 | Original hero or concept art | Raster asset | `image_generation` provider | Typographic or licensed sourced-image composition |
 | Exact simple architecture/process | Native PPT shapes | `presentation` provider | SVG |
-| Complex topology/network | Graphviz or deterministic SVG | diagram tooling + `presentation` provider | Simplify topology |
+| Complex topology/network | Graphviz or deterministic SVG | `diagram_graph` + `svg_optimization` + `presentation` | Simplify topology |
 | Product UI | HTML/React capture | `ui_capture` + `presentation` providers | Native framed screenshot |
-| Spatial product or assembly animation | Remotion video with optional Three.js component | `video` + `three_d` + poster | 3D still, isometric SVG, or static storyboard |
-| 3–15 second slide motion | MP4/WebM + poster | `short_motion` provider | Progressive static build |
-| 15–90 second demo/video | MP4 + poster | `video` provider | Short motion summary or static storyboard |
+| Spatial product or assembly animation | Remotion video with optional Three.js component | `video` + `media_tooling` + `three_d` + poster | 3D still, isometric SVG, or static storyboard |
+| 3–15 second slide motion | MP4/WebM + poster | `short_motion` + `media_tooling` | Progressive static build |
+| 15–90 second demo/video | MP4 + poster | `video` + `media_tooling` | Short motion summary or static storyboard |
 | Full web presentation | HTML runtime | HyperFrames or a dedicated HTML-slide route | PPTX/PDF |
 
 ## Assign renderers by slide role

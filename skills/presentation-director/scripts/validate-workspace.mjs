@@ -3,6 +3,16 @@
 import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  computeCreativeDigest,
+  computeDesignDigest,
+  computeManifestBuildDigest,
+  hashFile,
+  inspectBuildRecord,
+  sha256,
+  stableStringify,
+  workspacePath,
+} from "./lib/production-state.mjs";
 
 const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DEPENDENCY_PATH = path.join(SKILL_DIR, "references", "dependencies.json");
@@ -44,6 +54,18 @@ const DESIGN_HEADINGS = [
   "## Rights",
 ];
 const TASTE_HEADINGS = ["## Design Thesis", "## Design DNA", "## Anti-AI Defaults"];
+const CREATIVE_ASSET_METHODS = new Set([
+  "image-generation",
+  "sourced-image",
+  "ui-capture",
+  "diagram",
+  "short-motion",
+  "video",
+  "3d-model",
+  "3d-material",
+  "native",
+]);
+const CREATIVE_SELECTION_MODES = new Set(["deterministic", "single", "variants"]);
 
 function parseArgs(argv) {
   const projectDir = argv.find((arg) => !arg.startsWith("--"));
@@ -85,6 +107,201 @@ async function validateLocalPath(projectDir, relativePath, issues, location, all
   }
 }
 
+function nonEmpty(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function validationFailure(issues) {
+  return {
+    ok: false,
+    issues,
+    summary: {
+      slides: 0,
+      videoSlides: 0,
+      videoSeconds: 0,
+      threeDSlides: 0,
+      transitionStyles: 0,
+      capabilityMode: "unresolved",
+      errors: issues.filter((issue) => issue.severity === "error").length,
+      warnings: issues.filter((issue) => issue.severity === "warning").length,
+    },
+  };
+}
+
+async function validateCreativeContract(root, manifest, design, slides, draft, issues) {
+  if (!design.includes("## Asset Language")) {
+    addIssue(issues, "error", "design.asset_language", "Manifest 1.5 requires a ## Asset Language section in DESIGN.md.");
+  }
+  const narrative = manifest.narrative;
+  const narrativeFields = [
+    "communicationJob",
+    "audienceStartingPoint",
+    "audienceEndState",
+    "stakes",
+    "arc",
+    "turningPointSlideId",
+    "resolution",
+  ];
+  if (!narrative || typeof narrative !== "object" || Array.isArray(narrative)) {
+    addIssue(issues, "error", "narrative.missing", "Manifest 1.5 requires a narrative object.");
+  } else {
+    if (!new Set(["draft", "locked"]).has(narrative.status)) {
+      addIssue(issues, "error", "narrative.status", "narrative.status must be draft or locked.");
+    }
+    for (const key of narrativeFields) {
+      if (!nonEmpty(narrative[key])) addIssue(issues, "error", `narrative.${key}`, `${key} is required.`);
+      if (!draft && /to be inferred|unresolved|pending/i.test(narrative[key] || "")) {
+        addIssue(issues, "error", `narrative.${key}_unresolved`, `${key} is unresolved.`);
+      }
+    }
+    if (!draft && narrative.status !== "locked") {
+      addIssue(issues, "error", "narrative.unlocked", "Final delivery requires a locked narrative.");
+    }
+    if (narrative.turningPointSlideId && slides.length && !slides.some((slide) => slide.id === narrative.turningPointSlideId)) {
+      addIssue(issues, "error", "narrative.turning_point", "turningPointSlideId must reference a current slide.");
+    }
+  }
+
+  for (let slideIndex = 0; slideIndex < slides.length; slideIndex += 1) {
+    const slide = slides[slideIndex];
+    const location = `slides[${slideIndex}]`;
+    const beat = slide.narrativeBeat;
+    if (!beat || typeof beat !== "object" || Array.isArray(beat)) {
+      addIssue(issues, "error", "slide.narrativeBeat", "Manifest 1.5 requires narrativeBeat on every slide.", location);
+    } else {
+      for (const key of ["question", "consequence", "evidenceType"]) {
+        if (!nonEmpty(beat[key])) addIssue(issues, "error", `slide.narrativeBeat.${key}`, `${key} is required.`, location);
+      }
+      if (slideIndex < slides.length - 1 && !nonEmpty(beat.bridgeToNext)) {
+        addIssue(issues, "error", "slide.narrativeBeat.bridge", "Every non-closing slide requires bridgeToNext.", location);
+      }
+    }
+    const visual = slide.visualPlan;
+    if (!visual || typeof visual !== "object" || Array.isArray(visual)) {
+      addIssue(issues, "error", "slide.visualPlan", "Manifest 1.5 requires visualPlan on every slide.", location);
+    } else {
+      for (const key of ["silhouette", "density", "focalMode", "continuityCue"]) {
+        if (!nonEmpty(visual[key])) addIssue(issues, "error", `slide.visualPlan.${key}`, `${key} is required.`, location);
+      }
+      if (typeof visual.visualPeak !== "boolean") {
+        addIssue(issues, "error", "slide.visualPlan.visualPeak", "visualPeak must be boolean.", location);
+      }
+    }
+
+    for (let assetIndex = 0; assetIndex < (slide.assets || []).length; assetIndex += 1) {
+      const asset = slide.assets[assetIndex];
+      const assetLocation = `${location}.assets[${assetIndex}]`;
+      const brief = asset.brief;
+      if (!brief || typeof brief !== "object" || Array.isArray(brief)) {
+        addIssue(issues, "error", "asset.brief", "Manifest 1.5 requires a structured brief for every asset.", assetLocation);
+        continue;
+      }
+      for (const key of ["purpose", "method", "role", "placement", "continuityKey", "reusePolicy", "selectionMode"]) {
+        if (!nonEmpty(brief[key])) addIssue(issues, "error", `asset.brief.${key}`, `${key} is required.`, assetLocation);
+      }
+      if (!CREATIVE_ASSET_METHODS.has(brief.method)) {
+        addIssue(issues, "error", "asset.brief.method", "Asset production method is unsupported.", assetLocation);
+      }
+      if (!CREATIVE_SELECTION_MODES.has(brief.selectionMode)) {
+        addIssue(issues, "error", "asset.brief.selectionMode", "Asset selectionMode is unsupported.", assetLocation);
+      }
+      if (!Array.isArray(brief.acceptance) || brief.acceptance.length < 2) {
+        addIssue(issues, "error", "asset.brief.acceptance", "Asset brief needs at least two acceptance checks.", assetLocation);
+      }
+      const variantCount = Number(brief.variantCount ?? 1);
+      if (!Number.isInteger(variantCount) || variantCount < 1 || variantCount > 4) {
+        addIssue(issues, "error", "asset.brief.variantCount", "variantCount must be an integer from 1 to 4.", assetLocation);
+      }
+      if (brief.selectionMode === "variants" && variantCount < 2) {
+        addIssue(issues, "error", "asset.brief.variants", "Variant selection requires at least two candidates.", assetLocation);
+      }
+      if (!draft && brief.selectionMode === "variants") {
+        const selection = asset.selection;
+        if (!selection || selection.status !== "selected") {
+          addIssue(issues, "error", "asset.selection.missing", "Variant assets require a recorded selection.", assetLocation);
+          continue;
+        }
+        if (!Array.isArray(selection.candidates) || selection.candidates.length < variantCount) {
+          addIssue(issues, "error", "asset.selection.candidates", "Recorded candidates do not satisfy variantCount.", assetLocation);
+        }
+        if (selection.selectedPath !== asset.path || !selection.selectedCandidateId || !selection.reviewer || !selection.rationale) {
+          addIssue(issues, "error", "asset.selection.record", "Asset selection must match the canonical path and include reviewer plus rationale.", assetLocation);
+        }
+        try {
+          const selectedPath = workspacePath(root, asset.path, "selected asset");
+          if (!(await exists(selectedPath))) {
+            addIssue(issues, "error", "asset.selection.output_missing", "Selected canonical asset is missing.", assetLocation);
+          } else if (selection.selectedHash !== await hashFile(selectedPath)) {
+            addIssue(issues, "error", "asset.selection.changed", "Selected asset changed after approval.", assetLocation);
+          }
+          for (const candidate of selection.candidates || []) {
+            const candidatePath = workspacePath(root, candidate.path, "asset selection candidate");
+            if (!(await exists(candidatePath)) || candidate.hash !== await hashFile(candidatePath)) {
+              addIssue(issues, "error", "asset.selection.candidate_changed", `Candidate changed or is missing: ${candidate.id}.`, assetLocation);
+            }
+          }
+          const briefPath = workspacePath(root, selection.providerBrief, "selected asset provider brief");
+          if (!(await exists(briefPath))) {
+            addIssue(issues, "error", "asset.selection.brief_missing", "Provider brief is missing after asset selection.", assetLocation);
+          } else if (selection.providerBriefHash !== await hashFile(briefPath)) {
+            addIssue(issues, "error", "asset.selection.brief_changed", "Provider brief changed after asset selection.", assetLocation);
+          }
+        } catch (error) {
+          addIssue(issues, "error", "asset.selection.path", error.message, assetLocation);
+        }
+      }
+    }
+  }
+
+  const creative = manifest.production?.creativePlan;
+  if (!creative || typeof creative !== "object" || Array.isArray(creative)) {
+    addIssue(issues, "error", "production.creativePlan", "Manifest 1.5 requires production.creativePlan.");
+    return;
+  }
+  if (!new Set(["pending", "prepared"]).has(creative.status)) {
+    addIssue(issues, "error", "production.creativePlan.status", "Creative plan status must be pending or prepared.");
+  }
+  if (!draft && creative.status !== "prepared") {
+    addIssue(issues, "error", "production.creativePlan.unprepared", "Final delivery requires a prepared creative plan.");
+  }
+  if (creative.status !== "prepared") return;
+  const currentDigest = computeCreativeDigest(manifest);
+  if (creative.digest !== currentDigest) {
+    addIssue(issues, "error", "production.creativePlan.stale", "Narrative, slide content, visual storyboard, or asset intent changed after creative preparation.");
+  }
+  if (creative.contractVersion !== "1.0") {
+    addIssue(issues, "error", "production.creativePlan.contract", "Unsupported creative plan contract version.");
+  }
+  for (const key of ["narrativeMap", "storyboard", "assetPlan", "report", "providerIndex"]) {
+    if (!creative[key] || !/^tmp[\\/]/i.test(creative[key])) {
+      addIssue(issues, "error", `production.creativePlan.${key}`, `${key} must be a workspace-relative path under tmp/.`);
+      continue;
+    }
+    await validateLocalPath(root, creative[key], issues, `production.creativePlan.${key}`, false);
+    try {
+      const artifact = JSON.parse(await readFile(workspacePath(root, creative[key], `creative ${key}`), "utf8"));
+      if (artifact.creativeDigest !== creative.digest) {
+        addIssue(issues, "error", "production.creativePlan.artifact_digest", `${key} does not match the current creative digest.`);
+      }
+      const expectedHash = creative.artifactHashes?.[key];
+      if (!expectedHash || expectedHash !== sha256(stableStringify(artifact))) {
+        addIssue(issues, "error", "production.creativePlan.artifact_changed", `${key} changed after creative preparation.`);
+      }
+      if (key === "providerIndex") {
+        for (const briefRecord of artifact.briefs || []) {
+          await validateLocalPath(root, briefRecord.path, issues, `provider brief ${briefRecord.assetKey}`, false);
+          const brief = JSON.parse(await readFile(workspacePath(root, briefRecord.path, "provider brief"), "utf8"));
+          if (brief.creativeDigest !== creative.digest || briefRecord.digest !== sha256(stableStringify(brief))) {
+            addIssue(issues, "error", "production.creativePlan.provider_brief", `Provider brief is stale or changed: ${briefRecord.assetKey}.`);
+          }
+        }
+      }
+    } catch (error) {
+      addIssue(issues, "error", "production.creativePlan.files", `Cannot validate ${key}: ${error.message}`);
+    }
+  }
+}
+
 export async function validateWorkspace(projectDir, options = {}) {
   const issues = [];
   const root = path.resolve(projectDir);
@@ -93,7 +310,7 @@ export async function validateWorkspace(projectDir, options = {}) {
 
   if (!(await exists(designPath))) addIssue(issues, "error", "design.missing", "DESIGN.md is required.");
   if (!(await exists(manifestPath))) addIssue(issues, "error", "manifest.missing", "presentation.json is required.");
-  if (issues.some((issue) => issue.severity === "error")) return { ok: false, issues, summary: {} };
+  if (issues.some((issue) => issue.severity === "error")) return validationFailure(issues);
 
   const design = await readFile(designPath, "utf8");
   for (const heading of DESIGN_HEADINGS) {
@@ -108,28 +325,28 @@ export async function validateWorkspace(projectDir, options = {}) {
     manifest = JSON.parse(await readFile(manifestPath, "utf8"));
   } catch (error) {
     addIssue(issues, "error", "manifest.json", `presentation.json is invalid JSON: ${error.message}`);
-    return { ok: false, issues, summary: {} };
+    return validationFailure(issues);
   }
   let dependencyConfig;
   try {
     dependencyConfig = JSON.parse(await readFile(DEPENDENCY_PATH, "utf8"));
   } catch (error) {
     addIssue(issues, "error", "capabilities.config", `Dependency configuration is invalid: ${error.message}`);
-    return { ok: false, issues, summary: {} };
+    return validationFailure(issues);
   }
 
-  if (!["1.0", "1.1", "1.2", "1.3"].includes(manifest.version)) {
-    addIssue(issues, "error", "manifest.version", 'version must be "1.0", "1.1", "1.2", or "1.3".');
+  if (!["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"].includes(manifest.version)) {
+    addIssue(issues, "error", "manifest.version", 'version must be "1.0", "1.1", "1.2", "1.3", "1.4", or "1.5".');
   }
-  if (["1.1", "1.2", "1.3"].includes(manifest.version) && !design.includes("## Reference Evidence")) {
+  if (["1.1", "1.2", "1.3", "1.4", "1.5"].includes(manifest.version) && !design.includes("## Reference Evidence")) {
     addIssue(issues, "error", "design.reference_evidence", "Manifest 1.1+ requires a ## Reference Evidence section in DESIGN.md.");
   }
-  if (manifest.version === "1.3") {
+  if (["1.3", "1.4", "1.5"].includes(manifest.version)) {
     for (const heading of TASTE_HEADINGS) {
-      if (!design.includes(heading)) addIssue(issues, "error", "design.taste_heading", `Manifest 1.3 requires DESIGN.md section: ${heading}`);
+      if (!design.includes(heading)) addIssue(issues, "error", "design.taste_heading", `Manifest 1.3+ requires DESIGN.md section: ${heading}`);
     }
   }
-  if (["1.2", "1.3"].includes(manifest.version)) {
+  if (["1.2", "1.3", "1.4", "1.5"].includes(manifest.version)) {
     if (path.basename(root).toLowerCase() !== WORKSPACE_NAME) {
       addIssue(issues, "error", "workspace.location", `Manifest 1.2+ workspace must be named ${WORKSPACE_NAME}.`);
     }
@@ -152,9 +369,9 @@ export async function validateWorkspace(projectDir, options = {}) {
       }
     }
   }
-  if (manifest.version === "1.3") {
+  if (["1.3", "1.4", "1.5"].includes(manifest.version)) {
     if (!manifest.deliveryContract || typeof manifest.deliveryContract !== "object" || Array.isArray(manifest.deliveryContract)) {
-      addIssue(issues, "error", "deliveryContract.missing", "Manifest 1.3 requires deliveryContract.");
+      addIssue(issues, "error", "deliveryContract.missing", "Manifest 1.3+ requires deliveryContract.");
     } else {
       for (const [key, value] of Object.entries(DELIVERY_CONTRACT)) {
         if (manifest.deliveryContract[key] !== value) {
@@ -193,7 +410,7 @@ export async function validateWorkspace(projectDir, options = {}) {
 
   const styleDecision = manifest.styleDecision;
   if (!styleDecision || typeof styleDecision !== "object" || Array.isArray(styleDecision)) {
-    if (["1.1", "1.2", "1.3"].includes(manifest.version) || !draft) {
+    if (["1.1", "1.2", "1.3", "1.4", "1.5"].includes(manifest.version) || !draft) {
       addIssue(issues, "error", "styleDecision.missing", "Manifest 1.1+ requires styleDecision.");
     } else {
       addIssue(issues, "warning", "styleDecision.legacy", "Legacy manifest has no styleDecision record.");
@@ -312,9 +529,9 @@ export async function validateWorkspace(projectDir, options = {}) {
   }
 
   const tasteProfile = manifest.tasteProfile;
-  if (manifest.version === "1.3") {
+  if (["1.3", "1.4", "1.5"].includes(manifest.version)) {
     if (!tasteProfile || typeof tasteProfile !== "object" || Array.isArray(tasteProfile)) {
-      addIssue(issues, "error", "tasteProfile.missing", "Manifest 1.3 requires tasteProfile.");
+      addIssue(issues, "error", "tasteProfile.missing", "Manifest 1.3+ requires tasteProfile.");
     } else {
       if (!TASTE_STATUSES.has(tasteProfile.status)) {
         addIssue(issues, "error", "tasteProfile.status", "status must be draft or locked.");
@@ -526,7 +743,7 @@ export async function validateWorkspace(projectDir, options = {}) {
       addIssue(issues, "error", "slide.image_editability", "image_slide must declare editability as flattened.", location);
     }
     if (
-      manifest.version === "1.3"
+      ["1.3", "1.4", "1.5"].includes(manifest.version)
       && slide.renderer === "image_slide"
       && (
         typeof slide.rasterExceptionReason !== "string"
@@ -537,7 +754,7 @@ export async function validateWorkspace(projectDir, options = {}) {
         issues,
         "error",
         "slide.raster_exception_reason",
-        "Manifest 1.3 requires rasterExceptionReason for every full-page image slide.",
+        "Manifest 1.3+ requires rasterExceptionReason for every full-page image slide.",
         location,
       );
     }
@@ -656,6 +873,204 @@ export async function validateWorkspace(projectDir, options = {}) {
   }
   if (transitions.size > Number(budget.maxTransitionStyles)) {
     addIssue(issues, "error", "motionBudget.transitions", `${transitions.size} transition styles exceed the budget of ${budget.maxTransitionStyles}.`);
+  }
+
+  if (manifest.version === "1.5") {
+    await validateCreativeContract(root, manifest, design, slides, draft, issues);
+  }
+
+  if (["1.4", "1.5"].includes(manifest.version)) {
+    const production = manifest.production;
+    if (!production || typeof production !== "object" || Array.isArray(production)) {
+      addIssue(issues, "error", "production.missing", "Manifest 1.4+ requires the production optimization contract.");
+    } else {
+      const designLock = production.designLock;
+      if (!designLock || typeof designLock !== "object" || Array.isArray(designLock)) {
+        addIssue(issues, "error", "production.designLock", "production.designLock is required.");
+      } else {
+        if (!new Set(["pending", "locked"]).has(designLock.status)) {
+          addIssue(issues, "error", "production.designLock.status", "Design lock status must be pending or locked.");
+        }
+        if (!Number.isInteger(designLock.requiredSampleCount) || designLock.requiredSampleCount < 1 || designLock.requiredSampleCount > 4) {
+          addIssue(issues, "error", "production.designLock.sample_count", "requiredSampleCount must be an integer from 1 to 4.");
+        }
+        if (!Array.isArray(designLock.samples)) {
+          addIssue(issues, "error", "production.designLock.samples", "Design lock samples must be an array.");
+        }
+        if (!draft && designLock.status !== "locked") {
+          addIssue(issues, "error", "production.designLock.unlocked", "Final delivery requires approved representative design samples.");
+        }
+        if (designLock.status === "locked") {
+          if (!designLock.lockedAt || Number.isNaN(Date.parse(designLock.lockedAt))) {
+            addIssue(issues, "error", "production.designLock.lockedAt", "A locked design requires an ISO lockedAt timestamp.");
+          }
+          if (!new Set(["user", "team", "auto-review"]).has(designLock.approvedBy)) {
+            addIssue(issues, "error", "production.designLock.approvedBy", "approvedBy must be user, team, or auto-review.");
+          }
+          if (!/^[a-f0-9]{64}$/i.test(designLock.designDigest || "")) {
+            addIssue(issues, "error", "production.designLock.digest", "A locked design requires a SHA-256 designDigest.");
+          } else if (designLock.designDigest !== computeDesignDigest(manifest, design)) {
+            addIssue(issues, "error", "production.designLock.stale", "DESIGN.md or its design contract changed after sample approval.");
+          }
+          if (manifest.version === "1.5" && designLock.creativeDigest !== production.creativePlan?.digest) {
+            addIssue(issues, "error", "production.designLock.creative_digest", "Design lock must cover the current creative plan.");
+          }
+          const expectedSampleCount = Math.min(4, slides.length);
+          if (designLock.requiredSampleCount !== expectedSampleCount) {
+            addIssue(
+              issues,
+              "error",
+              "production.designLock.required_count",
+              `requiredSampleCount must be ${expectedSampleCount} for this deck.`,
+            );
+          }
+          const samples = Array.isArray(designLock.samples) ? designLock.samples : [];
+          if (samples.length !== expectedSampleCount) {
+            addIssue(issues, "error", "production.designLock.samples_missing", `Design lock requires ${expectedSampleCount} sample(s).`);
+          }
+          const sampleIds = new Set();
+          for (let index = 0; index < samples.length; index += 1) {
+            const sample = samples[index];
+            const location = `production.designLock.samples[${index}]`;
+            if (!sample?.slideId || !ids.has(sample.slideId)) {
+              addIssue(issues, "error", "production.designLock.slide", "Sample slideId must reference a manifest slide.", location);
+            } else if (sampleIds.has(sample.slideId)) {
+              addIssue(issues, "error", "production.designLock.duplicate", `Duplicate sample slide: ${sample.slideId}`, location);
+            }
+            sampleIds.add(sample?.slideId);
+            if (!sample?.artifact || !sample?.artifactHash) {
+              addIssue(issues, "error", "production.designLock.artifact", "Sample artifact and artifactHash are required.", location);
+              continue;
+            }
+            await validateLocalPath(root, sample.artifact, issues, location, false);
+            try {
+              const artifactPath = workspacePath(root, sample.artifact, "approved sample");
+              if (await exists(artifactPath)) {
+                const currentHash = await hashFile(artifactPath);
+                if (currentHash !== sample.artifactHash) {
+                  addIssue(issues, "error", "production.designLock.artifact_changed", `Approved sample changed: ${sample.artifact}`, location);
+                }
+              }
+            } catch {
+              // validateLocalPath already records the workspace boundary error.
+            }
+          }
+          if (slides[0]?.id && !sampleIds.has(slides[0].id)) {
+            addIssue(issues, "error", "production.designLock.opening", "Representative samples must include the opening slide.");
+          }
+          const sampleRoles = new Set(samples.map((sample) => sample?.role).filter(Boolean));
+          const availableRoles = new Set(slides.map((slide) => slide.role).filter(Boolean));
+          if (sampleRoles.size < Math.min(3, expectedSampleCount, availableRoles.size)) {
+            addIssue(issues, "error", "production.designLock.role_coverage", "Representative samples do not cover enough distinct slide roles.");
+          }
+          if (slides.some((slide) => slide.renderer !== "native_ppt") && !samples.some((sample) => sample.renderer !== "native_ppt")) {
+            addIssue(issues, "error", "production.designLock.specialist", "Include a specialist-rendered slide in the representative samples.");
+          }
+        }
+      }
+
+      const build = production.build;
+      if (!build || typeof build !== "object" || Array.isArray(build)) {
+        addIssue(issues, "error", "production.build", "production.build is required.");
+      } else {
+        if (build.strategy !== "incremental-content-addressed") {
+          addIssue(issues, "error", "production.build.strategy", "Build strategy must be incremental-content-addressed.");
+        }
+        if (!Number.isInteger(build.maxParallelWorkers) || build.maxParallelWorkers < 1 || build.maxParallelWorkers > 8) {
+          addIssue(issues, "error", "production.build.workers", "maxParallelWorkers must be an integer from 1 to 8.");
+        }
+        for (const key of ["cacheState", "plan", "taskGraph"]) {
+          if (!build[key] || !/^tmp[\\/]/i.test(build[key])) {
+            addIssue(issues, "error", `production.build.${key}`, `${key} must be a workspace-relative path under tmp/.`);
+          } else {
+            await validateLocalPath(root, build[key], issues, `production.build.${key}`, draft);
+          }
+        }
+        if (!draft && (!build.lastPreparedAt || Number.isNaN(Date.parse(build.lastPreparedAt)))) {
+          addIssue(issues, "error", "production.build.prepared", "Final delivery requires a current build plan timestamp.");
+        }
+        if (!draft && build.plan && build.cacheState) {
+          try {
+            const [plan, state] = await Promise.all([
+              JSON.parse(await readFile(workspacePath(root, build.plan, "build plan"), "utf8")),
+              JSON.parse(await readFile(workspacePath(root, build.cacheState, "build cache"), "utf8")),
+            ]);
+            if (plan.designDigest !== designLock?.designDigest || state.designDigest !== designLock?.designDigest) {
+              addIssue(issues, "error", "production.build.design_digest", "Build plan and cache state must match the current design lock.");
+            }
+            if (plan.manifestDigest !== computeManifestBuildDigest(manifest)) {
+              addIssue(issues, "error", "production.build.manifest_digest", "Build plan is stale because presentation.json changed.");
+            }
+            if (manifest.version === "1.5" && plan.creativeDigest !== production.creativePlan?.digest) {
+              addIssue(issues, "error", "production.build.creative_digest", "Build plan does not match the current creative plan.");
+            }
+            const plannedIds = new Set((plan.slides || []).map((slide) => slide.slideId));
+            if (plannedIds.size !== slides.length || slides.some((slide) => !plannedIds.has(slide.id))) {
+              addIssue(issues, "error", "production.build.slide_set", "Build plan must cover every current slide exactly once.");
+            }
+            for (const planned of plan.slides || []) {
+              const record = state.slides?.[planned.slideId];
+              const inspection = await inspectBuildRecord(root, planned, record);
+              if (!inspection.valid) {
+                addIssue(issues, "error", "production.build.incomplete", `Current build for ${planned.slideId} is invalid: ${inspection.problems.join("; ")}.`);
+              }
+            }
+          } catch (error) {
+            addIssue(issues, "error", "production.build.files", `Cannot validate build plan or cache state: ${error.message}`);
+          }
+        }
+      }
+
+      const qa = production.qa;
+      if (!qa || typeof qa !== "object" || Array.isArray(qa)) {
+        addIssue(issues, "error", "production.qa", "production.qa is required.");
+      } else {
+        if (qa.strategy !== "risk-based-plus-final-full" || qa.finalFullReviewRequired !== true) {
+          addIssue(issues, "error", "production.qa.strategy", "QA must use risk-based iteration plus a mandatory final full review.");
+        }
+        for (const key of ["plan", "results", "ledger"]) {
+          if (!qa[key] || !/^tmp[\\/]/i.test(qa[key])) {
+            addIssue(issues, "error", `production.qa.${key}`, `${key} must be a workspace-relative path under tmp/.`);
+          } else {
+            await validateLocalPath(root, qa[key], issues, `production.qa.${key}`, draft);
+          }
+        }
+        if (!draft) {
+          if (qa.finalFullReview?.status !== "passed") {
+            addIssue(issues, "error", "production.qa.final", "Final delivery requires a passed full-deck review.");
+          }
+          if (!qa.finalFullReview?.completedAt || Number.isNaN(Date.parse(qa.finalFullReview.completedAt))) {
+            addIssue(issues, "error", "production.qa.completedAt", "Final review requires an ISO completedAt timestamp.");
+          }
+          if (!qa.finalFullReview?.reviewer) {
+            addIssue(issues, "error", "production.qa.reviewer", "Final review requires a reviewer.");
+          }
+          try {
+            const [qaPlan, qaResults] = await Promise.all([
+              JSON.parse(await readFile(workspacePath(root, qa.plan, "QA plan"), "utf8")),
+              JSON.parse(await readFile(workspacePath(root, qa.results, "QA results"), "utf8")),
+            ]);
+            const plannedQaIds = new Set((qaPlan.slides || []).map((slide) => slide.slideId));
+            if (plannedQaIds.size !== slides.length || slides.some((slide) => !plannedQaIds.has(slide.id))) {
+              addIssue(issues, "error", "production.qa.slide_set", "QA plan must cover every current slide.");
+            }
+            if ((qaPlan.slides || []).some((slide) => slide.finalRequired !== true)) {
+              addIssue(issues, "error", "production.qa.final_scope", "Every slide must be included in final QA.");
+            }
+            for (const slide of slides) {
+              if (qaResults.slides?.[slide.id]?.status !== "passed") {
+                addIssue(issues, "error", "production.qa.slide_failed", `Slide ${slide.id} has not passed final QA.`);
+              }
+            }
+            if (qaResults.final?.status !== "passed" || qaResults.final?.planGeneratedAt !== qaPlan.generatedAt) {
+              addIssue(issues, "error", "production.qa.stale_final", "Final QA result must pass against the current QA plan.");
+            }
+          } catch (error) {
+            addIssue(issues, "error", "production.qa.files", `Cannot validate QA plan or results: ${error.message}`);
+          }
+        }
+      }
+    }
   }
 
   const errors = issues.filter((issue) => issue.severity === "error").length;

@@ -13,7 +13,10 @@ flowchart LR
     C --> S{"Style decision"}
     S --> R["Preset raw / custom web research"]
     R --> D["Delivery contract + DESIGN.md + presentation.json"]
-    D --> E{"Renderer router"}
+    D --> C1["Creative compiler: narrative + storyboard + assets + briefs"]
+    C1 --> Q["Representative sample lock"]
+    Q --> P["Content hashes + task graph + QA risk plan"]
+    P --> E{"Renderer router"}
     E --> F["Native PPTX"]
     E --> G["Image / UI / SVG"]
     E --> H["HyperFrames"]
@@ -23,14 +26,15 @@ flowchart LR
     G --> K
     H --> K
     I --> K
-    K --> L["Ready-to-present PPTX + supporting outputs"]
+    K --> M["Build cache + structured QA evidence"]
+    M --> L["Ready-to-present PPTX + supporting outputs"]
 ```
 
 The workflow is source-first, but its primary outcome is a complete PPTX that can be presented and modified immediately. The manifest and renderer sources preserve reproducibility; they do not substitute for the finished deck.
 
 ## Workspace boundary
 
-Every project-owned persistent file lives under `<current-directory>/presentation-director/`: copied inputs, raw references, generated assets, diagrams, browser captures, HyperFrames and Remotion projects, temporary records, and final outputs. Manifest 1.3 preserves this fixed layout and adds a validated design-taste profile; validation rejects workspace escape paths and unresolved generic directions.
+Every project-owned persistent file lives under `<current-directory>/presentation-director/`: copied inputs, raw references, generated assets, diagrams, browser captures, HyperFrames and Remotion projects, temporary records, and final outputs. Manifest 1.5 preserves this fixed layout, compiles narrative and creative production records, validates design taste, locks representative samples, and records incremental build plus QA evidence; validation rejects workspace escape paths, stale hashes, modified provider briefs, unrecorded asset choices, and unresolved generic directions.
 
 ## Operating principles
 
@@ -40,11 +44,15 @@ Every project-owned persistent file lives under `<current-directory>/presentatio
 4. **Optional style checkpoint.** Respect specified, automatic, and recommendation modes instead of forcing one interaction model.
 5. **References before design.** Load selected preset raw sources or research a custom direction before locking the visual identity.
 6. **Design before assets.** Lock the visual identity before images, UI, diagrams, or motion are produced.
-7. **Purpose before technology.** Choose a renderer because it communicates the slide correctly, not because the tool is available.
-8. **One contract across providers.** Every provider reads the same design and presentation source files.
-9. **Native-first editability.** Keep text, data, tables, charts, and simple diagrams editable; disclose every flattened or replaceable-media exception.
-10. **Motion with a budget.** Animation is used for sequence, state change, product demonstration, or a meaningful reveal.
-11. **Validation before delivery.** Structural checks, full-size rendered-slide review, and a target-application open check are required for final output.
+7. **Compile before generation.** Turn the story, visual rhythm, asset dependencies, continuity families, and acceptance criteria into immutable provider briefs.
+8. **Samples before scale.** Approve representative static frames before parallel full-deck production.
+9. **Rebuild only what changed.** Content and output hashes may skip unchanged work, but never replace visual approval.
+10. **Parallelism with ownership.** Workers write only declared slide paths; the Director owns shared truth, cache state, QA, and final assembly.
+11. **Purpose before technology.** Choose a renderer because it communicates the slide correctly, not because the tool is available.
+12. **One contract across providers.** Every provider reads the same design and presentation source files.
+13. **Native-first editability.** Keep text, data, tables, charts, and simple diagrams editable; disclose every flattened or replaceable-media exception.
+14. **Motion with a budget.** Animation is used for sequence, state change, product demonstration, or a meaningful reveal.
+15. **Validation before delivery.** Risk-based iteration and structural checks culminate in a full-size review plus target-application open check.
 
 ## Source-of-truth contracts
 
@@ -74,6 +82,8 @@ All visual providers must read this file. Provider defaults must not override it
 - Locked taste profile, content-swap result, and authorship rationale.
 - Preset raw loading or custom web-research status and source records.
 - Deck narrative and slide order.
+- Audience starting and ending states, stakes, turning point, and resolution.
+- Per-slide questions, consequences, bridges, silhouettes, density, focal modes, and visual peaks.
 - Slide roles and content.
 - Renderer selection.
 - Asset inputs and outputs.
@@ -82,6 +92,10 @@ All visual providers must read this file. Provider defaults must not override it
 - Source provenance.
 - Capability profile and fallback approvals.
 - Review and delivery status.
+- Representative design samples and immutable design digest.
+- Incremental build plan, content-addressed cache state, and exclusive-write task graph.
+- Per-slide risk classifications and structured final QA evidence.
+- Compiled narrative map, storyboard, dependency-aware asset plan with parallel execution waves, immutable provider briefs, and recorded asset selections.
 
 See the complete contract in [`manifest.md`](../skills/presentation-director/references/manifest.md).
 
@@ -111,7 +125,23 @@ Detailed routing rules live in [`routing.md`](../skills/presentation-director/re
 
 A deck containing flattened or replaceable-media slides must not be described as fully editable.
 
-For Manifest 1.3, every `image_slide` must include `rasterExceptionReason`. Full-page rasterization is reserved for cases where a unified visual composition cannot be preserved through native or mixed construction; it is prohibited for architecture, data, charts, tables, and editable factual content.
+For Manifest 1.3+, every `image_slide` must include `rasterExceptionReason`. Full-page rasterization is reserved for cases where a unified visual composition cannot be preserved through native or mixed construction; it is prohibited for architecture, data, charts, tables, and editable factual content.
+
+## Optimized production loop
+
+Manifest 1.5 adds a creative quality gate to the deterministic production loop:
+
+1. Compile the narrative map, visual storyboard, asset graph, and provider briefs.
+2. Render and approve up to four representative static samples.
+3. Hash the creative plan, design contract, manifest, slide inputs, and existing outputs.
+4. Mark matching slides cached and changed slides dirty.
+5. Generate an exclusive-write task graph for bounded parallel workers.
+6. Write each slide into an isolated build capsule and finish it with a current build receipt.
+7. Record inspected asset choices and successful slide builds only after declared outputs exist and hash correctly.
+8. Review dirty and medium/high-risk slides during iteration.
+9. Review every slide and open-check the final PPTX before delivery.
+
+The cache accelerates revisions; it never certifies visual quality. See [`production-optimization.md`](../skills/presentation-director/references/production-optimization.md).
 
 ## Motion routing
 
@@ -159,7 +189,7 @@ Avoid it for conventional architecture diagrams, charts, roadmaps, dense labels,
 
 Implementation constraints:
 
-- Install Three.js, React Three Fiber, and `@remotion/three` only in projects that require 3D.
+- Install Three.js, its TypeScript definitions, React Three Fiber, and `@remotion/three` only in projects that require 3D.
 - Drive scenes, cameras, materials, and shader parameters from the deterministic Remotion frame timeline.
 - Export MP4 or WebM plus a static poster.
 - Record the source and license for models, textures, and environment maps.
@@ -173,6 +203,11 @@ Final output should pass:
 
 - Delivery-contract validation and final PPTX presence in requested outputs.
 - Capability preflight.
+- Current representative design lock and unchanged approved samples.
+- Current creative digest, unchanged generated provider briefs, and verified asset-selection hashes.
+- Build plan and cache state matching the current design and manifest digests.
+- Exclusive worker output ownership and complete slide build records.
+- Risk-based iteration QA plus a passing full-deck final review.
 - Manifest and routing validation.
 - Text overflow and safe-area checks.
 - Cross-slide typography, color, and spacing review.

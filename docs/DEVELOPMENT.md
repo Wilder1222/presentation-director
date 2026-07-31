@@ -31,8 +31,10 @@ presentation-director/
 │   │   ├── routing.md                     # Renderer routing
 │   │   ├── dependencies.json              # Capability profiles and provider detection
 │   │   ├── manifest.md                    # Intermediate manifest contract
+│   │   ├── creative-planning.md           # Narrative, storyboard, assets, and provider briefs
 │   │   └── review.md                      # Delivery acceptance criteria
-│   └── scripts/                           # Initialization, collection, validation
+│   └── scripts/                           # Initialization, production planning, cache, QA, validation
+├── tests/                                 # Node integration tests for production contracts
 └── README.md
 ```
 
@@ -64,13 +66,19 @@ motion/hyperframes/
 motion/remotion/three/
 output/
 tmp/
+tmp/build-cache/
+tmp/creative/
+tmp/design-lock/
+tmp/provider-briefs/
+tmp/qa/
+tmp/slide-builds/<slide-id>/
 ```
 
 ## Minimal manifest
 
 ```json
 {
-  "version": "1.3",
+  "version": "1.5",
   "status": "planning",
   "storage": {
     "policy": "workspace-local",
@@ -90,13 +98,23 @@ tmp/
     "editability": "native-first",
     "fullPageRaster": "exception-only"
   },
+  "narrative": {
+    "status": "draft",
+    "communicationJob": "To be inferred",
+    "audienceStartingPoint": "To be inferred",
+    "audienceEndState": "To be inferred",
+    "stakes": "To be inferred",
+    "arc": "To be inferred",
+    "turningPointSlideId": "To be inferred",
+    "resolution": "To be inferred"
+  },
   "capabilityProfile": {
     "platform": "codex",
     "requestedMode": "full-studio",
     "resolvedMode": "full-studio",
     "checkedAt": "2026-07-30T08:00:00.000Z",
-    "required": ["presentation", "image_generation", "ui_capture", "short_motion", "video"],
-    "available": ["presentation", "image_generation", "ui_capture", "short_motion", "video"],
+    "required": ["presentation", "image_generation", "ui_capture", "raster_processing", "svg_optimization", "diagram_graph", "short_motion", "video", "media_tooling"],
+    "available": ["presentation", "image_generation", "ui_capture", "raster_processing", "svg_optimization", "diagram_graph", "short_motion", "video", "media_tooling"],
     "missing": [],
     "taskReady": true,
     "fallbacksApproved": false
@@ -161,6 +179,52 @@ tmp/
 ```
 
 See [`manifest.md`](../skills/presentation-director/references/manifest.md) for the complete schema and 3D examples.
+
+## Production optimization scripts
+
+After the narrative, slide visual plans, and asset briefs are locked, compile the creative production contract:
+
+```powershell
+node .\skills\presentation-director\scripts\prepare-creative.mjs <project-directory> --strict
+```
+
+Inspect `tmp/creative/` and use the generated JSON in `tmp/provider-briefs/` for specialist calls. After representative samples are rendered, lock the design and prepare incremental work:
+
+```powershell
+node .\skills\presentation-director\scripts\lock-design.mjs <project-directory> `
+  --approved-by user `
+  --sample s01=tmp/design-lock/s01.png `
+  --sample s03=tmp/design-lock/s03.png `
+  --sample s05=tmp/design-lock/s05.png `
+  --sample s08=tmp/design-lock/s08.png
+
+node .\skills\presentation-director\scripts\prepare-build.mjs <project-directory> --max-workers 4
+```
+
+Each production task owns `tmp/slide-builds/<slide-id>/` plus its declared media outputs. Write a
+matching `receipt.json` into that capsule only after the slide source and preview are complete; its
+`inputHash` must equal the task's `cacheKey`.
+
+After declared outputs exist, record builds and QA:
+
+```powershell
+node .\skills\presentation-director\scripts\record-build.mjs <project-directory> --all
+node .\skills\presentation-director\scripts\record-qa.mjs <project-directory> `
+  --slide s01 --status passed --reviewer reviewer --note "Full-size inspection passed"
+```
+
+Only the Director writes shared state. Worker tasks use the exclusive paths generated in `tmp/task-graph.json`.
+
+For assets that declare candidate variants, preserve the reviewed selection before final build preparation:
+
+```powershell
+node .\skills\presentation-director\scripts\record-asset-selection.mjs <project-directory> `
+  --slide s01 --asset hero-product `
+  --candidate a=assets/generated/images/candidates/hero-a.webp `
+  --candidate b=assets/generated/images/candidates/hero-b.webp `
+  --selected b --reviewer director `
+  --rationale "B preserves the title safe zone and explains the mechanism."
+```
 
 ## Add a Design Atlas entry
 
@@ -231,6 +295,13 @@ Validate a presentation workspace:
 
 ```powershell
 node .\skills\presentation-director\scripts\validate-workspace.mjs <project-directory>
+```
+
+Run creative and production integration tests:
+
+```powershell
+node --test .\tests\creative-planning.test.mjs
+node --test .\tests\production-optimization.test.mjs
 ```
 
 Use `--allow-draft` only during development. Final delivery must pass without it.

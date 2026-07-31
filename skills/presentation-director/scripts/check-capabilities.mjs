@@ -218,39 +218,69 @@ async function collectPackages(projectDir, config) {
     }
   }
 
-  let current = path.resolve(projectDir);
-  while (true) {
-    for (const name of candidates) {
-      const packageManifest = path.join(current, "node_modules", ...name.split("/"), "package.json");
-      if (await exists(packageManifest)) packages.add(name);
-    }
-    const parent = path.dirname(current);
-    if (parent === current) break;
-    current = parent;
+  const packageRoot = path.join(path.resolve(projectDir), "node_modules");
+  for (const name of candidates) {
+    const packageManifest = path.join(packageRoot, ...name.split("/"), "package.json");
+    if (await exists(packageManifest)) packages.add(name);
   }
   return packages;
 }
 
-async function collectCommands() {
-  const commands = new Set();
+async function findProjectCommand(toolsDir, command, extensions, depth = 0) {
+  if (depth > 4 || !(await exists(toolsDir))) return undefined;
+  let entries;
+  try {
+    entries = await readdir(toolsDir, { withFileTypes: true });
+  } catch {
+    return undefined;
+  }
+  for (const entry of entries) {
+    const target = path.join(toolsDir, entry.name);
+    if (entry.isFile()) {
+      const normalized = entry.name.toLowerCase();
+      if (extensions.some((extension) => normalized === `${command}${extension}`.toLowerCase())) return target;
+    }
+    if (entry.isDirectory()) {
+      const nested = await findProjectCommand(target, command, extensions, depth + 1);
+      if (nested) return nested;
+    }
+  }
+  return undefined;
+}
+
+async function collectCommands(config, projectDir) {
+  const commands = new Map();
   const searchPaths = (process.env.PATH || "").split(path.delimiter).filter(Boolean);
   const extensions = process.platform === "win32"
     ? (process.env.PATHEXT || ".EXE;.CMD;.BAT;.COM").split(";")
     : [""];
-  const candidates = ["hyperframes", "libreoffice", "playwright", "remotion", "soffice"];
+  const candidates = new Set();
+  for (const capability of Object.values(config.capabilities)) {
+    for (const provider of capability.providers) {
+      if (provider.kind.startsWith("command-")) {
+        for (const value of provider.values) candidates.add(normalize(value));
+      }
+    }
+  }
 
   for (const command of candidates) {
+    let found = false;
     for (const directory of searchPaths) {
-      let found = false;
       for (const extension of extensions) {
         if (await exists(path.join(directory, `${command}${extension.toLowerCase()}`)) ||
             await exists(path.join(directory, `${command}${extension.toUpperCase()}`))) {
-          commands.add(command);
+          commands.set(command, path.join(directory, `${command}${extension}`));
           found = true;
           break;
         }
       }
       if (found) break;
+    }
+    const projectCommand = !found
+      ? await findProjectCommand(path.join(projectDir, "tools"), command, extensions)
+      : undefined;
+    if (projectCommand) {
+      commands.set(command, projectCommand);
     }
   }
   return commands;
@@ -316,7 +346,7 @@ export async function checkCapabilities(options = {}) {
 
   const skills = await collectSkills(platformSkillRoots(platform, projectDir));
   const packages = await collectPackages(projectDir, config);
-  const commands = await collectCommands();
+  const commands = await collectCommands(config, projectDir);
   const capabilityResults = evaluateCapabilities(config, { skills, packages, commands });
   const required = [...new Set([...requestedProfile.requires, ...(options.required || [])])];
   for (const id of required) {
@@ -339,6 +369,7 @@ export async function checkCapabilities(options = {}) {
     evidence: Object.fromEntries(
       Object.entries(capabilityResults).map(([id, result]) => [id, result.evidence]),
     ),
+    toolPaths: Object.fromEntries(commands.entries()),
     installGuidance: Object.fromEntries(
       missing.map((id) => [id, config.capabilities[id].install[platform] || config.capabilities[id].install.generic]),
     ),

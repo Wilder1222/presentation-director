@@ -61,6 +61,14 @@ These values are temporary planning defaults only. Replace them after style reso
 - Default composition: one dominant visual relationship, not a grid of UI cards.
 - Vary adjacent silhouettes while preserving the same grid and hierarchy.
 
+## Asset Language
+
+- Evidence boundary: distinguish sourced proof, authentic product surfaces, generated concepts, and decorative support.
+- Continuity families: unresolved; define named visual families for related images, UI states, diagrams, and motion.
+- Image treatment: define subject, camera, crop, material, light, and color grading before generation.
+- Reuse: default to single-use; reuse only as a declared system element or derived variant.
+- Selection: compare purposeful variants for generated hero imagery and record why the chosen asset best supports the claim.
+
 ## Motion
 
 - Tempo: restrained.

@@ -28,8 +28,11 @@ Act as the presentation director. Deliver a PowerPoint file the user can present
 8. Read [references/design-taste.md](references/design-taste.md), derive a content-specific design thesis, motif, tensions, signature moves, and anti-defaults, then lock `tasteProfile`. A direction that fails the content-swap test is not ready.
 9. Create the final `DESIGN.md` only after style, reference, and taste resolution. Style-selection boards are temporary decision artifacts, not production assets.
 10. Create `presentation.json` before rendering slides and preserve its `deliveryContract`, `styleDecision`, and `tasteProfile` records.
-11. Build the most-visible static frame before adding animation.
-12. Render, inspect, assemble, and open-check the final PPTX before delivery. Do not stop at source files or intermediate renders.
+11. Lock the deck narrative, then give every slide a `narrativeBeat` and `visualPlan`, and every asset a structured production brief. Run `prepare-creative.mjs --strict` before generating production assets. Resolve every error and warning; use its generated narrative map, storyboard, asset plan, and provider briefs as the production source.
+12. Render representative static samples, including the opening and a specialist-rendered page when planned. Lock them with `lock-design.mjs` before parallel production. Manifest 1.5 locks both the creative digest and visual samples.
+13. Run `prepare-build.mjs`, produce only dirty tasks, and enforce the generated task graph's dependencies and exclusive write paths. Each worker owns its slide build capsule and writes a matching receipt last. Only the Director may update shared truth or final assembly.
+14. Build the most-visible static frame before adding animation. For high-impact generative assets, produce the declared variants and record the selected candidate with `record-asset-selection.mjs`.
+15. Record completed slide builds and QA with the production scripts, recheck output hashes, then render, inspect, assemble, and open-check the final PPTX. Do not stop at source files or intermediate renders.
 
 Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments as audience-facing slide copy.
 
@@ -67,8 +70,10 @@ For a requested Three.js scene, add `--require three_d`. Rerun `check-capabiliti
   - [references/platforms/cursor.md](references/platforms/cursor.md)
 - Read [references/routing.md](references/routing.md) before assigning renderers or output formats.
 - Read [references/manifest.md](references/manifest.md) before authoring `presentation.json`.
+- Read [references/creative-planning.md](references/creative-planning.md) before locking the narrative, planning slide rhythm, decomposing assets, or handing work to providers.
 - Read [references/review.md](references/review.md) before final rendering and delivery.
 - Read [references/prompt-contracts.md](references/prompt-contracts.md) before handing work to imagegen, HyperFrames, Remotion, UI capture, or a diagram renderer.
+- Read [references/production-optimization.md](references/production-optimization.md) before representative samples, parallel production, incremental rebuilds, or risk-based QA.
 - Read [references/style-discovery.md](references/style-discovery.md) whenever the user has not supplied a usable template, or when the style is delegated, recommended, named, or custom researched.
 - Read [references/patterns/layouts.md](references/patterns/layouts.md) when selecting slide silhouettes.
 - Read [references/patterns/motion.md](references/patterns/motion.md) when any motion is requested or materially useful.
@@ -97,12 +102,15 @@ For a requested Three.js scene, add `--require three_d`. Rerun `check-capabiliti
 
 ## Invoke installed providers when their route is selected
 
+- Invoke production providers from the generated brief at `tmp/provider-briefs/<slide-id>/<asset-id>.json`; do not replace it with an improvised prompt. The brief carries the narrative relationship, visual plan, continuity family, acceptance criteria, and shared Design DNA.
 - Use the presentation provider recorded by capability preflight for every local PPTX read/create/edit workflow. Follow its template route, source-note policy, rendering checks, and overflow checks.
 - Use the detected image-generation provider for original product imagery, conceptual hero art, backgrounds, and illustrative assets. Do not use it for exact architecture, charts, tables, or text-heavy UI.
 - Use the detected short-motion provider for deterministic animated architecture builds, title cards, slide loops, and 3-15 second sequences. Give the composition the same `DESIGN.md`.
 - Use the detected video provider for 15-90 second multi-scene product demos, narration, captions, or parameterized video. Follow that provider's video-layout guidance before coding.
 - When a `remotion_video` slide declares `threeD`, use project-local Three.js, React Three Fiber, and `@remotion/three` as a component inside Remotion. Drive every 3D animation from the Remotion frame timeline and provide a poster fallback.
 - Use native PowerPoint shapes for simple editable diagrams and Graphviz or another deterministic diagram route for complex topology. Keep labels outside image generation.
+
+Use `selectionMode: deterministic` for diagrams, charts, and exact UI states. Use `single` for low-risk supporting assets. Use `variants` with two to four candidates for hero imagery, major concept visuals, material studies, or another asset whose quality materially changes the slide. Record the choice and its visual rationale before final build validation.
 
 If a required capability is unavailable, present its installation guidance first and stop. Continue with a static or alternate fallback only after explicit user approval, rerun capability preflight with `--approve-fallbacks --write`, record the decision in `tmp/fallback-reasons.txt`, and change every unsupported slide renderer in `presentation.json`. Do not silently claim animation, 3D, or editability that was not produced.
 
@@ -158,4 +166,4 @@ Run the workspace validator:
 node <skill-dir>/scripts/validate-workspace.mjs <project-dir>
 ```
 
-Then execute the renderer-specific checks in [references/review.md](references/review.md). Resolve every capability mismatch, content-swap failure, generic visual default, unintended overlap, clipping, broken connector, missing asset, unresolved placeholder, contrast failure, and motion-budget violation. Deliver only the requested final outputs plus a concise summary of what remains flattened or replaceable.
+For Manifest 1.5, validation also requires a current compiled creative plan, immutable provider briefs, a design lock tied to the creative digest, complete incremental build state, passing slide QA, and a passing final full-deck review. Then execute the renderer-specific checks in [references/review.md](references/review.md). Resolve every capability mismatch, stale creative plan, broken narrative bridge, repetitive storyboard, unrecorded variant choice, stale cache, content-swap failure, generic visual default, unintended overlap, clipping, broken connector, missing asset, unresolved placeholder, contrast failure, and motion-budget violation. Deliver only the requested final outputs plus a concise summary of what remains flattened or replaceable.

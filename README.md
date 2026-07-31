@@ -8,7 +8,7 @@
 
 Turn a brief, document, or reference deck into a ready-to-present PPTX with a clear narrative, high visual impact, high-fidelity execution, and native-first editability.
 
-![Version](https://img.shields.io/badge/version-0.7.0-4F46E5)
+![Version](https://img.shields.io/badge/version-0.9.0-4F46E5)
 ![Codex Plugin](https://img.shields.io/badge/Codex-standard_plugin-111111)
 ![Agent Skills](https://img.shields.io/badge/agents-Codex%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Gemini%20%7C%20Cursor-2563EB)
 ![Presentation](https://img.shields.io/badge/output-PPTX%20%7C%20PDF%20%7C%20HTML%20%7C%20MP4-0A7D55)
@@ -46,26 +46,31 @@ AI can generate slides. Presentation Director coordinates the decisions that mak
 |---|---|
 | **A finished PPTX—not a draft** | The primary artifact opens in PowerPoint, contains every completed slide, and is ready to present without repair. Source files and previews support the deck; they do not replace it. |
 | **A narrative, not an agenda** | Every slide advances one causal argument, titles state takeaways, and the closing resolves the audience decision established at the opening. |
+| **Story and materials are compiled before rendering** | A narrative map, visual rhythm strip, dependency-aware asset plan, and immutable provider briefs catch weak transitions and inconsistent art direction before expensive generation starts. |
 | **One visual system** | `DESIGN.md` locks typography, color, spacing, imagery, diagram language, and motion before production begins. |
 | **Authored, not generic** | A design thesis, content-derived motif, signature moves, anti-defaults, and content-swap test prevent interchangeable AI slide aesthetics. |
 | **The right tool per slide** | Native PowerPoint, image generation, SVG, browser UI, HyperFrames, Remotion, and optional Three.js are selected by purpose rather than novelty. |
 | **Reusable design intelligence** | The built-in Design Atlas abstracts proven patterns from product launches, editorial technology stories, technical platforms, developer ecosystems, and enterprise communication. |
 | **Native-first editability** | Text, data, tables, charts, and simple diagrams stay editable; images and motion remain replaceable; full-page raster slides require an explicit exception. |
 | **Quality before delivery** | Slides are rendered and reviewed for hierarchy, consistency, readability, overflow, provenance, and motion restraint. |
+| **Faster iteration without blind reuse** | Representative samples lock the direction first; content-addressed caching rebuilds only changed slides; an exclusive-write task graph enables safe parallel production. |
 
 ## Core capabilities
 
 - Turn a topic, document, reference deck, or company template into a complete, ready-to-present PPTX—not only an outline, source project, preview, or PDF.
 - Build a causal narrative with one communication job, one claim per slide, takeaway titles, evidence, implications, and a resolved close.
+- Compile that narrative into explicit slide questions, consequences, bridges, visual silhouettes, density, focal modes, and planned visual peaks before production.
 - When style is unspecified, either auto-select the best-fit direction or present visual candidates for the user to choose.
 - Preserve enterprise masters and brand rules, or establish an original design direction from the Design Atlas.
 - Translate references into project-specific Design DNA instead of copying a company style or accepting generic AI defaults.
 - Generate hero visuals, product concepts, realistic UI, precise technical diagrams, and data-led slides within one system.
+- Decompose assets by role, continuity family, dependencies, reuse policy, and acceptance criteria; compare high-impact visual variants and preserve the selected candidate with traceable hashes.
 - Create short progressive animations with HyperFrames and multi-scene product demos with Remotion.
 - Add Three.js only when depth communicates product structure or spatial relationships.
 - Produce a high-fidelity, native-first PPTX as the primary artifact, with PDF, HTML, MP4, slide previews, and replaceable media assets as optional supporting outputs.
 - Keep source provenance and usage boundaries attached to external references and generated assets.
 - Detect missing specialist capabilities before production and explain what must be installed for the requested result.
+- Lock representative samples before full production, then use incremental builds, bounded parallel workers, and risk-based iteration QA without skipping the final full-deck review.
 - Load selected preset raw references on demand, or research official web sources for a custom direction.
 - Keep copied inputs, raw references, generated assets, process records, and final outputs together in `./presentation-director/`.
 
@@ -172,6 +177,7 @@ The plugin remains lightweight: it directs specialist capabilities instead of du
 | [Design Atlas and Reference Library](docs/DESIGN-ATLAS.md) | Design DNA, role packs, on-demand source loading, provenance, and copyright boundaries. |
 | [Development and Contribution](docs/DEVELOPMENT.md) | Repository structure, workspace initialization, manifests, extension points, validation, and contribution workflow. |
 | [Skill source](skills/presentation-director/SKILL.md) | The canonical orchestration rules used by compatible Agent hosts. |
+| [Changelog](CHANGELOG.md) | Versioned user-visible changes, compatibility notes, and migration guidance. |
 
 ## License and responsible use
 

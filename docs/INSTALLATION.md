@@ -11,7 +11,7 @@ This guide covers host installation, capability profiles, provider detection, an
 - Access to this repository from the environment where the Agent runs.
 - The specialist capabilities required by the selected production profile.
 
-Three.js dependencies are optional and should be installed only in presentation projects that use 3D.
+Full Studio also checks production-grade raster processing, SVG optimization, deterministic graph layout, and media inspection. Install Node packages inside the presentation workspace. Portable Graphviz and FFmpeg binaries may live under `presentation-director/tools/`; the checker records their resolved paths. Three.js remains optional and should be installed only in projects that use 3D.
 
 Browser or web-research capability is required on demand when a selected visual direction is not represented by the bundled Design Atlas.
 
@@ -62,14 +62,24 @@ Presentation Director is useful on its own for narrative, reference selection, m
 |---|---|
 | `director-core` | Planning, reference selection, routing, and review contracts. |
 | `static-studio` | Editable presentation output. |
-| `visual-studio` | Static Studio, image generation, and browser-based UI capture. |
-| `motion-studio` | Visual Studio, short motion, and multi-scene video. |
-| `full-studio` | Complete general workflow; 3D remains on demand. |
-| `spatial-studio` | Full Studio plus Three.js, React Three Fiber, and `@remotion/three`. |
+| `visual-studio` | Static Studio, image generation, browser UI capture, and Sharp raster processing. |
+| `motion-studio` | Visual Studio, short motion, multi-scene video, FFmpeg, and ffprobe. |
+| `full-studio` | Motion Studio plus SVGO and Graphviz production tooling; 3D remains on demand. |
+| `spatial-studio` | Full Studio plus Three.js, type definitions, React Three Fiber, and `@remotion/three`. |
 
 `reference_research` is an on-demand capability rather than a production profile. After selecting a custom style, rerun preflight with `--require reference_research` so the Agent can search official sites and direct web sources.
 
 The profile names describe verified capability sets. A partial installation must never be reported as Full Studio.
+
+Install project-local Node production tools when the selected profile requires them:
+
+```powershell
+Set-Location .\presentation-director
+npm install sharp svgo
+npm install three @types/three @react-three/fiber @remotion/three  # only for Spatial Studio
+```
+
+Install Graphviz and FFmpeg normally, or keep portable executables beneath `presentation-director/tools/`. Required command pairs are `dot` and `ffmpeg` + `ffprobe`.
 
 ## Capability preflight
 
@@ -87,7 +97,7 @@ The checker records what is actually available instead of assuming that a docume
 
 - Skills must be discoverable in a supported skills directory.
 - Project packages must exist under `node_modules`.
-- Command providers must be available on `PATH`.
+- Command providers must be available on `PATH` or discoverable beneath the active workspace's `tools/` directory.
 - A dependency declaration alone does not count as an installation.
 
 When a required capability is missing, the checker reports:

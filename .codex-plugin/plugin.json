@@ -1,7 +1,7 @@
 {
   "name": "presentation-director",
-  "version": "0.7.0+codex.20260730073612",
-  "description": "Create ready-to-present, narrative-led, visually impactful, high-fidelity, native-first editable PowerPoint decks with motion and optional Three.js scenes.",
+  "version": "0.9.0+codex.20260731034106",
+  "description": "Compile narrative, visual rhythm, and asset direction into ready-to-present, high-fidelity, native-first editable PowerPoint decks.",
   "author": {
     "name": "Wilder1222",
     "url": "https://github.com/Wilder1222"
@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Presentation Director",
     "shortDescription": "Create ready-to-use, editable narrative PPTX",
-    "longDescription": "A lightweight presentation director that produces a complete, ready-to-present PPTX with a clear narrative, high visual impact, high-fidelity execution, and native-first editability. It keeps project artifacts local, derives content-specific Design DNA, routes specialist capabilities, and validates the final deck.",
+    "longDescription": "A lightweight presentation director that compiles the narrative, visual rhythm, asset plan, and provider briefs before producing a complete PPTX. It keeps project artifacts local, derives content-specific Design DNA, routes specialist capabilities, preserves high-impact asset choices, and validates a ready-to-present, high-fidelity, native-first editable deck.",
     "developerName": "Wilder1222",
     "category": "Productivity",
     "capabilities": [

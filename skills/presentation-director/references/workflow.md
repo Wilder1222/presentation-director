@@ -10,9 +10,11 @@
 5. Reference resolution
 6. Design taste and contract
 7. Slide plan and manifest
-8. Asset production
-9. Rendering
-10. Review and delivery
+8. Creative compilation
+9. Production lock and incremental plan
+10. Asset production
+11. Rendering
+12. Review and delivery
 
 ## 0. Establish the workspace boundary
 
@@ -61,7 +63,7 @@ Collect or infer:
 
 Ask only when a missing answer materially changes the output. Otherwise record a reasonable assumption in `tmp/assumptions.txt` and continue.
 
-Initialize the Manifest 1.3 `deliveryContract` exactly as defined in `delivery-contract.md`. Treat PPTX as the primary artifact throughout the workflow. Supporting previews, HTML, PDF, MP4, source projects, and manifests do not replace the final deck.
+Initialize the Manifest 1.5 `deliveryContract` exactly as defined in `delivery-contract.md`. Treat PPTX as the primary artifact throughout the workflow. Supporting previews, HTML, PDF, MP4, source projects, and manifests do not replace the final deck.
 
 ## 3. Define communication and narrative
 
@@ -144,14 +146,38 @@ Create the slide sequence before asset generation. Preserve `deliveryContract`, 
 - assets and their statuses;
 - sources;
 - motion only when it earns its cost.
+- a `narrativeBeat` that states the live question, evidence type, consequence, and bridge;
+- a `visualPlan` that states silhouette, density, focal mode, visual peak, and continuity cue.
+
+For every asset, define a structured brief with its production method, role, placement, continuity family, reuse policy, selection mode, dependencies, and concrete acceptance checks. Use variant selection only where candidate quality materially changes the communication result.
 
 Plan two to four visual peaks in a typical 10-15 slide deck and let quieter slides create contrast around them. Use `native_ppt` for editable text, data, tables, charts, and simple diagrams. Use `image_slide` only as an exception and record `rasterExceptionReason` on that slide.
 
 Read `manifest.md` for the complete contract. Set `status` to `planning` during design and `final` only after all paths and sources resolve and every selected renderer is supported by an available capability or an explicitly approved fallback.
 
-## 8. Produce assets
+## 8. Compile the creative plan
 
-Write an asset brief before invoking a specialist. Reuse the same design tokens and state exactly where the asset sits on the slide.
+Read `creative-planning.md`, lock the top-level narrative, and run:
+
+```text
+node <skill-dir>/scripts/prepare-creative.mjs <project-dir> --strict
+```
+
+Inspect the generated narrative map as a causal argument, the storyboard as a rhythm strip, and the asset plan as a dependency graph with safe execution waves. Resolve repeated questions or claims, weak slide bridges, three repeated silhouettes, density fatigue, missing visual peaks, circular asset dependencies, vague acceptance criteria, and renderer/focal-mode conflicts.
+
+Use only the generated provider briefs for production. A later narrative, slide title, claim, content, renderer, visual-plan, asset-brief, motion, or 3D change invalidates the creative digest and requires compilation again.
+
+## 9. Lock representative samples and prepare production
+
+Read `production-optimization.md`. Render representative static samples after the Manifest, design direction, and taste profile are coherent. Use four samples when the deck has at least four slides, include the opening slide, cover distinct slide roles, and include a specialist-rendered slide when one is planned.
+
+Store the approved samples under `tmp/design-lock/` and run `lock-design.mjs`. Do not start parallel workers before the creative digest and resulting design digest are locked. When style choice was delegated, use an internal `auto-review`; otherwise record user or team approval accurately.
+
+Run `prepare-build.mjs` to classify slides as dirty or cached and to generate `tmp/task-graph.json` plus `tmp/qa-plan.json`. Give each worker exclusive declared output paths. Keep `DESIGN.md`, `presentation.json`, cache state, shared QA records, and final assembly under Director ownership. Parallelize only dirty production tasks whose dependencies are satisfied.
+
+## 10. Produce assets
+
+Invoke each specialist with the compiler-generated brief under `tmp/provider-briefs/`. Reuse the same design tokens and preserve its exact narrative role, placement, continuity key, prohibited defaults, and acceptance checks.
 
 Recommended order:
 
@@ -163,7 +189,11 @@ Recommended order:
 
 Do not generate production assets before the selected visual direction and taste profile are resolved. Do not generate motion before the static hero frame passes composition review. Reject provider defaults that conflict with the design thesis or anti-default list.
 
-## 9. Render
+For an asset using `selectionMode: variants`, render the declared candidate count, inspect candidates at the intended crop and slide size, and record the winner with `record-asset-selection.mjs`. Judge the candidate by communication, composition, continuity, factual safety, and replaceability rather than surface polish alone.
+
+After each worker returns, inspect its declared files and use `record-build.mjs` to record successful slide work. Never let a worker mark its own cache entry complete.
+
+## 11. Render
 
 - Build PPTX with the presentation provider recorded in `capabilityProfile` and its required local engine.
 - Keep titles, claims, labels, charts, and simple diagrams native whenever practical.
@@ -173,9 +203,9 @@ Do not generate production assets before the selected visual direction and taste
 - For motion, keep HyperFrames or Remotion project sources next to the rendered media so the user can regenerate them.
 - Assemble a complete PPTX in `output/`; renderer previews and source projects are intermediate artifacts.
 
-## 10. Review and deliver
+## 12. Review and deliver
 
-Run `validate-workspace.mjs`, then follow `review.md`.
+Record each slide review with `record-qa.mjs`. Run the mandatory full-size review of every slide and open-check the final PPTX, then record final QA as passed. Run `validate-workspace.mjs`, then follow `review.md`.
 
 Do not deliver until:
 
@@ -192,6 +222,11 @@ Do not deliver until:
 - all local asset paths exist;
 - externally sourced claims and assets are traceable;
 - motion is deterministic and within budget;
+- the compiled creative plan matches the current narrative, slide sequence, visual plans, and asset briefs;
+- provider briefs and final variant-selection records still match their recorded hashes;
+- the representative design lock still matches `DESIGN.md` and the selected design contract;
+- the build plan matches the current manifest and every slide has a complete cache-state record;
+- risk-based iteration records exist and final QA covers every slide;
 - native-first editability is preserved for text, data, tables, charts, and simple diagrams;
 - every flattened slide has a recorded, defensible `rasterExceptionReason` and a replaceable source asset;
 - flattened and replaceable-media slides are disclosed accurately.
