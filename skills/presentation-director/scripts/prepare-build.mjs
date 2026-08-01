@@ -123,7 +123,7 @@ function slideRisk(slide) {
     score += 1;
     reasons.push("multiple coordinated assets");
   }
-  if (slide.visualPeak === true) {
+  if (slide.visualPlan?.visualPeak === true) {
     score += 1;
     reasons.push("declared visual peak");
   }
@@ -179,7 +179,7 @@ function buildTaskGraph(slidePlans, maxParallelWorkers, generatedAt) {
       status: "pending",
       dependsOn: plan.status === "dirty" ? [`produce:${plan.slideId}`] : [],
       riskLevel: plan.risk.level,
-      writes: [`tmp/qa/${plan.slideId}.json`],
+      writes: [`tmp/qa/observations/${plan.slideId}/`, `tmp/qa/repairs/${plan.slideId}/`],
       forbiddenWrites: ["DESIGN.md", "presentation.json", "tmp/qa-results.json", "tmp/qa-ledger.txt"],
     });
   }
@@ -190,6 +190,30 @@ function buildTaskGraph(slidePlans, maxParallelWorkers, generatedAt) {
     status: "pending",
     dependsOn: ["assemble:pptx", ...tasks.filter((task) => task.type === "slide-qa").map((task) => task.id)],
     writes: ["tmp/qa-results.json", "tmp/qa-ledger.txt"],
+  });
+  tasks.push({
+    id: "report:native-capability",
+    type: "delivery-report",
+    agentRole: "director",
+    status: "pending",
+    dependsOn: ["assemble:pptx"],
+    writes: ["tmp/delivery/native-capability-audit.json", "output/native-capability-report.json"],
+  });
+  tasks.push({
+    id: "rehearse:delivery",
+    type: "delivery-rehearsal",
+    agentRole: "presenter-reviewer",
+    status: "pending",
+    dependsOn: ["assemble:pptx"],
+    writes: ["tmp/delivery/rehearsal.json"],
+  });
+  tasks.push({
+    id: "report:quality-scorecard",
+    type: "quality-scorecard",
+    agentRole: "director-reviewer",
+    status: "pending",
+    dependsOn: ["qa:deck-final", "report:native-capability", "rehearse:delivery"],
+    writes: ["output/quality-scorecard.json"],
   });
   return {
     schemaVersion: "1.0",
@@ -213,19 +237,39 @@ function buildTaskGraph(slidePlans, maxParallelWorkers, generatedAt) {
   };
 }
 
-function buildQaPlan(slidePlans, generatedAt) {
+function buildQaPlan(slidePlans, generatedAt, rubric, qaContract) {
+  const artifactChecks = rubric.checks.filter((check) => check.dimension !== "delivery");
+  const deliveryChecks = rubric.checks.filter((check) => check.dimension === "delivery");
   return {
-    schemaVersion: "1.0",
+    schemaVersion: deliveryChecks.length ? "1.2" : "1.1",
     generatedAt,
     strategy: "risk-based-plus-final-full",
     iterationPolicy: "Review every dirty slide and every medium/high-risk cached slide.",
     finalPolicy: "Review every slide at full size and open-check the final PPTX.",
+    rubric: qaContract.rubric,
+    rubricDigest: sha256(stableStringify(rubric)),
+    observationPolicy: {
+      required: true,
+      root: qaContract.observationsRoot,
+      repairRoot: qaContract.repairsRoot,
+      strategy: qaContract.repairStrategy,
+      maxRounds: qaContract.maxRepairRounds,
+      wholeSlideRedesignAllowed: false,
+    },
+    deckCheckIds: artifactChecks.filter((check) => check.scope === "deck").map((check) => check.id),
+    deliveryCheckIds: deliveryChecks.map((check) => check.id),
     slides: slidePlans.map((item) => ({
       slideId: item.slideId,
       risk: item.risk,
       dirty: item.status === "dirty",
       iterationRequired: item.status === "dirty" || item.risk.level !== "low",
       finalRequired: true,
+      rubricCheckIds: artifactChecks
+        .filter((check) => check.scope === "slide" && check.slideId === item.slideId)
+        .map((check) => check.id),
+      deliveryCheckIds: deliveryChecks
+        .filter((check) => check.scope === "slide" && check.slideId === item.slideId)
+        .map((check) => check.id),
     })),
   };
 }
@@ -240,7 +284,7 @@ export async function prepareBuild(projectDir, options = {}) {
   const manifest = await readJson(manifestPath);
   const design = await readFile(designPath, "utf8");
   const production = ensureProduction(manifest);
-  if (manifest.version === "1.5") {
+  if (["1.5", "1.6", "1.7"].includes(manifest.version)) {
     if (production.creativePlan.status !== "prepared") {
       throw new Error("Prepare the creative plan before preparing production.");
     }
@@ -258,6 +302,9 @@ export async function prepareBuild(projectDir, options = {}) {
   }
   const slides = Array.isArray(manifest.slides) ? manifest.slides : [];
   if (!slides.length) throw new Error("No slides are defined in presentation.json.");
+  const rubric = ["1.6", "1.7"].includes(manifest.version)
+    ? await readJson(workspacePath(root, production.creativePlan.deckRubric, "deck rubric"))
+    : { checks: [] };
 
   const statePath = workspacePath(root, production.build.cacheState, "cache state");
   const previousState = await exists(statePath)
@@ -327,13 +374,13 @@ export async function prepareBuild(projectDir, options = {}) {
   production.build.maxParallelWorkers = maxParallelWorkers;
   production.build.lastPreparedAt = generatedAt;
   production.qa.finalFullReview = { status: "pending", completedAt: null, reviewer: null };
-  manifest.version = manifest.version === "1.5" ? "1.5" : "1.4";
+  manifest.version = ["1.5", "1.6", "1.7"].includes(manifest.version) ? manifest.version : "1.4";
 
   const plan = {
     schemaVersion: "1.0",
     generatedAt,
     designDigest: currentDesignDigest,
-    creativeDigest: manifest.version === "1.5" ? production.creativePlan.digest : null,
+    creativeDigest: ["1.5", "1.6", "1.7"].includes(manifest.version) ? production.creativePlan.digest : null,
     manifestDigest: computeManifestBuildDigest(manifest),
     capabilityFingerprint,
     maxParallelWorkers,
@@ -346,7 +393,22 @@ export async function prepareBuild(projectDir, options = {}) {
     slides: slidePlans,
   };
   const taskGraph = buildTaskGraph(slidePlans, maxParallelWorkers, generatedAt);
-  const qaPlan = buildQaPlan(slidePlans, generatedAt);
+  const qaPlan = ["1.6", "1.7"].includes(manifest.version)
+    ? buildQaPlan(slidePlans, generatedAt, rubric, production.qa)
+    : {
+        schemaVersion: "1.0",
+        generatedAt,
+        strategy: "risk-based-plus-final-full",
+        iterationPolicy: "Review every dirty slide and every medium/high-risk cached slide.",
+        finalPolicy: "Review every slide at full size and open-check the final PPTX.",
+        slides: slidePlans.map((item) => ({
+          slideId: item.slideId,
+          risk: item.risk,
+          dirty: item.status === "dirty",
+          iterationRequired: item.status === "dirty" || item.risk.level !== "low",
+          finalRequired: true,
+        })),
+      };
   await Promise.all([
     writeJson(workspacePath(root, production.build.plan, "build plan"), plan),
     writeJson(workspacePath(root, production.build.taskGraph, "task graph"), taskGraph),

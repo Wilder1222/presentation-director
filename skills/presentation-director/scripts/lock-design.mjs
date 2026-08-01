@@ -76,14 +76,19 @@ export async function lockDesign(projectDir, options) {
     throw new Error("Lock tasteProfile and pass the content-swap test before locking design.");
   }
   if (unresolvedDesign(design)) throw new Error("DESIGN.md still contains unresolved planning language.");
-  if (manifest.version === "1.5") {
+  if (["1.5", "1.6", "1.7"].includes(manifest.version)) {
     if (production.creativePlan.status !== "prepared") {
-      throw new Error("Prepare the Manifest 1.5 creative plan before locking representative samples.");
+      throw new Error("Prepare the Manifest 1.5+ creative plan before locking representative samples.");
     }
     if (production.creativePlan.digest !== computeCreativeDigest(manifest)) {
       throw new Error("The narrative, slide content, storyboard, or asset plan changed; run prepare-creative.mjs again.");
     }
-    for (const key of ["narrativeMap", "storyboard", "assetPlan", "report", "providerIndex"]) {
+    const requiredCreativeOutputs = ["narrativeMap", "storyboard", "assetPlan", "report", "providerIndex"];
+    if (["1.6", "1.7"].includes(manifest.version)) {
+      requiredCreativeOutputs.push("evidenceBundle", "contentAlignment", "pageDesignIndex", "deckRubric");
+    }
+    if (manifest.version === "1.7") requiredCreativeOutputs.push("contentPreference", "deliveryPlan");
+    for (const key of requiredCreativeOutputs) {
       const relativePath = production.creativePlan[key];
       if (!relativePath || !(await exists(workspacePath(root, relativePath, `creative plan ${key}`)))) {
         throw new Error(`Creative plan output is missing: ${key}`);
@@ -129,17 +134,26 @@ export async function lockDesign(projectDir, options) {
   }
 
   const lockedAt = new Date().toISOString();
-  manifest.version = manifest.version === "1.5" ? "1.5" : "1.4";
+  manifest.version = ["1.5", "1.6", "1.7"].includes(manifest.version) ? manifest.version : "1.4";
   production.designLock = {
     status: "locked",
     requiredSampleCount,
     lockedAt,
     approvedBy: options.approvedBy,
-    creativeDigest: manifest.version === "1.5" ? production.creativePlan.digest : null,
+    creativeDigest: ["1.5", "1.6", "1.7"].includes(manifest.version) ? production.creativePlan.digest : null,
     designDigest: computeDesignDigest(manifest, design),
     samples: samples.map((sample) => ({ ...sample, approvedAt: lockedAt })),
   };
   production.qa.finalFullReview = { status: "pending", completedAt: null, reviewer: null };
+  production.delivery = {
+    ...production.delivery,
+    rehearsalStatus: "pending",
+    rehearsalHash: null,
+    qualityScorecardStatus: "pending",
+    qualityScorecardHash: null,
+    nativeCapabilityStatus: "pending",
+    nativeCapabilityHash: null,
+  };
   await writeJson(manifestPath, manifest);
   return production.designLock;
 }

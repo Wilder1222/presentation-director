@@ -1,5 +1,5 @@
 {
   "name": "presentation-director",
-  "version": "0.9.0",
-  "description": "Compile narrative, visual rhythm, and asset direction into ready-to-present, high-fidelity, native-first editable PowerPoint decks."
+  "version": "0.11.0",
+  "description": "Compile evidence, narrative, content preferences, delivery timing, page design, and asset direction into ready-to-present, high-fidelity, native-first editable PowerPoint decks."
 }

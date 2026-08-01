@@ -4,7 +4,7 @@ import path from "node:path";
 
 export const WORKSPACE_NAME = "presentation-director";
 export const BUILD_CONTRACT_VERSION = "1.0";
-export const CREATIVE_CONTRACT_VERSION = "1.0";
+export const CREATIVE_CONTRACT_VERSION = "1.2";
 
 export async function exists(target) {
   try {
@@ -143,10 +143,14 @@ export function creativeSourceSnapshot(manifest) {
       centralTakeaway: deck.centralTakeaway,
       language: deck.language,
       aspectRatio: deck.aspectRatio,
+      acceptanceCriteria: deck.acceptanceCriteria || [],
     },
+    contentPreference: manifest.contentPreference || null,
+    delivery: manifest.delivery || null,
     narrative: manifest.narrative || null,
     slides: (manifest.slides || []).map((slide) => ({
       id: slide.id,
+      claimId: slide.claimId,
       role: slide.role,
       claimKind: slide.claimKind,
       claim: slide.claim,
@@ -156,9 +160,13 @@ export function creativeSourceSnapshot(manifest) {
       editability: slide.editability,
       narrativeBeat: slide.narrativeBeat || null,
       visualPlan: slide.visualPlan || null,
+      pageDesign: slide.pageDesign || null,
+      delivery: slide.delivery || null,
+      acceptanceCriteria: slide.acceptanceCriteria || [],
       contentShape: contentShape(slide.content || {}),
       contentDigest: sha256(stableStringify(slide.content || {})),
       assets: (slide.assets || []).map(creativeAssetSnapshot),
+      sources: slide.sources || [],
       motion: slide.motion ? {
         engine: slide.motion.engine,
         pattern: slide.motion.pattern,
@@ -245,6 +253,12 @@ export function productionDefaults() {
       narrativeMap: "tmp/creative/narrative-map.json",
       storyboard: "tmp/creative/storyboard.json",
       assetPlan: "tmp/creative/asset-plan.json",
+      evidenceBundle: "tmp/evidence/evidence-bundle.json",
+      contentAlignment: "tmp/evidence/content-alignment.json",
+      pageDesignIndex: "tmp/design/page-design/index.json",
+      deckRubric: "tmp/qa/deck-rubric.json",
+      contentPreference: "tmp/preferences/content-preference.json",
+      deliveryPlan: "tmp/delivery/delivery-plan.json",
       report: "tmp/creative/report.json",
       providerBriefsRoot: "tmp/provider-briefs",
       providerIndex: "tmp/provider-briefs/index.json",
@@ -274,12 +288,29 @@ export function productionDefaults() {
       plan: "tmp/qa-plan.json",
       results: "tmp/qa-results.json",
       ledger: "tmp/qa-ledger.txt",
+      rubric: "tmp/qa/deck-rubric.json",
+      observationsRoot: "tmp/qa/observations",
+      repairsRoot: "tmp/qa/repairs",
+      maxRepairRounds: 2,
+      repairStrategy: "minimal",
       finalFullReviewRequired: true,
       finalFullReview: {
         status: "pending",
         completedAt: null,
         reviewer: null,
       },
+    },
+    delivery: {
+      rehearsal: "tmp/delivery/rehearsal.json",
+      nativeCapabilityAudit: "tmp/delivery/native-capability-audit.json",
+      qualityScorecard: "output/quality-scorecard.json",
+      nativeCapabilityReport: "output/native-capability-report.json",
+      rehearsalStatus: "pending",
+      rehearsalHash: null,
+      qualityScorecardStatus: "pending",
+      qualityScorecardHash: null,
+      nativeCapabilityStatus: "pending",
+      nativeCapabilityHash: null,
     },
   };
 }
@@ -306,6 +337,10 @@ export function ensureProduction(manifest) {
       ...defaults.qa.finalFullReview,
       ...(manifest.production.qa?.finalFullReview || {}),
     },
+  };
+  manifest.production.delivery = {
+    ...defaults.delivery,
+    ...(manifest.production.delivery || {}),
   };
   return manifest.production;
 }

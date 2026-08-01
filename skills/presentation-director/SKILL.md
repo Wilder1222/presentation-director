@@ -10,6 +10,7 @@ Act as the presentation director. Deliver a PowerPoint file the user can present
 ## Apply the hard gates
 
 0. Resolve the workspace to `<current-directory>/presentation-director`. If the current directory is already an initialized workspace with that name, use it directly. Keep every project-owned persistent source copy, raw reference, generated asset, renderer project, temporary record, and final output inside it. Never use a user-home or system-global cache.
+   For an existing workspace, read `presentation.json` before applying version-specific gates. Manifest 1.4-1.6 remain validation-compatible, but the current creative compiler targets 1.7: validate unchanged legacy evidence as-is, and request an explicit 1.7 migration before any revision that needs creative recompilation. Never silently rewrite a legacy project. New workspaces and explicit upgrades use the 1.7 content-preference, delivery, native-audit, rehearsal, and dual-score gates below.
 1. Read [references/delivery-contract.md](references/delivery-contract.md). Treat the final PPTX—not an outline, code project, PDF, preview, or image folder—as the default primary artifact.
 2. Run capability preflight before creating `DESIGN.md` or generating assets. Read [references/dependencies.json](references/dependencies.json), select the requested profile, and write `capabilityProfile` to `presentation.json`.
 3. If a required capability is missing, show the user its platform-specific installation guidance and fallback impact. Stop until the capability is installed or the user explicitly approves a fallback. Never silently downgrade or claim Full Studio.
@@ -28,11 +29,11 @@ Act as the presentation director. Deliver a PowerPoint file the user can present
 8. Read [references/design-taste.md](references/design-taste.md), derive a content-specific design thesis, motif, tensions, signature moves, and anti-defaults, then lock `tasteProfile`. A direction that fails the content-swap test is not ready.
 9. Create the final `DESIGN.md` only after style, reference, and taste resolution. Style-selection boards are temporary decision artifacts, not production assets.
 10. Create `presentation.json` before rendering slides and preserve its `deliveryContract`, `styleDecision`, and `tasteProfile` records.
-11. Lock the deck narrative, then give every slide a `narrativeBeat` and `visualPlan`, and every asset a structured production brief. Run `prepare-creative.mjs --strict` before generating production assets. Resolve every error and warning; use its generated narrative map, storyboard, asset plan, and provider briefs as the production source.
-12. Render representative static samples, including the opening and a specialist-rendered page when planned. Lock them with `lock-design.mjs` before parallel production. Manifest 1.5 locks both the creative digest and visual samples.
+11. Follow the current manifest's creative contract. For Manifest 1.7, lock the narrative, content-preference DNA, and delivery envelope; then give every slide a stable claim, `narrativeBeat`, `visualPlan`, renderer-neutral `pageDesign`, delivery cues, sources, and acceptance criteria. Read [references/quality-contracts.md](references/quality-contracts.md) and [references/content-delivery.md](references/content-delivery.md), then run `prepare-creative.mjs --strict`. Treat compiled artifacts as production truth.
+12. Render representative static samples, including the opening and a specialist-rendered page when planned. Lock them with `lock-design.mjs` before parallel production. Manifest 1.7 locks the creative digest, delivery intent, and visual samples.
 13. Run `prepare-build.mjs`, produce only dirty tasks, and enforce the generated task graph's dependencies and exclusive write paths. Each worker owns its slide build capsule and writes a matching receipt last. Only the Director may update shared truth or final assembly.
 14. Build the most-visible static frame before adding animation. For high-impact generative assets, produce the declared variants and record the selected candidate with `record-asset-selection.mjs`.
-15. Record completed slide builds and QA with the production scripts, recheck output hashes, then render, inspect, assemble, and open-check the final PPTX. Do not stop at source files or intermediate renders.
+15. Record completed slide builds and inspect exact renders against the current artifact rubric. Manifest 1.7 receipts also require truthful native-capability declarations; after final assembly, audit the opened PPTX, rehearse its delivery plan, and compile the dual artifact/delivery scorecard. Recheck hashes and do not stop at source files or intermediate renders.
 
 Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments as audience-facing slide copy.
 
@@ -71,6 +72,8 @@ For a requested Three.js scene, add `--require three_d`. Rerun `check-capabiliti
 - Read [references/routing.md](references/routing.md) before assigning renderers or output formats.
 - Read [references/manifest.md](references/manifest.md) before authoring `presentation.json`.
 - Read [references/creative-planning.md](references/creative-planning.md) before locking the narrative, planning slide rhythm, decomposing assets, or handing work to providers.
+- Read [references/quality-contracts.md](references/quality-contracts.md) before authoring claims, sources, page-design IR, acceptance criteria, render observations, or repair plans.
+- Read [references/content-delivery.md](references/content-delivery.md) before inferring content preferences, allocating presentation time, writing speaker notes, rehearsing, or declaring editability.
 - Read [references/review.md](references/review.md) before final rendering and delivery.
 - Read [references/prompt-contracts.md](references/prompt-contracts.md) before handing work to imagegen, HyperFrames, Remotion, UI capture, or a diagram renderer.
 - Read [references/production-optimization.md](references/production-optimization.md) before representative samples, parallel production, incremental rebuilds, or risk-based QA.
@@ -166,4 +169,4 @@ Run the workspace validator:
 node <skill-dir>/scripts/validate-workspace.mjs <project-dir>
 ```
 
-For Manifest 1.5, validation also requires a current compiled creative plan, immutable provider briefs, a design lock tied to the creative digest, complete incremental build state, passing slide QA, and a passing final full-deck review. Then execute the renderer-specific checks in [references/review.md](references/review.md). Resolve every capability mismatch, stale creative plan, broken narrative bridge, repetitive storyboard, unrecorded variant choice, stale cache, content-swap failure, generic visual default, unintended overlap, clipping, broken connector, missing asset, unresolved placeholder, contrast failure, and motion-budget violation. Deliver only the requested final outputs plus a concise summary of what remains flattened or replaceable.
+For Manifest 1.7, validation also requires current evidence, page-design, content-preference, delivery-plan, rubric, provider-brief, build, observation, rehearsal, native-capability, and dual-scorecard evidence. Then execute [references/review.md](references/review.md). Deliver only requested outputs plus the editability exceptions reported by `output/native-capability-report.json`.

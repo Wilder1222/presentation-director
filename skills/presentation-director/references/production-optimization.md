@@ -1,5 +1,7 @@
 # Production Optimization
 
+Manifest 1.7 adds three lightweight director-owned tasks after parallel slide production: native-capability reporting, delivery rehearsal, and dual quality scoring. They add no renderer dependency and must not be delegated to slide workers because they aggregate shared build and QA evidence.
+
 ## Contents
 
 1. Purpose
@@ -13,7 +15,7 @@
 
 ## Purpose
 
-Use Manifest 1.5 production records to improve story and material quality while reducing full-deck rework. Compile the narrative, storyboard, assets, and provider briefs; lock representative visual evidence before parallel work; hash every slide's design and inputs; rebuild only changed work; isolate worker output paths; and retain a mandatory full-deck final review.
+Use Manifest 1.7 production records to improve story, delivery, and material quality while reducing full-deck rework. Compile evidence, content preferences, delivery timing, narrative, page designs, storyboard, rubric, assets, and provider briefs; lock representative visual evidence before parallel work; hash every slide's design and inputs; rebuild only changed work; isolate worker output paths; and retain observed artifact and delivery review.
 
 ## Creative compilation
 
@@ -23,7 +25,7 @@ After narrative, style, taste, `DESIGN.md`, and the slide plan are coherent, run
 node <skill-dir>/scripts/prepare-creative.mjs <project-dir> --strict
 ```
 
-This creates a content-addressed creative plan under `tmp/creative/` plus immutable specialist briefs under `tmp/provider-briefs/`. Resolve every strict issue before representative samples. Changes to the narrative, slide titles, claims or content, renderer routing, visual rhythm, asset briefs, motion, or 3D make the plan stale and invalidate any existing design lock.
+This creates content-addressed evidence, page-design, rubric, creative-plan, and immutable provider-brief records. Resolve every strict issue before representative samples. Changes to acceptance criteria, sources, narrative, slide titles, claims or content, renderer routing, page design, visual rhythm, asset briefs, motion, or 3D make the plan stale and invalidate any existing design lock.
 
 ## Representative design lock
 
@@ -86,15 +88,27 @@ Write `receipt.json` last, using the task's current input hash:
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.1",
   "slideId": "s03",
   "renderer": "svg",
   "inputHash": "<task cacheKey>",
   "status": "complete",
   "sourceFiles": ["diagram.mmd", "diagram.svg"],
-  "preview": "preview.png"
+  "preview": "preview.png",
+  "nativeCapabilities": {
+    "nativeText": true,
+    "nativeShapes": false,
+    "nativeCharts": false,
+    "replaceableSvg": true,
+    "replaceableImages": false,
+    "embeddedVideo": false,
+    "flattened": false,
+    "losses": ["The complex topology remains a replaceable SVG rather than native connectors."]
+  }
 }
 ```
+
+Manifest 1.7 requires all seven booleans and a concrete `losses` array in every receipt. These fields describe the slide before final assembly; the final native-capability audit described in `content-delivery.md` rechecks the assembled PPTX and reports any assembly-stage change.
 
 ## Build recording
 
@@ -105,7 +119,7 @@ node <skill-dir>/scripts/record-build.mjs <project-dir> --slide s03,s05
 node <skill-dir>/scripts/record-build.mjs <project-dir> --all
 ```
 
-Recording is transactional for the selected slides. Missing outputs, invalid receipts, stale task hashes, or mismatched renderers fail the command. A manifest or design change makes the prepared plan stale and requires `prepare-build.mjs` again.
+Recording is transactional for the selected slides. Missing outputs, invalid receipts, stale task hashes, or mismatched renderers fail the command. A content-preference, deck/slide delivery, visible copy, source, renderer, asset, motion, manifest, or design change makes the creative/build evidence stale and requires creative recompilation, representative re-lock, and `prepare-build.mjs` again.
 
 For a generative asset with `selectionMode: variants`, record the inspected choice before final build preparation:
 
@@ -120,34 +134,46 @@ node <skill-dir>/scripts/record-asset-selection.mjs <project-dir> \
 
 The selection record preserves candidate, canonical output, and provider-brief hashes. Changing a selected file makes final validation fail instead of silently substituting a different asset.
 
-## Risk-based QA
+## Risk-based QA and repair
 
-During iteration, inspect every dirty slide and every medium/high-risk cached slide. Review video, 3D, flattened, externally sourced, multi-asset, long-title, and visual-peak slides more deeply. Save isolated worker findings under `tmp/qa/<slide-id>.json`; let the Director merge accepted results:
+During iteration, inspect every dirty slide and every medium/high-risk cached slide. Review video, 3D, flattened, externally sourced, multi-asset, long-title, and visual-peak slides more deeply. Evaluate the exact render against all matching checks in `tmp/qa/deck-rubric.json`, then record an observation input:
+
+```text
+node <skill-dir>/scripts/record-render-observation.mjs <project-dir> \
+  --input tmp/qa/inputs/s05-r1.json
+```
+
+Failed observations before the round limit must include a minimal repair plan. Repair only the failing copy, layout, typography, asset, connector, diagram, motion, or renderer route; do not restart the whole slide. After the corrected render passes, bind the current observation to QA:
 
 ```text
 node <skill-dir>/scripts/record-qa.mjs <project-dir> --slide s05 \
-  --status passed --reviewer reviewer --note "Poster, labels, crop, and editability verified"
+  --status passed --reviewer reviewer --note "Poster, labels, crop, and editability verified" \
+  --observation tmp/qa/observations/s05/r2.json
 ```
 
 Risk-based iteration never replaces the final full review. Before delivery, review every slide at full size, inspect the montage for rhythm, run provider checks, and open the final PPTX in the target application. Then record:
 
 ```text
+node <skill-dir>/scripts/record-render-observation.mjs <project-dir> \
+  --input tmp/qa/inputs/deck-final-r1.json
 node <skill-dir>/scripts/record-qa.mjs <project-dir> --final \
-  --status passed --reviewer director --note "All slides and final PPTX open-check passed"
+  --status passed --reviewer director --note "All slides and final PPTX open-check passed" \
+  --observation tmp/qa/observations/deck-final/r1.json
 ```
 
 Final pass fails when any slide lacks a passing QA record, its current build hash is incomplete, or a recorded output changed after build recording.
 
 ## Final acceptance
 
-Manifest 1.5 final validation requires:
+Manifest 1.7 final validation requires:
 
-- a current strict creative plan and unchanged generated provider briefs;
+- a current evidence bundle, alignment map, page-design index, binary rubric, strict creative plan, and unchanged provider briefs;
 - a recorded final selection for every `variants` asset, including the declared candidate count;
 - a current representative design lock;
 - a build plan matching the current manifest and design digest;
 - a complete cache-state record for every slide;
 - a QA plan that covers every slide;
-- passing slide-level records and a passing final full-deck review.
+- passing current render observations bound to every slide-level record and the final full-deck review.
+- a passing current delivery rehearsal, truthful native-capability report, and 100-point artifact and delivery scorecard.
 
 Use the optimization records as evidence of work completed, not as a substitute for visual judgment.

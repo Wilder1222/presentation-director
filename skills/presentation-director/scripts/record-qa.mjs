@@ -7,9 +7,12 @@ import {
   computeManifestBuildDigest,
   ensureProduction,
   exists,
+  hashPath,
   inspectBuildRecord,
   readJson,
   resolveProjectDir,
+  sha256,
+  stableStringify,
   workspacePath,
   writeJson,
 } from "./lib/production-state.mjs";
@@ -17,7 +20,7 @@ import {
 function usage() {
   console.error(
     "Usage: node scripts/record-qa.mjs [project-dir] (--slide <id> | --final) " +
-      "--status <passed|failed> --reviewer <name> --note <text> [--json]",
+      "--status <passed|failed> --reviewer <name> --note <text> [--observation <path>] [--json]",
   );
 }
 
@@ -29,6 +32,7 @@ function parseArgs(argv) {
     status: undefined,
     reviewer: undefined,
     note: undefined,
+    observation: undefined,
     json: false,
   };
   const args = [...argv];
@@ -37,7 +41,7 @@ function parseArgs(argv) {
     const flag = args.shift();
     if (flag === "--final") options.final = true;
     else if (flag === "--json") options.json = true;
-    else if (["--slide", "--status", "--reviewer", "--note"].includes(flag)) {
+    else if (["--slide", "--status", "--reviewer", "--note", "--observation"].includes(flag)) {
       const value = args.shift();
       if (!value) {
         usage();
@@ -47,6 +51,7 @@ function parseArgs(argv) {
       if (flag === "--status") options.status = value;
       if (flag === "--reviewer") options.reviewer = value;
       if (flag === "--note") options.note = value;
+      if (flag === "--observation") options.observation = value;
     } else {
       usage();
       process.exit(2);
@@ -56,6 +61,46 @@ function parseArgs(argv) {
   if (!new Set(["passed", "failed"]).has(options.status)) throw new Error("--status must be passed or failed.");
   if (!options.reviewer || !options.note) throw new Error("--reviewer and --note are required.");
   return options;
+}
+
+async function validateObservation(root, manifest, production, buildPlan, qaPlan, options) {
+  if (!["1.6", "1.7"].includes(manifest.version)) return null;
+  if (!options.observation) throw new Error("Manifest 1.6+ QA requires --observation from record-render-observation.mjs.");
+  const observationPath = workspacePath(root, options.observation, "render observation");
+  if (!(await exists(observationPath))) throw new Error(`Render observation is missing: ${options.observation}.`);
+  const observation = await readJson(observationPath);
+  const expectedScope = options.slideId ? "slide" : "deck";
+  if (observation.scope !== expectedScope || (options.slideId && observation.slideId !== options.slideId)) {
+    throw new Error("Render observation scope does not match the QA result.");
+  }
+  if (observation.status !== options.status) throw new Error("QA status must match the render observation status.");
+  if (observation.planGeneratedAt !== qaPlan.generatedAt) throw new Error("Render observation is stale because the QA plan changed.");
+  if (observation.manifestDigest !== buildPlan.manifestDigest) throw new Error("Render observation is stale because the manifest changed.");
+  if (observation.designDigest !== production.designLock.designDigest) throw new Error("Render observation is stale because the design lock changed.");
+  if (options.slideId) {
+    const planned = buildPlan.slides.find((slide) => slide.slideId === options.slideId);
+    if (!planned || observation.inputHash !== planned.inputHash) throw new Error("Render observation is stale because the slide input changed.");
+  }
+  const artifactPath = workspacePath(root, observation.artifact, "observed artifact");
+  if (!(await exists(artifactPath)) || observation.artifactHash !== await hashPath(artifactPath)) {
+    throw new Error("Observed artifact changed after review.");
+  }
+  const rubric = await readJson(workspacePath(root, production.creativePlan.deckRubric, "deck rubric"));
+  if (observation.rubricDigest !== sha256(stableStringify(rubric))) throw new Error("Render observation uses a stale deck rubric.");
+  if (observation.status === "failed" && observation.repairPlan && !observation.repairExhausted) {
+    const repairPath = workspacePath(root, observation.repairPlan, "repair plan");
+    if (!(await exists(repairPath))) throw new Error("Repair plan is missing for the failed observation.");
+    const repair = await readJson(repairPath);
+    if (repair.observation !== options.observation || repair.observationHash !== sha256(stableStringify(observation))) {
+      throw new Error("Repair plan does not match the recorded observation.");
+    }
+  }
+  return {
+    path: options.observation.replace(/\\/g, "/"),
+    hash: sha256(stableStringify(observation)),
+    round: observation.round,
+    rubricPassed: observation.status === "passed",
+  };
 }
 
 export async function recordQa(projectDir, options = {}) {
@@ -80,6 +125,7 @@ export async function recordQa(projectDir, options = {}) {
     ? await readJson(resultsPath)
     : { schemaVersion: "1.0", slides: {}, final: { status: "pending", completedAt: null, reviewer: null, note: null } };
   const reviewedAt = new Date().toISOString();
+  const observation = await validateObservation(root, manifest, production, buildPlan, qaPlan, options);
 
   if (options.slideId) {
     const slide = qaPlan.slides.find((item) => item.slideId === options.slideId);
@@ -91,6 +137,7 @@ export async function recordQa(projectDir, options = {}) {
       note: options.note,
       riskLevel: slide.risk.level,
       planGeneratedAt: qaPlan.generatedAt,
+      observation,
     };
     results.final = { status: "pending", completedAt: null, reviewer: null, note: null };
     production.qa.finalFullReview = { status: "pending", completedAt: null, reviewer: null };
@@ -115,6 +162,7 @@ export async function recordQa(projectDir, options = {}) {
       reviewer: options.reviewer,
       note: options.note,
       planGeneratedAt: qaPlan.generatedAt,
+      observation,
     };
     production.qa.finalFullReview = {
       status: options.status,
@@ -123,6 +171,8 @@ export async function recordQa(projectDir, options = {}) {
     };
   }
   results.updatedAt = reviewedAt;
+  production.delivery.qualityScorecardStatus = "pending";
+  production.delivery.qualityScorecardHash = null;
   const ledgerPath = workspacePath(root, production.qa.ledger, "QA ledger");
   const scope = options.slideId || "deck-final";
   const ledgerLine = `${reviewedAt} | ${options.status} | ${scope} | ${options.note.replace(/[\r\n]+/g, " ")} | ${options.reviewer}\n`;

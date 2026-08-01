@@ -45,6 +45,29 @@ function parseArgs(argv) {
   return options;
 }
 
+function validateNativeCapabilities(receipt, slideId) {
+  const capability = receipt.nativeCapabilities;
+  const keys = [
+    "nativeText",
+    "nativeShapes",
+    "nativeCharts",
+    "replaceableSvg",
+    "replaceableImages",
+    "embeddedVideo",
+    "flattened",
+  ];
+  if (!capability || typeof capability !== "object" || Array.isArray(capability)) {
+    throw new Error(`Cannot record ${slideId}; Manifest 1.7 receipts require nativeCapabilities.`);
+  }
+  for (const key of keys) {
+    if (typeof capability[key] !== "boolean") throw new Error(`Cannot record ${slideId}; nativeCapabilities.${key} must be boolean.`);
+  }
+  if (!Array.isArray(capability.losses) || capability.losses.some((item) => typeof item !== "string" || !item.trim())) {
+    throw new Error(`Cannot record ${slideId}; nativeCapabilities.losses must be an array of concrete strings.`);
+  }
+  return capability;
+}
+
 export async function recordBuild(projectDir, options = {}) {
   const root = resolveProjectDir(projectDir);
   const manifestPath = path.join(root, "presentation.json");
@@ -85,6 +108,12 @@ export async function recordBuild(projectDir, options = {}) {
     if (receipt.slideId !== slidePlan.slideId || receipt.renderer !== slidePlan.renderer || receipt.inputHash !== slidePlan.inputHash || receipt.status !== "complete") {
       throw new Error(`Cannot record ${slidePlan.slideId}; receipt must match slideId, renderer, inputHash, and complete status from the current plan.`);
     }
+    if (manifest.version === "1.7" && receipt.schemaVersion !== "1.1") {
+      throw new Error(`Cannot record ${slidePlan.slideId}; Manifest 1.7 receipts require schemaVersion 1.1.`);
+    }
+    const nativeCapabilities = manifest.version === "1.7"
+      ? validateNativeCapabilities(receipt, slidePlan.slideId)
+      : receipt.nativeCapabilities || null;
     const outputs = [];
     for (const output of slidePlan.outputs || []) {
       const target = workspacePath(root, output.path, `slide ${slidePlan.slideId} output`);
@@ -97,6 +126,9 @@ export async function recordBuild(projectDir, options = {}) {
       renderer: slidePlan.renderer,
       inputHash: slidePlan.inputHash,
       outputs,
+      nativeCapabilities,
+      sourceFiles: Array.isArray(receipt.sourceFiles) ? receipt.sourceFiles : [],
+      preview: receipt.preview || null,
       completedAt: new Date().toISOString(),
     });
   }
@@ -113,6 +145,15 @@ export async function recordBuild(projectDir, options = {}) {
   state.updatedAt = new Date().toISOString();
   production.build.lastRecordedAt = state.updatedAt;
   production.qa.finalFullReview = { status: "pending", completedAt: null, reviewer: null };
+  production.delivery = {
+    ...production.delivery,
+    rehearsalStatus: "pending",
+    rehearsalHash: null,
+    qualityScorecardStatus: "pending",
+    qualityScorecardHash: null,
+    nativeCapabilityStatus: "pending",
+    nativeCapabilityHash: null,
+  };
   await Promise.all([writeJson(statePath, state), writeJson(manifestPath, manifest)]);
   return { recorded, statePath: production.build.cacheState };
 }

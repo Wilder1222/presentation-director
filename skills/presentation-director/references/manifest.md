@@ -8,12 +8,13 @@
 4. Capability profile
 5. Style decision
 6. Design taste profile
-7. Creative planning
-8. Production optimization
-9. Deck and slide objects
-10. Assets and motion
-11. Optional Three.js component
-12. Sources and validation
+7. Content preference and delivery planning
+8. Creative and quality contracts
+9. Production optimization and observed QA
+10. Deck and slide objects
+11. Assets and motion
+12. Optional Three.js component
+13. Sources and validation
 
 ## Purpose
 
@@ -23,7 +24,7 @@ Use `presentation.json` as the source of truth for narrative, renderer routing, 
 
 ```json
 {
-  "version": "1.5",
+  "version": "1.7",
   "status": "planning",
   "storage": {},
   "deliveryContract": {},
@@ -31,6 +32,8 @@ Use `presentation.json` as the source of truth for narrative, renderer routing, 
   "capabilityProfile": {},
   "styleDecision": {},
   "tasteProfile": {},
+  "contentPreference": {},
+  "delivery": {},
   "production": {},
   "deck": {},
   "motionBudget": {},
@@ -205,9 +208,15 @@ Rules:
 
 Read `design-taste.md` before authoring this object.
 
-## Creative planning
+## Content preference and delivery planning
 
-Manifest 1.5 locks the causal story and compiles the visual and material plan before representative samples or production assets:
+Manifest 1.7 adds a non-visual preference profile and a rehearsable time contract. `contentPreference` records compression, evidence order, preferred and rejected content moves, and speaker-note detail. Top-level `delivery` records mode, total seconds, reserve, presenter goal, and timing tolerance; each slide records `timeBudgetSeconds`, complementary `spokenDetail`, semantic `attentionCues`, and a non-closing `transitionLine`.
+
+Slide time budgets plus reserve must equal the deck total. Attention targets must reference `pageDesign.regions[].id`. Run `prepare-creative.mjs --strict` to compile `tmp/preferences/content-preference.json` and `tmp/delivery/delivery-plan.json`. See `content-delivery.md` for the full schema, rehearsal input, native-capability receipt, and scorecard contract.
+
+## Creative and quality contracts
+
+Manifest 1.7 locks the causal story, content preferences, and delivery timing, then compiles evidence, page-design intent, visual rhythm, materials, provider handoffs, and a task-specific binary rubric before representative samples or production assets:
 
 ```json
 {
@@ -224,7 +233,7 @@ Manifest 1.5 locks the causal story and compiles the visual and material plan be
   "production": {
     "creativePlan": {
       "status": "prepared",
-      "contractVersion": "1.0",
+      "contractVersion": "1.2",
       "preparedAt": "2026-07-31T07:30:00.000Z",
       "digest": "<sha256>",
       "narrativeMap": "tmp/creative/narrative-map.json",
@@ -233,6 +242,12 @@ Manifest 1.5 locks the causal story and compiles the visual and material plan be
       "report": "tmp/creative/report.json",
       "providerBriefsRoot": "tmp/provider-briefs",
       "providerIndex": "tmp/provider-briefs/index.json",
+      "evidenceBundle": "tmp/evidence/evidence-bundle.json",
+      "contentAlignment": "tmp/evidence/content-alignment.json",
+      "pageDesignIndex": "tmp/design/page-design/index.json",
+      "deckRubric": "tmp/qa/deck-rubric.json",
+      "contentPreference": "tmp/preferences/content-preference.json",
+      "deliveryPlan": "tmp/delivery/delivery-plan.json",
       "artifactHashes": {},
       "warnings": 0
     }
@@ -240,11 +255,11 @@ Manifest 1.5 locks the causal story and compiles the visual and material plan be
 }
 ```
 
-Use `prepare-creative.mjs --strict` to write these records; never author their digests or generated artifacts manually. Any change to narrative, slide titles, claims or content, renderer routing, visual plans, asset briefs, motion intent, or 3D intent invalidates the plan. Read `creative-planning.md` for the full contract.
+Use `prepare-creative.mjs --strict` to write these records; never author their digests or generated artifacts manually. Any change to acceptance criteria, sources, narrative, slide titles, claims or content, renderer routing, visual or page-design plans, asset briefs, motion intent, or 3D intent invalidates the plan. Read `creative-planning.md` and `quality-contracts.md` for the full contract.
 
 ## Production optimization
 
-Manifest 1.5 carries forward Manifest 1.4 production optimization and binds it to the compiled creative plan:
+Manifest 1.7 carries forward Manifest 1.4 production optimization and binds it to compiled evidence, page-design, content-preference, delivery, rubric, and creative contracts:
 
 ```json
 {
@@ -280,12 +295,26 @@ Manifest 1.5 carries forward Manifest 1.4 production optimization and binds it t
     "plan": "tmp/qa-plan.json",
     "results": "tmp/qa-results.json",
     "ledger": "tmp/qa-ledger.txt",
+    "rubric": "tmp/qa/deck-rubric.json",
+    "observationsRoot": "tmp/qa/observations",
+    "repairsRoot": "tmp/qa/repairs",
+    "maxRepairRounds": 2,
+    "repairStrategy": "minimal",
     "finalFullReviewRequired": true,
     "finalFullReview": {
       "status": "passed",
       "completedAt": "2026-07-31T09:30:00.000Z",
       "reviewer": "director"
     }
+  },
+  "delivery": {
+    "rehearsal": "tmp/delivery/rehearsal.json",
+    "nativeCapabilityAudit": "tmp/delivery/native-capability-audit.json",
+    "qualityScorecard": "output/quality-scorecard.json",
+    "nativeCapabilityReport": "output/native-capability-report.json",
+    "rehearsalStatus": "passed",
+    "qualityScorecardStatus": "passed",
+    "nativeCapabilityStatus": "complete"
   }
 }
 ```
@@ -304,12 +333,12 @@ renderer needs a different capsule location:
 ```
 
 The capsule is the renderer-neutral assembly handoff. It contains the slide's source or assembly
-instructions, a preview when available, and a `receipt.json` whose slide id, renderer, and input
-hash match the current build task.
+instructions, a preview when available, and a `receipt.json` whose slide id, renderer, input
+hash, and Manifest 1.7 `nativeCapabilities` match the current build task.
 
-Use `lock-design.mjs` to create the digest and sample records. Do not author hashes manually. Use `prepare-build.mjs` to write build, task, and QA plans; use `record-build.mjs` only after declared outputs and the current capsule receipt exist; use `record-qa.mjs` to merge slide reviews and final review evidence.
+Use `lock-design.mjs` to create the digest and sample records. Do not author hashes manually. Use `prepare-build.mjs` to write build, task, and QA plans; use `record-build.mjs` only after declared outputs and the current capsule receipt exist; use `record-render-observation.mjs` and `record-qa.mjs` for artifact evidence; then record a rehearsal and compile native-capability and dual-score reports as described in `content-delivery.md`.
 
-The task graph gives workers exclusive output paths and rejects nested path ownership. Only the Director may modify `DESIGN.md`, `presentation.json`, cache state, shared QA results, or final assembly. A final Manifest 1.5 fails when its creative, design, or manifest digest is stale; a generated creative artifact or provider brief changed; any slide build is incomplete or changed after recording; an approved sample changed; or any slide lacks a passing final review.
+The task graph gives workers exclusive output paths and rejects nested path ownership. Only the Director may modify shared truth. A final Manifest 1.7 also fails when delivery timing, content preferences, rehearsal evidence, native-capability declarations, or either quality score is stale or incomplete.
 
 Read `production-optimization.md` for the complete execution contract.
 
@@ -321,6 +350,7 @@ Read `production-optimization.md` for the complete execution contract.
   "audience": "Enterprise technology leaders",
   "objective": "Approve a six-week pilot",
   "centralTakeaway": "A governed agent runtime can automate repeatable knowledge work without losing control.",
+  "acceptanceCriteria": ["The final recommendation is explicit and reversible."],
   "language": "zh-CN",
   "aspectRatio": "16:9",
   "primaryReference": "openai-editorial-inspired",
@@ -342,6 +372,7 @@ Use one primary reference. It must match `styleDecision.selectedId` or the suppl
 {
   "id": "s04",
   "role": "architecture",
+  "claimId": "claim-control-runtime",
   "claimKind": "original",
   "claim": "Governance surrounds every planning and execution step.",
   "title": "Control is part of the runtime—not an afterthought",
@@ -361,6 +392,28 @@ Use one primary reference. It must match `styleDecision.selectedId` or the suppl
     "visualPeak": true,
     "continuityCue": "The evidence margin becomes a control rail around every layer."
   },
+  "pageDesign": {
+    "designIntent": "Make governance visibly surround the execution stack.",
+    "backgroundLayer": "Warm-white field without decorative texture.",
+    "layoutLayer": "One layered stack inside a 12-column safe grid.",
+    "contentLayer": "Native takeaway, editable labels, and vector edges.",
+    "focalPoint": "control-rail",
+    "negativeSpaceTarget": 0.32,
+    "regions": [
+      { "id": "takeaway", "role": "headline", "anchor": "top-left", "span": "8 columns", "priority": "primary" },
+      { "id": "control-rail", "role": "diagram", "anchor": "center", "span": "10 columns", "priority": "secondary" }
+    ],
+    "readingPath": ["takeaway", "control-rail"]
+  },
+  "delivery": {
+    "timeBudgetSeconds": 70,
+    "spokenDetail": "Explain why the control rail makes the decision reversible without reading the title.",
+    "attentionCues": [
+      { "atSeconds": 8, "target": "control-rail", "purpose": "Focus the audience on the governing mechanism." }
+    ],
+    "transitionLine": "The next slide tests whether that control survives execution."
+  },
+  "acceptanceCriteria": ["Every connector has one declared semantic."],
   "content": {
     "layers": ["Experience", "Agent runtime", "Models and tools", "Governance and observability"]
   },
@@ -387,6 +440,10 @@ Required fields:
 - `editability`: one of `native`, `mixed`, `replaceable-media`, or `flattened`.
 - `narrativeBeat`: the live audience question, evidence type, consequence, and non-closing bridge.
 - `visualPlan`: the slide silhouette, density, focal mode, visual-peak flag, and continuity cue.
+- `claimId`: stable identifier used across evidence, rubric, and output alignment records.
+- `pageDesign`: renderer-neutral design intent, layers, semantic regions, focal point, negative-space target, and reading path.
+- `delivery`: slide time budget, complementary spoken detail, semantic attention cues, and the transition to the next beat.
+- `acceptanceCriteria`: optional task-specific binary checks added to the compiled deck rubric.
 
 For `image_slide`, set `editability` to `flattened` and add a non-empty `rasterExceptionReason`. Do not use `image_slide` for architecture, diagrams, data, charts, tables, or any slide whose facts need native correction.
 
@@ -444,7 +501,7 @@ After inspecting the declared candidates, use `record-asset-selection.mjs` to po
 }
 ```
 
-A final Manifest 1.5 requires a current selection record for every asset using `selectionMode: variants`. The canonical asset, candidates, and provider brief must still match their recorded hashes. Recording a reviewed `single` or `deterministic` asset is optional.
+A final Manifest 1.6+ requires a current selection record for every asset using `selectionMode: variants`. The canonical asset, candidates, and provider brief must still match their recorded hashes. Recording a reviewed `single` or `deterministic` asset is optional.
 
 Use project-relative paths. Never use paths outside the presentation workspace.
 

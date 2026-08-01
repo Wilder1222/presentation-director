@@ -32,6 +32,8 @@ presentation-director/
 │   │   ├── dependencies.json              # Capability profiles and provider detection
 │   │   ├── manifest.md                    # Intermediate manifest contract
 │   │   ├── creative-planning.md           # Narrative, storyboard, assets, and provider briefs
+│   │   ├── quality-contracts.md            # Evidence, page-design IR, rubric, observation, and repair
+│   │   ├── content-delivery.md             # Content preferences, timing, rehearsal, scores, editability report
 │   │   └── review.md                      # Delivery acceptance criteria
 │   └── scripts/                           # Initialization, production planning, cache, QA, validation
 ├── tests/                                 # Node integration tests for production contracts
@@ -69,8 +71,15 @@ tmp/
 tmp/build-cache/
 tmp/creative/
 tmp/design-lock/
+tmp/design/page-design/
+tmp/evidence/
+tmp/preferences/
+tmp/delivery/
 tmp/provider-briefs/
 tmp/qa/
+tmp/qa/inputs/
+tmp/qa/observations/
+tmp/qa/repairs/
 tmp/slide-builds/<slide-id>/
 ```
 
@@ -78,7 +87,7 @@ tmp/slide-builds/<slide-id>/
 
 ```json
 {
-  "version": "1.5",
+  "version": "1.7",
   "status": "planning",
   "storage": {
     "policy": "workspace-local",
@@ -124,6 +133,7 @@ tmp/slide-builds/<slide-id>/
     "audience": "Enterprise technology leaders",
     "objective": "Approve a pilot",
     "centralTakeaway": "A governed runtime makes agent automation controllable.",
+    "acceptanceCriteria": ["The recommendation is explicit and reversible."],
     "language": "en-US",
     "aspectRatio": "16:9",
     "primaryReference": "openai-editorial-inspired",
@@ -169,6 +179,24 @@ tmp/slide-builds/<slide-id>/
     "contentSwapTest": "pass",
     "authorshipNote": "Governance provenance becomes the recurring composition device."
   },
+  "contentPreference": {
+    "status": "locked",
+    "source": "inferred",
+    "compression": "high",
+    "evidenceOrder": "after-claim",
+    "prefers": ["giant-conclusion", "product-proof"],
+    "avoids": ["long-background", "generic-market-context"],
+    "speakerNotesDetail": "high",
+    "inferenceNote": "The brief favors concise conclusions and detailed presenter notes."
+  },
+  "delivery": {
+    "status": "locked",
+    "mode": "live",
+    "totalSeconds": 600,
+    "reserveSeconds": 30,
+    "presenterGoal": "Secure approval for a bounded pilot.",
+    "timingTolerance": 0.15
+  },
   "motionBudget": {
     "maxVideoSlides": 3,
     "maxTotalVideoSeconds": 45,
@@ -182,13 +210,13 @@ See [`manifest.md`](../skills/presentation-director/references/manifest.md) for 
 
 ## Production optimization scripts
 
-After the narrative, slide visual plans, and asset briefs are locked, compile the creative production contract:
+After sources, narrative, content preferences, deck timing, slide visual and delivery plans, renderer-neutral page designs, acceptance criteria, and asset briefs are locked, compile the creative and quality contracts:
 
 ```powershell
 node .\skills\presentation-director\scripts\prepare-creative.mjs <project-directory> --strict
 ```
 
-Inspect `tmp/creative/` and use the generated JSON in `tmp/provider-briefs/` for specialist calls. After representative samples are rendered, lock the design and prepare incremental work:
+Inspect `tmp/evidence/`, `tmp/preferences/`, `tmp/delivery/delivery-plan.json`, `tmp/design/page-design/`, `tmp/qa/deck-rubric.json`, and `tmp/creative/`; use generated JSON in `tmp/provider-briefs/` for specialist calls. After representative samples are rendered, lock the design and prepare incremental work:
 
 ```powershell
 node .\skills\presentation-director\scripts\lock-design.mjs <project-directory> `
@@ -205,12 +233,21 @@ Each production task owns `tmp/slide-builds/<slide-id>/` plus its declared media
 matching `receipt.json` into that capsule only after the slide source and preview are complete; its
 `inputHash` must equal the task's `cacheKey`.
 
-After declared outputs exist, record builds and QA:
+After declared outputs exist, record builds, exact render observations, and QA:
 
 ```powershell
 node .\skills\presentation-director\scripts\record-build.mjs <project-directory> --all
+node .\skills\presentation-director\scripts\record-render-observation.mjs <project-directory> `
+  --input tmp/qa/inputs/s01-r1.json
 node .\skills\presentation-director\scripts\record-qa.mjs <project-directory> `
-  --slide s01 --status passed --reviewer reviewer --note "Full-size inspection passed"
+  --slide s01 --status passed --reviewer reviewer --note "Full-size inspection passed" `
+  --observation tmp/qa/observations/s01/r1.json
+
+node .\skills\presentation-director\scripts\compile-native-capability-report.mjs <project-directory> `
+  --input tmp/delivery/native-capability-audit-input.json
+node .\skills\presentation-director\scripts\record-delivery-rehearsal.mjs <project-directory> `
+  --input tmp/delivery/rehearsal-input.json
+node .\skills\presentation-director\scripts\compile-quality-scorecard.mjs <project-directory>
 ```
 
 Only the Director writes shared state. Worker tasks use the exclusive paths generated in `tmp/task-graph.json`.

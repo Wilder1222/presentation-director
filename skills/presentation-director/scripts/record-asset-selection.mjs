@@ -75,8 +75,8 @@ export async function recordAssetSelection(projectDir, options = {}) {
   const manifestPath = path.join(root, "presentation.json");
   const manifest = await readJson(manifestPath);
   const production = ensureProduction(manifest);
-  if (manifest.version !== "1.5" || production.creativePlan.status !== "prepared") {
-    throw new Error("Prepare a Manifest 1.5 creative plan before selecting asset variants.");
+  if (!["1.5", "1.6", "1.7"].includes(manifest.version) || production.creativePlan.status !== "prepared") {
+    throw new Error("Prepare a Manifest 1.5+ creative plan before selecting asset variants.");
   }
   if (production.creativePlan.digest !== computeCreativeDigest(manifest)) {
     throw new Error("The creative plan is stale; run prepare-creative.mjs again.");

@@ -4,10 +4,12 @@ import { access, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  CREATIVE_CONTRACT_VERSION,
   computeCreativeDigest,
   computeDesignDigest,
   computeManifestBuildDigest,
   hashFile,
+  hashPath,
   inspectBuildRecord,
   sha256,
   stableStringify,
@@ -66,6 +68,11 @@ const CREATIVE_ASSET_METHODS = new Set([
   "native",
 ]);
 const CREATIVE_SELECTION_MODES = new Set(["deterministic", "single", "variants"]);
+const CONTENT_PREFERENCE_SOURCES = new Set(["specified", "inferred", "default"]);
+const CONTENT_COMPRESSION = new Set(["low", "medium", "high"]);
+const EVIDENCE_ORDERS = new Set(["before-claim", "after-claim", "contextual"]);
+const NOTES_DETAIL = new Set(["low", "medium", "high"]);
+const DELIVERY_MODES = new Set(["live", "async", "self-guided"]);
 
 function parseArgs(argv) {
   const projectDir = argv.find((arg) => !arg.startsWith("--"));
@@ -128,9 +135,133 @@ function validationFailure(issues) {
   };
 }
 
+function validateManifest17Intent(manifest, slides, draft, issues) {
+  if (manifest.version !== "1.7") return;
+  const preference = manifest.contentPreference;
+  if (!preference || typeof preference !== "object" || Array.isArray(preference)) {
+    addIssue(issues, "error", "contentPreference.missing", "Manifest 1.7 requires contentPreference.");
+  } else {
+    if (!new Set(["draft", "locked"]).has(preference.status)) addIssue(issues, "error", "contentPreference.status", "status must be draft or locked.");
+    if (!CONTENT_PREFERENCE_SOURCES.has(preference.source)) addIssue(issues, "error", "contentPreference.source", "source must be specified, inferred, or default.");
+    if (!CONTENT_COMPRESSION.has(preference.compression)) addIssue(issues, "error", "contentPreference.compression", "compression must be low, medium, or high.");
+    if (!EVIDENCE_ORDERS.has(preference.evidenceOrder)) addIssue(issues, "error", "contentPreference.evidenceOrder", "evidenceOrder is unsupported.");
+    if (!NOTES_DETAIL.has(preference.speakerNotesDetail)) addIssue(issues, "error", "contentPreference.speakerNotesDetail", "speakerNotesDetail is unsupported.");
+    for (const key of ["prefers", "avoids"]) {
+      if (!Array.isArray(preference[key]) || preference[key].some((item) => !nonEmpty(item))) addIssue(issues, "error", `contentPreference.${key}`, `${key} must be an array of non-empty strings.`);
+    }
+    if (!draft) {
+      if (preference.status !== "locked") addIssue(issues, "error", "contentPreference.unlocked", "Final delivery requires locked content preferences.");
+      if (!preference.prefers?.length || !preference.avoids?.length) addIssue(issues, "error", "contentPreference.sparse", "Final delivery requires concrete prefers and avoids entries.");
+      if (preference.source === "inferred" && !nonEmpty(preference.inferenceNote)) addIssue(issues, "error", "contentPreference.inferenceNote", "Inferred preferences require inferenceNote.");
+    }
+  }
+
+  const delivery = manifest.delivery;
+  if (!delivery || typeof delivery !== "object" || Array.isArray(delivery)) {
+    addIssue(issues, "error", "delivery.missing", "Manifest 1.7 requires delivery planning.");
+    return;
+  }
+  if (!new Set(["draft", "locked"]).has(delivery.status)) addIssue(issues, "error", "delivery.status", "delivery.status must be draft or locked.");
+  if (!DELIVERY_MODES.has(delivery.mode)) addIssue(issues, "error", "delivery.mode", "delivery.mode is unsupported.");
+  const totalSeconds = Number(delivery.totalSeconds);
+  const reserveSeconds = Number(delivery.reserveSeconds);
+  const tolerance = Number(delivery.timingTolerance);
+  if (!Number.isFinite(totalSeconds) || totalSeconds < 0) addIssue(issues, "error", "delivery.totalSeconds", "totalSeconds must be non-negative.");
+  if (!Number.isFinite(reserveSeconds) || reserveSeconds < 0 || (totalSeconds > 0 && reserveSeconds >= totalSeconds)) addIssue(issues, "error", "delivery.reserveSeconds", "reserveSeconds must fit inside totalSeconds.");
+  if (!Number.isFinite(tolerance) || tolerance < 0 || tolerance > 0.3) addIssue(issues, "error", "delivery.timingTolerance", "timingTolerance must be from 0 to 0.3.");
+  if (!Array.isArray(delivery.acceptanceCriteria) || delivery.acceptanceCriteria.some((item) => !nonEmpty(item))) addIssue(issues, "error", "delivery.acceptanceCriteria", "delivery.acceptanceCriteria must be an array of non-empty strings.");
+  if (!draft && (delivery.status !== "locked" || totalSeconds <= 0 || !nonEmpty(delivery.presenterGoal))) {
+    addIssue(issues, "error", "delivery.unlocked", "Final delivery requires a locked positive time budget and presenterGoal.");
+  }
+  let plannedSeconds = 0;
+  for (let index = 0; index < slides.length; index += 1) {
+    const slide = slides[index];
+    const location = `slides[${index}].delivery`;
+    const plan = slide.delivery;
+    if (!plan || typeof plan !== "object" || Array.isArray(plan)) {
+      addIssue(issues, "error", "slide.delivery", "Manifest 1.7 requires delivery planning on every slide.", location);
+      continue;
+    }
+    const budget = Number(plan.timeBudgetSeconds);
+    if (!Number.isFinite(budget) || budget <= 0) addIssue(issues, "error", "slide.delivery.timeBudgetSeconds", "timeBudgetSeconds must be positive.", location);
+    else plannedSeconds += budget;
+    if (!nonEmpty(plan.spokenDetail)) addIssue(issues, "error", "slide.delivery.spokenDetail", "spokenDetail is required.", location);
+    if (index < slides.length - 1 && !nonEmpty(plan.transitionLine)) addIssue(issues, "error", "slide.delivery.transitionLine", "Non-closing slides require transitionLine.", location);
+    if (plan.acceptanceCriteria !== undefined && (!Array.isArray(plan.acceptanceCriteria) || plan.acceptanceCriteria.some((item) => !nonEmpty(item)))) addIssue(issues, "error", "slide.delivery.acceptanceCriteria", "acceptanceCriteria must be an array of non-empty strings.", location);
+    const regionIds = new Set((slide.pageDesign?.regions || []).map((region) => region.id));
+    if (!Array.isArray(plan.attentionCues) || !plan.attentionCues.length) addIssue(issues, "error", "slide.delivery.attentionCues", "At least one attention cue is required.", location);
+    for (const cue of plan.attentionCues || []) {
+      if (!Number.isFinite(Number(cue?.atSeconds)) || Number(cue.atSeconds) < 0 || Number(cue.atSeconds) >= budget) addIssue(issues, "error", "slide.delivery.cue_time", "Cue time must fit inside the slide budget.", location);
+      if (!regionIds.has(cue?.target)) addIssue(issues, "error", "slide.delivery.cue_target", "Cue target must reference a pageDesign region.", location);
+      if (!nonEmpty(cue?.purpose)) addIssue(issues, "error", "slide.delivery.cue_purpose", "Cue purpose is required.", location);
+    }
+  }
+  if (slides.length && plannedSeconds + reserveSeconds !== totalSeconds) addIssue(issues, "error", "delivery.budget_sum", "Slide budgets plus reserve must equal totalSeconds.");
+}
+
+async function validateManifest17DeliveryArtifacts(root, manifest, slides, draft, issues) {
+  if (manifest.version !== "1.7") return;
+  const delivery = manifest.production?.delivery;
+  if (!delivery || typeof delivery !== "object" || Array.isArray(delivery)) {
+    addIssue(issues, "error", "production.delivery", "Manifest 1.7 requires production.delivery.");
+    return;
+  }
+  const pathRules = {
+    rehearsal: /^tmp[\\/]delivery[\\/]/i,
+    nativeCapabilityAudit: /^tmp[\\/]delivery[\\/]/i,
+    qualityScorecard: /^output[\\/]/i,
+    nativeCapabilityReport: /^output[\\/]/i,
+  };
+  for (const [key, pattern] of Object.entries(pathRules)) {
+    if (!nonEmpty(delivery[key]) || !pattern.test(delivery[key])) addIssue(issues, "error", `production.delivery.${key}`, `${key} uses an invalid workspace path.`);
+    else await validateLocalPath(root, delivery[key], issues, `production.delivery.${key}`, draft);
+  }
+  if (draft) return;
+  if (delivery.rehearsalStatus !== "passed" || delivery.qualityScorecardStatus !== "passed" || delivery.nativeCapabilityStatus !== "complete") {
+    addIssue(issues, "error", "production.delivery.incomplete", "Final delivery requires a passed rehearsal and scorecard plus a complete native capability report.");
+    return;
+  }
+  try {
+    const [rehearsal, nativeAudit, scorecard, nativeReport, rubric, deliveryPlan] = await Promise.all([
+      JSON.parse(await readFile(workspacePath(root, delivery.rehearsal, "delivery rehearsal"), "utf8")),
+      JSON.parse(await readFile(workspacePath(root, delivery.nativeCapabilityAudit, "native capability audit"), "utf8")),
+      JSON.parse(await readFile(workspacePath(root, delivery.qualityScorecard, "quality scorecard"), "utf8")),
+      JSON.parse(await readFile(workspacePath(root, delivery.nativeCapabilityReport, "native capability report"), "utf8")),
+      JSON.parse(await readFile(workspacePath(root, manifest.production.creativePlan.deckRubric, "deck rubric"), "utf8")),
+      JSON.parse(await readFile(workspacePath(root, manifest.production.creativePlan.deliveryPlan, "delivery plan"), "utf8")),
+    ]);
+    if (delivery.rehearsalHash !== sha256(stableStringify(rehearsal)) || rehearsal.status !== "passed") addIssue(issues, "error", "production.delivery.rehearsal_changed", "Delivery rehearsal is missing, stale, or changed.");
+    if (rehearsal.creativeDigest !== manifest.production.creativePlan.digest || rehearsal.manifestDigest !== computeManifestBuildDigest(manifest) || rehearsal.deliveryPlanDigest !== sha256(stableStringify(deliveryPlan)) || rehearsal.rubricDigest !== sha256(stableStringify(rubric))) {
+      addIssue(issues, "error", "production.delivery.rehearsal_stale", "Delivery rehearsal does not match the current creative, build, timing, or rubric contract.");
+    }
+    try {
+      const finalObservation = JSON.parse(await readFile(workspacePath(root, rehearsal.finalObservation, "rehearsal final observation"), "utf8"));
+      const rehearsedArtifact = workspacePath(root, rehearsal.artifact, "rehearsed final artifact");
+      if (rehearsal.finalObservationHash !== sha256(stableStringify(finalObservation)) || finalObservation.artifact !== rehearsal.artifact || !(await exists(rehearsedArtifact)) || rehearsal.artifactHash !== await hashPath(rehearsedArtifact)) {
+        addIssue(issues, "error", "production.delivery.rehearsal_artifact_changed", "Final PPTX or its observation changed after rehearsal.");
+      }
+    } catch (error) {
+      addIssue(issues, "error", "production.delivery.rehearsal_artifact", error.message);
+    }
+    if (delivery.nativeCapabilityHash !== sha256(stableStringify(nativeReport)) || nativeReport.creativeDigest !== manifest.production.creativePlan.digest || nativeReport.manifestDigest !== computeManifestBuildDigest(manifest) || nativeReport.auditDigest !== sha256(stableStringify(nativeAudit)) || nativeReport.auditedArtifact !== rehearsal.artifact) addIssue(issues, "error", "production.delivery.native_report_stale", "Native capability report is stale, changed, or audits a different artifact from rehearsal.");
+    try {
+      const auditedArtifact = workspacePath(root, nativeReport.auditedArtifact, "native capability audited artifact");
+      if (!(await exists(auditedArtifact)) || nativeReport.auditedArtifactHash !== await hashPath(auditedArtifact) || nativeAudit.artifactHash !== nativeReport.auditedArtifactHash) addIssue(issues, "error", "production.delivery.native_artifact_changed", "The final PPTX changed after native capability audit.");
+    } catch (error) {
+      addIssue(issues, "error", "production.delivery.native_artifact", error.message);
+    }
+    if ((nativeReport.slides || []).length !== slides.length) addIssue(issues, "error", "production.delivery.native_report_slide_set", "Native capability report must cover every slide.");
+    if (delivery.qualityScorecardHash !== sha256(stableStringify(scorecard)) || scorecard.status !== "passed" || scorecard.artifactScore !== 100 || scorecard.deliveryScore !== 100 || scorecard.creativeDigest !== manifest.production.creativePlan.digest || scorecard.rubricDigest !== sha256(stableStringify(rubric))) {
+      addIssue(issues, "error", "production.delivery.scorecard_stale", "Quality scorecard must be current and score both artifact and delivery at 100.");
+    }
+  } catch (error) {
+    addIssue(issues, "error", "production.delivery.files", `Cannot validate delivery artifacts: ${error.message}`);
+  }
+}
+
 async function validateCreativeContract(root, manifest, design, slides, draft, issues) {
   if (!design.includes("## Asset Language")) {
-    addIssue(issues, "error", "design.asset_language", "Manifest 1.5 requires a ## Asset Language section in DESIGN.md.");
+    addIssue(issues, "error", "design.asset_language", "Manifest 1.5+ requires a ## Asset Language section in DESIGN.md.");
   }
   const narrative = manifest.narrative;
   const narrativeFields = [
@@ -143,7 +274,7 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
     "resolution",
   ];
   if (!narrative || typeof narrative !== "object" || Array.isArray(narrative)) {
-    addIssue(issues, "error", "narrative.missing", "Manifest 1.5 requires a narrative object.");
+    addIssue(issues, "error", "narrative.missing", "Manifest 1.5+ requires a narrative object.");
   } else {
     if (!new Set(["draft", "locked"]).has(narrative.status)) {
       addIssue(issues, "error", "narrative.status", "narrative.status must be draft or locked.");
@@ -165,9 +296,12 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
   for (let slideIndex = 0; slideIndex < slides.length; slideIndex += 1) {
     const slide = slides[slideIndex];
     const location = `slides[${slideIndex}]`;
+    if (["1.6", "1.7"].includes(manifest.version) && !/^[a-z0-9][a-z0-9_-]*$/i.test(slide.claimId || "")) {
+      addIssue(issues, "error", "slide.claimId", "Manifest 1.6+ requires a stable filesystem-safe claimId.", location);
+    }
     const beat = slide.narrativeBeat;
     if (!beat || typeof beat !== "object" || Array.isArray(beat)) {
-      addIssue(issues, "error", "slide.narrativeBeat", "Manifest 1.5 requires narrativeBeat on every slide.", location);
+      addIssue(issues, "error", "slide.narrativeBeat", "Manifest 1.5+ requires narrativeBeat on every slide.", location);
     } else {
       for (const key of ["question", "consequence", "evidenceType"]) {
         if (!nonEmpty(beat[key])) addIssue(issues, "error", `slide.narrativeBeat.${key}`, `${key} is required.`, location);
@@ -178,7 +312,7 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
     }
     const visual = slide.visualPlan;
     if (!visual || typeof visual !== "object" || Array.isArray(visual)) {
-      addIssue(issues, "error", "slide.visualPlan", "Manifest 1.5 requires visualPlan on every slide.", location);
+      addIssue(issues, "error", "slide.visualPlan", "Manifest 1.5+ requires visualPlan on every slide.", location);
     } else {
       for (const key of ["silhouette", "density", "focalMode", "continuityCue"]) {
         if (!nonEmpty(visual[key])) addIssue(issues, "error", `slide.visualPlan.${key}`, `${key} is required.`, location);
@@ -188,12 +322,52 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
       }
     }
 
+    if (["1.6", "1.7"].includes(manifest.version)) {
+      const pageDesign = slide.pageDesign;
+      if (!pageDesign || typeof pageDesign !== "object" || Array.isArray(pageDesign)) {
+        addIssue(issues, "error", "slide.pageDesign", "Manifest 1.6 requires pageDesign on every slide.", location);
+      } else {
+        for (const key of ["designIntent", "backgroundLayer", "layoutLayer", "contentLayer", "focalPoint"]) {
+          if (!nonEmpty(pageDesign[key])) addIssue(issues, "error", `slide.pageDesign.${key}`, `${key} is required.`, location);
+        }
+        const negativeSpace = Number(pageDesign.negativeSpaceTarget);
+        if (!Number.isFinite(negativeSpace) || negativeSpace < 0.1 || negativeSpace > 0.8) {
+          addIssue(issues, "error", "slide.pageDesign.negativeSpaceTarget", "negativeSpaceTarget must be from 0.1 to 0.8.", location);
+        }
+        const regions = Array.isArray(pageDesign.regions) ? pageDesign.regions : [];
+        const regionIds = new Set(regions.map((region) => region?.id).filter(Boolean));
+        if (regions.length < 2 || regions.length > 8) {
+          addIssue(issues, "error", "slide.pageDesign.regions", "Define two to eight semantic regions.", location);
+        }
+        if (!Array.isArray(pageDesign.readingPath) || pageDesign.readingPath.length < 2 || pageDesign.readingPath.some((id) => !regionIds.has(id))) {
+          addIssue(issues, "error", "slide.pageDesign.readingPath", "readingPath must reference declared region ids.", location);
+        }
+      }
+      for (let sourceIndex = 0; sourceIndex < (slide.sources || []).length; sourceIndex += 1) {
+        const source = slide.sources[sourceIndex];
+        const sourceLocation = `${location}.sources[${sourceIndex}]`;
+        if (!/^[a-z0-9][a-z0-9_-]*$/i.test(source?.id || "") || !/^[a-f0-9]{64}$/i.test(source?.contentHash || "")) {
+          addIssue(issues, "error", "source.identity", "Manifest 1.6 sources require stable id and contentHash.", sourceLocation);
+        }
+        if (source?.path) {
+          try {
+            const target = workspacePath(root, source.path, "evidence source");
+            if (!(await exists(target)) || source.contentHash !== await hashPath(target)) {
+              addIssue(issues, "error", "source.changed", `Source changed after evidence compilation: ${source.path}.`, sourceLocation);
+            }
+          } catch (error) {
+            addIssue(issues, "error", "source.path", error.message, sourceLocation);
+          }
+        }
+      }
+    }
+
     for (let assetIndex = 0; assetIndex < (slide.assets || []).length; assetIndex += 1) {
       const asset = slide.assets[assetIndex];
       const assetLocation = `${location}.assets[${assetIndex}]`;
       const brief = asset.brief;
       if (!brief || typeof brief !== "object" || Array.isArray(brief)) {
-        addIssue(issues, "error", "asset.brief", "Manifest 1.5 requires a structured brief for every asset.", assetLocation);
+        addIssue(issues, "error", "asset.brief", "Manifest 1.5+ requires a structured brief for every asset.", assetLocation);
         continue;
       }
       for (const key of ["purpose", "method", "role", "placement", "continuityKey", "reusePolicy", "selectionMode"]) {
@@ -255,7 +429,7 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
 
   const creative = manifest.production?.creativePlan;
   if (!creative || typeof creative !== "object" || Array.isArray(creative)) {
-    addIssue(issues, "error", "production.creativePlan", "Manifest 1.5 requires production.creativePlan.");
+    addIssue(issues, "error", "production.creativePlan", "Manifest 1.5+ requires production.creativePlan.");
     return;
   }
   if (!new Set(["pending", "prepared"]).has(creative.status)) {
@@ -269,10 +443,16 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
   if (creative.digest !== currentDigest) {
     addIssue(issues, "error", "production.creativePlan.stale", "Narrative, slide content, visual storyboard, or asset intent changed after creative preparation.");
   }
-  if (creative.contractVersion !== "1.0") {
+  const expectedCreativeContract = manifest.version === "1.7" ? CREATIVE_CONTRACT_VERSION : manifest.version === "1.6" ? "1.1" : "1.0";
+  if (creative.contractVersion !== expectedCreativeContract) {
     addIssue(issues, "error", "production.creativePlan.contract", "Unsupported creative plan contract version.");
   }
-  for (const key of ["narrativeMap", "storyboard", "assetPlan", "report", "providerIndex"]) {
+  const artifactKeys = ["narrativeMap", "storyboard", "assetPlan", "report", "providerIndex"];
+  if (["1.6", "1.7"].includes(manifest.version)) {
+    artifactKeys.push("evidenceBundle", "contentAlignment", "pageDesignIndex", "deckRubric");
+  }
+  if (manifest.version === "1.7") artifactKeys.push("contentPreference", "deliveryPlan");
+  for (const key of artifactKeys) {
     if (!creative[key] || !/^tmp[\\/]/i.test(creative[key])) {
       addIssue(issues, "error", `production.creativePlan.${key}`, `${key} must be a workspace-relative path under tmp/.`);
       continue;
@@ -294,6 +474,69 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
           if (brief.creativeDigest !== creative.digest || briefRecord.digest !== sha256(stableStringify(brief))) {
             addIssue(issues, "error", "production.creativePlan.provider_brief", `Provider brief is stale or changed: ${briefRecord.assetKey}.`);
           }
+        }
+      }
+      if (key === "pageDesignIndex") {
+        const indexedIds = new Set();
+        for (const record of artifact.designs || []) {
+          indexedIds.add(record.slideId);
+          await validateLocalPath(root, record.path, issues, `page design ${record.slideId}`, false);
+          const pageDesign = JSON.parse(await readFile(workspacePath(root, record.path, "page design"), "utf8"));
+          if (pageDesign.creativeDigest !== creative.digest || record.digest !== sha256(stableStringify(pageDesign))) {
+            addIssue(issues, "error", "production.creativePlan.page_design", `Page design is stale or changed: ${record.slideId}.`);
+          }
+        }
+        if (indexedIds.size !== slides.length || slides.some((slide) => !indexedIds.has(slide.id))) {
+          addIssue(issues, "error", "production.creativePlan.page_design_set", "Page design index must cover every slide.");
+        }
+      }
+      if (key === "evidenceBundle") {
+        const claimIds = new Set((artifact.claims || []).map((claim) => claim.id));
+        if (claimIds.size !== slides.length || slides.some((slide) => !claimIds.has(slide.claimId))) {
+          addIssue(issues, "error", "production.creativePlan.evidence_claims", "Evidence bundle must cover every slide claim.");
+        }
+      }
+      if (key === "contentAlignment") {
+        const aligned = new Map((artifact.slides || []).map((slide) => [slide.slideId, slide.claimId]));
+        if (aligned.size !== slides.length || slides.some((slide) => aligned.get(slide.id) !== slide.claimId)) {
+          addIssue(issues, "error", "production.creativePlan.alignment", "Content alignment must map every slide to its current claim.");
+        }
+      }
+      if (key === "deckRubric") {
+        const checkIds = new Set();
+        for (const check of artifact.checks || []) {
+          if (!check.id || checkIds.has(check.id) || !new Set(["deck", "slide"]).has(check.scope) || !nonEmpty(check.requirement) || (manifest.version === "1.7" && !new Set(["artifact", "delivery"]).has(check.dimension))) {
+            addIssue(issues, "error", "production.creativePlan.rubric", "Deck rubric contains an invalid or duplicate check.");
+            break;
+          }
+          checkIds.add(check.id);
+        }
+        for (const slide of slides) {
+          if (!(artifact.checks || []).some((check) => check.scope === "slide" && check.slideId === slide.id)) {
+            addIssue(issues, "error", "production.creativePlan.rubric_slide", `Deck rubric has no slide-specific checks for ${slide.id}.`);
+          }
+        }
+      }
+      if (key === "contentPreference" && stableStringify({
+        status: artifact.status,
+        source: artifact.source,
+        compression: artifact.compression,
+        evidenceOrder: artifact.evidenceOrder,
+        prefers: artifact.prefers,
+        avoids: artifact.avoids,
+        speakerNotesDetail: artifact.speakerNotesDetail,
+        inferenceNote: artifact.inferenceNote,
+      }) !== stableStringify(manifest.contentPreference)) {
+        addIssue(issues, "error", "production.creativePlan.content_preference", "Compiled content preferences do not match the manifest.");
+      }
+      if (key === "deliveryPlan") {
+        const plannedIds = new Set((artifact.slides || []).map((slide) => slide.slideId));
+        const plannedSeconds = (artifact.slides || []).reduce((total, slide) => total + Number(slide.timeBudgetSeconds || 0), 0);
+        if (plannedIds.size !== slides.length || slides.some((slide) => !plannedIds.has(slide.id))) {
+          addIssue(issues, "error", "production.creativePlan.delivery_slide_set", "Delivery plan must cover every slide.");
+        }
+        if (artifact.totalSeconds !== manifest.delivery.totalSeconds || artifact.reserveSeconds !== manifest.delivery.reserveSeconds || plannedSeconds !== artifact.plannedSpeakingSeconds) {
+          addIssue(issues, "error", "production.creativePlan.delivery_budget", "Compiled delivery timing does not match the manifest.");
         }
       }
     } catch (error) {
@@ -335,18 +578,18 @@ export async function validateWorkspace(projectDir, options = {}) {
     return validationFailure(issues);
   }
 
-  if (!["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"].includes(manifest.version)) {
-    addIssue(issues, "error", "manifest.version", 'version must be "1.0", "1.1", "1.2", "1.3", "1.4", or "1.5".');
+  if (!["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version)) {
+    addIssue(issues, "error", "manifest.version", 'version must be "1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", or "1.7".');
   }
-  if (["1.1", "1.2", "1.3", "1.4", "1.5"].includes(manifest.version) && !design.includes("## Reference Evidence")) {
+  if (["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version) && !design.includes("## Reference Evidence")) {
     addIssue(issues, "error", "design.reference_evidence", "Manifest 1.1+ requires a ## Reference Evidence section in DESIGN.md.");
   }
-  if (["1.3", "1.4", "1.5"].includes(manifest.version)) {
+  if (["1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version)) {
     for (const heading of TASTE_HEADINGS) {
       if (!design.includes(heading)) addIssue(issues, "error", "design.taste_heading", `Manifest 1.3+ requires DESIGN.md section: ${heading}`);
     }
   }
-  if (["1.2", "1.3", "1.4", "1.5"].includes(manifest.version)) {
+  if (["1.2", "1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version)) {
     if (path.basename(root).toLowerCase() !== WORKSPACE_NAME) {
       addIssue(issues, "error", "workspace.location", `Manifest 1.2+ workspace must be named ${WORKSPACE_NAME}.`);
     }
@@ -369,7 +612,7 @@ export async function validateWorkspace(projectDir, options = {}) {
       }
     }
   }
-  if (["1.3", "1.4", "1.5"].includes(manifest.version)) {
+  if (["1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version)) {
     if (!manifest.deliveryContract || typeof manifest.deliveryContract !== "object" || Array.isArray(manifest.deliveryContract)) {
       addIssue(issues, "error", "deliveryContract.missing", "Manifest 1.3+ requires deliveryContract.");
     } else {
@@ -402,6 +645,7 @@ export async function validateWorkspace(projectDir, options = {}) {
 
   const slides = Array.isArray(manifest.slides) ? manifest.slides : [];
   const draft = options.allowDraft || manifest.status === "planning";
+  validateManifest17Intent(manifest, slides, draft, issues);
   if (!Array.isArray(manifest.slides)) addIssue(issues, "error", "slides.type", "slides must be an array.");
   if (!draft && slides.length === 0) addIssue(issues, "error", "slides.empty", "A final presentation must contain slides.");
   if (manifest.status === "planning" && !options.allowDraft) {
@@ -410,7 +654,7 @@ export async function validateWorkspace(projectDir, options = {}) {
 
   const styleDecision = manifest.styleDecision;
   if (!styleDecision || typeof styleDecision !== "object" || Array.isArray(styleDecision)) {
-    if (["1.1", "1.2", "1.3", "1.4", "1.5"].includes(manifest.version) || !draft) {
+    if (["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version) || !draft) {
       addIssue(issues, "error", "styleDecision.missing", "Manifest 1.1+ requires styleDecision.");
     } else {
       addIssue(issues, "warning", "styleDecision.legacy", "Legacy manifest has no styleDecision record.");
@@ -529,7 +773,7 @@ export async function validateWorkspace(projectDir, options = {}) {
   }
 
   const tasteProfile = manifest.tasteProfile;
-  if (["1.3", "1.4", "1.5"].includes(manifest.version)) {
+  if (["1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version)) {
     if (!tasteProfile || typeof tasteProfile !== "object" || Array.isArray(tasteProfile)) {
       addIssue(issues, "error", "tasteProfile.missing", "Manifest 1.3+ requires tasteProfile.");
     } else {
@@ -743,7 +987,7 @@ export async function validateWorkspace(projectDir, options = {}) {
       addIssue(issues, "error", "slide.image_editability", "image_slide must declare editability as flattened.", location);
     }
     if (
-      ["1.3", "1.4", "1.5"].includes(manifest.version)
+      ["1.3", "1.4", "1.5", "1.6", "1.7"].includes(manifest.version)
       && slide.renderer === "image_slide"
       && (
         typeof slide.rasterExceptionReason !== "string"
@@ -875,11 +1119,11 @@ export async function validateWorkspace(projectDir, options = {}) {
     addIssue(issues, "error", "motionBudget.transitions", `${transitions.size} transition styles exceed the budget of ${budget.maxTransitionStyles}.`);
   }
 
-  if (manifest.version === "1.5") {
+  if (["1.5", "1.6", "1.7"].includes(manifest.version)) {
     await validateCreativeContract(root, manifest, design, slides, draft, issues);
   }
 
-  if (["1.4", "1.5"].includes(manifest.version)) {
+  if (["1.4", "1.5", "1.6", "1.7"].includes(manifest.version)) {
     const production = manifest.production;
     if (!production || typeof production !== "object" || Array.isArray(production)) {
       addIssue(issues, "error", "production.missing", "Manifest 1.4+ requires the production optimization contract.");
@@ -912,7 +1156,7 @@ export async function validateWorkspace(projectDir, options = {}) {
           } else if (designLock.designDigest !== computeDesignDigest(manifest, design)) {
             addIssue(issues, "error", "production.designLock.stale", "DESIGN.md or its design contract changed after sample approval.");
           }
-          if (manifest.version === "1.5" && designLock.creativeDigest !== production.creativePlan?.digest) {
+          if (["1.5", "1.6", "1.7"].includes(manifest.version) && designLock.creativeDigest !== production.creativePlan?.digest) {
             addIssue(issues, "error", "production.designLock.creative_digest", "Design lock must cover the current creative plan.");
           }
           const expectedSampleCount = Math.min(4, slides.length);
@@ -1001,7 +1245,7 @@ export async function validateWorkspace(projectDir, options = {}) {
             if (plan.manifestDigest !== computeManifestBuildDigest(manifest)) {
               addIssue(issues, "error", "production.build.manifest_digest", "Build plan is stale because presentation.json changed.");
             }
-            if (manifest.version === "1.5" && plan.creativeDigest !== production.creativePlan?.digest) {
+            if (["1.5", "1.6", "1.7"].includes(manifest.version) && plan.creativeDigest !== production.creativePlan?.digest) {
               addIssue(issues, "error", "production.build.creative_digest", "Build plan does not match the current creative plan.");
             }
             const plannedIds = new Set((plan.slides || []).map((slide) => slide.slideId));
@@ -1035,6 +1279,21 @@ export async function validateWorkspace(projectDir, options = {}) {
             await validateLocalPath(root, qa[key], issues, `production.qa.${key}`, draft);
           }
         }
+        if (["1.6", "1.7"].includes(manifest.version)) {
+          for (const key of ["rubric", "observationsRoot", "repairsRoot"]) {
+            if (!qa[key] || !/^tmp[\\/]/i.test(qa[key])) {
+              addIssue(issues, "error", `production.qa.${key}`, `${key} must be a workspace-relative path under tmp/.`);
+            } else {
+              await validateLocalPath(root, qa[key], issues, `production.qa.${key}`, draft);
+            }
+          }
+          if (qa.repairStrategy !== "minimal" || !Number.isInteger(qa.maxRepairRounds) || qa.maxRepairRounds < 1 || qa.maxRepairRounds > 3) {
+            addIssue(issues, "error", "production.qa.repair_policy", "Manifest 1.6 requires one to three minimal repair rounds.");
+          }
+          if (qa.rubric !== production.creativePlan?.deckRubric) {
+            addIssue(issues, "error", "production.qa.rubric_path", "QA must use the current compiled deck rubric.");
+          }
+        }
         if (!draft) {
           if (qa.finalFullReview?.status !== "passed") {
             addIssue(issues, "error", "production.qa.final", "Final delivery requires a passed full-deck review.");
@@ -1050,6 +1309,46 @@ export async function validateWorkspace(projectDir, options = {}) {
               JSON.parse(await readFile(workspacePath(root, qa.plan, "QA plan"), "utf8")),
               JSON.parse(await readFile(workspacePath(root, qa.results, "QA results"), "utf8")),
             ]);
+            if (["1.6", "1.7"].includes(manifest.version)) {
+              const rubric = JSON.parse(await readFile(workspacePath(root, production.creativePlan.deckRubric, "deck rubric"), "utf8"));
+              if (
+                qaPlan.schemaVersion !== (manifest.version === "1.7" ? "1.2" : "1.1") ||
+                qaPlan.rubric !== production.creativePlan.deckRubric ||
+                qaPlan.rubricDigest !== sha256(stableStringify(rubric))
+              ) {
+                addIssue(issues, "error", "production.qa.rubric_stale", "QA plan does not match the current compiled deck rubric.");
+              }
+              const expectedDeckChecks = (rubric.checks || []).filter((check) => check.scope === "deck" && check.dimension !== "delivery").map((check) => check.id).sort();
+              if (stableStringify([...(qaPlan.deckCheckIds || [])].sort()) !== stableStringify(expectedDeckChecks)) {
+                addIssue(issues, "error", "production.qa.deck_checks", "QA plan deck checks do not match the compiled rubric.");
+              }
+              for (const slide of slides) {
+                const expectedSlideChecks = (rubric.checks || [])
+                  .filter((check) => check.scope === "slide" && check.slideId === slide.id && check.dimension !== "delivery")
+                  .map((check) => check.id)
+                  .sort();
+                const planned = qaPlan.slides?.find((item) => item.slideId === slide.id);
+                if (stableStringify([...(planned?.rubricCheckIds || [])].sort()) !== stableStringify(expectedSlideChecks)) {
+                  addIssue(issues, "error", "production.qa.slide_checks", `QA plan checks do not match the compiled rubric for ${slide.id}.`);
+                }
+              }
+              if (manifest.version === "1.7") {
+                const expectedDeliveryChecks = (rubric.checks || []).filter((check) => check.dimension === "delivery").map((check) => check.id).sort();
+                if (stableStringify([...(qaPlan.deliveryCheckIds || [])].sort()) !== stableStringify(expectedDeliveryChecks)) {
+                  addIssue(issues, "error", "production.qa.delivery_checks", "QA plan delivery checks do not match the compiled rubric.");
+                }
+                for (const slide of slides) {
+                  const expectedSlideDelivery = (rubric.checks || [])
+                    .filter((check) => check.dimension === "delivery" && check.scope === "slide" && check.slideId === slide.id)
+                    .map((check) => check.id)
+                    .sort();
+                  const planned = qaPlan.slides?.find((item) => item.slideId === slide.id);
+                  if (stableStringify([...(planned?.deliveryCheckIds || [])].sort()) !== stableStringify(expectedSlideDelivery)) {
+                    addIssue(issues, "error", "production.qa.slide_delivery_checks", `QA plan delivery checks do not match ${slide.id}.`);
+                  }
+                }
+              }
+            }
             const plannedQaIds = new Set((qaPlan.slides || []).map((slide) => slide.slideId));
             if (plannedQaIds.size !== slides.length || slides.some((slide) => !plannedQaIds.has(slide.id))) {
               addIssue(issues, "error", "production.qa.slide_set", "QA plan must cover every current slide.");
@@ -1058,12 +1357,60 @@ export async function validateWorkspace(projectDir, options = {}) {
               addIssue(issues, "error", "production.qa.final_scope", "Every slide must be included in final QA.");
             }
             for (const slide of slides) {
-              if (qaResults.slides?.[slide.id]?.status !== "passed") {
+              const result = qaResults.slides?.[slide.id];
+              if (result?.status !== "passed") {
                 addIssue(issues, "error", "production.qa.slide_failed", `Slide ${slide.id} has not passed final QA.`);
+              }
+              if (["1.6", "1.7"].includes(manifest.version) && result?.status === "passed") {
+                if (!result.observation?.path || !result.observation?.hash || result.observation.rubricPassed !== true) {
+                  addIssue(issues, "error", "production.qa.observation_missing", `Slide ${slide.id} has no recorded render observation.`);
+                } else {
+                  try {
+                    const observation = JSON.parse(await readFile(workspacePath(root, result.observation.path, "render observation"), "utf8"));
+                    if (
+                      result.observation.hash !== sha256(stableStringify(observation)) ||
+                      observation.status !== "passed" ||
+                      observation.slideId !== slide.id ||
+                      observation.planGeneratedAt !== qaPlan.generatedAt
+                    ) {
+                      addIssue(issues, "error", "production.qa.observation_stale", `Slide ${slide.id} render observation is stale or changed.`);
+                    }
+                    const artifactPath = workspacePath(root, observation.artifact, "observed slide artifact");
+                    if (!(await exists(artifactPath)) || observation.artifactHash !== await hashPath(artifactPath)) {
+                      addIssue(issues, "error", "production.qa.observed_artifact_changed", `Observed artifact changed for ${slide.id}.`);
+                    }
+                  } catch (error) {
+                    addIssue(issues, "error", "production.qa.observation_file", `Cannot validate ${slide.id} observation: ${error.message}`);
+                  }
+                }
               }
             }
             if (qaResults.final?.status !== "passed" || qaResults.final?.planGeneratedAt !== qaPlan.generatedAt) {
               addIssue(issues, "error", "production.qa.stale_final", "Final QA result must pass against the current QA plan.");
+            }
+            if (["1.6", "1.7"].includes(manifest.version)) {
+              const finalObservation = qaResults.final?.observation;
+              if (!finalObservation?.path || !finalObservation?.hash || finalObservation.rubricPassed !== true) {
+                addIssue(issues, "error", "production.qa.final_observation", "Final QA requires a current deck render observation.");
+              } else {
+                try {
+                  const observation = JSON.parse(await readFile(workspacePath(root, finalObservation.path, "final render observation"), "utf8"));
+                  if (
+                    finalObservation.hash !== sha256(stableStringify(observation)) ||
+                    observation.scope !== "deck" ||
+                    observation.status !== "passed" ||
+                    observation.planGeneratedAt !== qaPlan.generatedAt
+                  ) {
+                    addIssue(issues, "error", "production.qa.final_observation_stale", "Final deck observation is stale or changed.");
+                  }
+                  const artifactPath = workspacePath(root, observation.artifact, "observed final artifact");
+                  if (!(await exists(artifactPath)) || observation.artifactHash !== await hashPath(artifactPath)) {
+                    addIssue(issues, "error", "production.qa.final_artifact_changed", "Observed final artifact changed after review.");
+                  }
+                } catch (error) {
+                  addIssue(issues, "error", "production.qa.final_observation_file", `Cannot validate final observation: ${error.message}`);
+                }
+              }
             }
           } catch (error) {
             addIssue(issues, "error", "production.qa.files", `Cannot validate QA plan or results: ${error.message}`);
@@ -1072,6 +1419,8 @@ export async function validateWorkspace(projectDir, options = {}) {
       }
     }
   }
+
+  await validateManifest17DeliveryArtifacts(root, manifest, slides, draft, issues);
 
   const errors = issues.filter((issue) => issue.severity === "error").length;
   const warnings = issues.filter((issue) => issue.severity === "warning").length;

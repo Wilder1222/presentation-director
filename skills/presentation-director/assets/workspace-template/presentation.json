@@ -1,5 +1,5 @@
 {
-  "version": "1.5",
+  "version": "1.7",
   "status": "planning",
   "storage": {
     "policy": "workspace-local",
@@ -38,7 +38,8 @@
     "aspectRatio": "16:9",
     "primaryReference": "unresolved",
     "secondaryReferences": [],
-    "outputs": ["pptx"]
+    "outputs": ["pptx"],
+    "acceptanceCriteria": []
   },
   "styleDecision": {
     "mode": "recommend",
@@ -69,6 +70,25 @@
     "contentSwapTest": "not-run",
     "authorshipNote": null
   },
+  "contentPreference": {
+    "status": "draft",
+    "source": "default",
+    "compression": "medium",
+    "evidenceOrder": "contextual",
+    "prefers": [],
+    "avoids": [],
+    "speakerNotesDetail": "medium",
+    "inferenceNote": null
+  },
+  "delivery": {
+    "status": "draft",
+    "mode": "live",
+    "totalSeconds": 0,
+    "reserveSeconds": 0,
+    "presenterGoal": null,
+    "timingTolerance": 0.15,
+    "acceptanceCriteria": []
+  },
   "capabilityProfile": {
     "platform": "unresolved",
     "requestedMode": "full-studio",
@@ -83,12 +103,18 @@
   "production": {
     "creativePlan": {
       "status": "pending",
-      "contractVersion": "1.0",
+      "contractVersion": "1.2",
       "preparedAt": null,
       "digest": null,
       "narrativeMap": "tmp/creative/narrative-map.json",
       "storyboard": "tmp/creative/storyboard.json",
       "assetPlan": "tmp/creative/asset-plan.json",
+      "evidenceBundle": "tmp/evidence/evidence-bundle.json",
+      "contentAlignment": "tmp/evidence/content-alignment.json",
+      "pageDesignIndex": "tmp/design/page-design/index.json",
+      "deckRubric": "tmp/qa/deck-rubric.json",
+      "contentPreference": "tmp/preferences/content-preference.json",
+      "deliveryPlan": "tmp/delivery/delivery-plan.json",
       "report": "tmp/creative/report.json",
       "providerBriefsRoot": "tmp/provider-briefs",
       "providerIndex": "tmp/provider-briefs/index.json",
@@ -118,12 +144,29 @@
       "plan": "tmp/qa-plan.json",
       "results": "tmp/qa-results.json",
       "ledger": "tmp/qa-ledger.txt",
+      "rubric": "tmp/qa/deck-rubric.json",
+      "observationsRoot": "tmp/qa/observations",
+      "repairsRoot": "tmp/qa/repairs",
+      "maxRepairRounds": 2,
+      "repairStrategy": "minimal",
       "finalFullReviewRequired": true,
       "finalFullReview": {
         "status": "pending",
         "completedAt": null,
         "reviewer": null
       }
+    },
+    "delivery": {
+      "rehearsal": "tmp/delivery/rehearsal.json",
+      "nativeCapabilityAudit": "tmp/delivery/native-capability-audit.json",
+      "qualityScorecard": "output/quality-scorecard.json",
+      "nativeCapabilityReport": "output/native-capability-report.json",
+      "rehearsalStatus": "pending",
+      "rehearsalHash": null,
+      "qualityScorecardStatus": "pending",
+      "qualityScorecardHash": null,
+      "nativeCapabilityStatus": "pending",
+      "nativeCapabilityHash": null
     }
   },
   "motionBudget": {

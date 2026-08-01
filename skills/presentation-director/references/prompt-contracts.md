@@ -31,7 +31,7 @@ Do not use rejected candidate traits in production. After selection, resolve ref
 
 ## Compiled provider brief
 
-Manifest 1.5 production handoffs originate in `presentation.json`, not an improvised provider prompt. After the narrative, storyboard, and asset briefs are complete, run `prepare-creative.mjs --strict`. Use the generated file at `tmp/provider-briefs/<slide-id>/<asset-id>.json` as the provider's task contract.
+Manifest 1.7 production handoffs originate in `presentation.json`, not an improvised provider prompt. After evidence, narrative, content preferences, delivery cues, page design, storyboard, rubric, and asset briefs are complete, run `prepare-creative.mjs --strict`. Use the generated file at `tmp/provider-briefs/<slide-id>/<asset-id>.json` as the provider's task contract.
 
 The compiled brief carries:
 

@@ -1,5 +1,7 @@
 # Director Workflow
 
+Manifest 1.7 locks `contentPreference` and the deck/slide delivery envelope before creative compilation. Follow `content-delivery.md`; static render review and timed rehearsal deliberately evaluate separate rubric dimensions.
+
 ## Contents
 
 0. Workspace boundary
@@ -63,7 +65,7 @@ Collect or infer:
 
 Ask only when a missing answer materially changes the output. Otherwise record a reasonable assumption in `tmp/assumptions.txt` and continue.
 
-Initialize the Manifest 1.5 `deliveryContract` exactly as defined in `delivery-contract.md`. Treat PPTX as the primary artifact throughout the workflow. Supporting previews, HTML, PDF, MP4, source projects, and manifests do not replace the final deck.
+Initialize the Manifest 1.7 `deliveryContract` exactly as defined in `delivery-contract.md`. Treat PPTX as the primary artifact throughout the workflow. Supporting previews, HTML, PDF, MP4, source projects, and manifests do not replace the final deck.
 
 ## 3. Define communication and narrative
 
@@ -145,9 +147,11 @@ Create the slide sequence before asset generation. Preserve `deliveryContract`, 
 - required content and evidence;
 - assets and their statuses;
 - sources;
+- a stable `claimId` and task-specific `acceptanceCriteria` where useful;
 - motion only when it earns its cost.
 - a `narrativeBeat` that states the live question, evidence type, consequence, and bridge;
 - a `visualPlan` that states silhouette, density, focal mode, visual peak, and continuity cue.
+- a renderer-neutral `pageDesign` that states intent, layers, regions, focal point, negative-space target, and reading path.
 
 For every asset, define a structured brief with its production method, role, placement, continuity family, reuse policy, selection mode, dependencies, and concrete acceptance checks. Use variant selection only where candidate quality materially changes the communication result.
 
@@ -157,15 +161,15 @@ Read `manifest.md` for the complete contract. Set `status` to `planning` during 
 
 ## 8. Compile the creative plan
 
-Read `creative-planning.md`, lock the top-level narrative, and run:
+Read `creative-planning.md` and `quality-contracts.md`, lock the top-level narrative, and run:
 
 ```text
 node <skill-dir>/scripts/prepare-creative.mjs <project-dir> --strict
 ```
 
-Inspect the generated narrative map as a causal argument, the storyboard as a rhythm strip, and the asset plan as a dependency graph with safe execution waves. Resolve repeated questions or claims, weak slide bridges, three repeated silhouettes, density fatigue, missing visual peaks, circular asset dependencies, vague acceptance criteria, and renderer/focal-mode conflicts.
+Inspect the evidence bundle for grounded claims and current source hashes, the page-design index for authored composition intent, the deck rubric for task-specific binary checks, the narrative map as a causal argument, the storyboard as a rhythm strip, and the asset plan as a dependency graph with safe execution waves. Resolve repeated questions or claims, weak slide bridges, three repeated silhouettes, density fatigue, missing visual peaks, circular asset dependencies, vague acceptance criteria, and renderer/focal-mode conflicts.
 
-Use only the generated provider briefs for production. A later narrative, slide title, claim, content, renderer, visual-plan, asset-brief, motion, or 3D change invalidates the creative digest and requires compilation again.
+Use only the generated provider briefs for production. A later acceptance-criteria, source, narrative, slide-title, claim, content, renderer, page-design, visual-plan, asset-brief, motion, or 3D change invalidates the creative digest and requires compilation again.
 
 ## 9. Lock representative samples and prepare production
 
@@ -205,7 +209,7 @@ After each worker returns, inspect its declared files and use `record-build.mjs`
 
 ## 12. Review and deliver
 
-Record each slide review with `record-qa.mjs`. Run the mandatory full-size review of every slide and open-check the final PPTX, then record final QA as passed. Run `validate-workspace.mjs`, then follow `review.md`.
+For each slide render, evaluate the matching `artifact` checks in `tmp/qa/deck-rubric.json` and record the exact artifact with `record-render-observation.mjs`. Apply only bounded minimal repairs. Bind passing observations to slide and final QA. Then compile the native-capability report, record a timed rehearsal against every `delivery` check, compile the dual scorecard, run `validate-workspace.mjs`, and follow `review.md`.
 
 Do not deliver until:
 
@@ -223,10 +227,11 @@ Do not deliver until:
 - externally sourced claims and assets are traceable;
 - motion is deterministic and within budget;
 - the compiled creative plan matches the current narrative, slide sequence, visual plans, and asset briefs;
+- evidence, content alignment, page-design contracts, and the binary deck rubric match the current sources and manifest;
 - provider briefs and final variant-selection records still match their recorded hashes;
 - the representative design lock still matches `DESIGN.md` and the selected design contract;
 - the build plan matches the current manifest and every slide has a complete cache-state record;
-- risk-based iteration records exist and final QA covers every slide;
+- current passing render observations and risk-based iteration records exist, and final QA covers every slide and the assembled deck;
 - native-first editability is preserved for text, data, tables, charts, and simple diagrams;
 - every flattened slide has a recorded, defensible `rasterExceptionReason` and a replaceable source asset;
 - flattened and replaceable-media slides are disclosed accurately.

@@ -1,5 +1,7 @@
 # Review and Acceptance
 
+Before final Manifest 1.7 validation, compile `output/native-capability-report.json`, record a timed delivery rehearsal, and compile `output/quality-scorecard.json`. The final gate requires current 100-point artifact and delivery scores; disclose every flattened slide, replaceable medium, and conversion loss.
+
 ## Contents
 
 1. Workspace validation
@@ -26,26 +28,35 @@ Do not use `--allow-draft` for delivery. Fix every error. Inspect warnings rathe
 
 Confirm that `capabilityProfile.checkedAt` is current, every selected renderer maps to an available capability, and any missing requested capability has an explicit fallback approval plus a corresponding renderer change. A list of installation instructions is not proof that a provider is installed.
 
-Confirm the workspace is named `presentation-director`, the Manifest 1.5 storage contract is unchanged, and every persistent local path resolves beneath that directory. Reject raw references, browser captures, renderer projects, temporary records, or final deliverables stored in a user-home or system-global cache.
+Confirm the workspace is named `presentation-director`, the Manifest 1.6+ storage contract is unchanged, and every persistent local path resolves beneath that directory. Reject raw references, browser captures, renderer projects, temporary records, or final deliverables stored in a user-home or system-global cache.
 
 Confirm the Manifest 1.3+ delivery contract is unchanged: PPTX is the primary artifact, the deck is ready to present, narrative is required, visual impact and fidelity are high, editability is native-first, and full-page rasterization is exception-only. Final `deck.outputs` must include `pptx`.
 
 ## 2. Creative and production evidence
 
-For Manifest 1.5:
+For Manifest 1.6+ artifact gates:
 
-1. Run `prepare-creative.mjs --strict` after the last narrative, claim, visual-plan, asset-brief, motion, or 3D change. Reject any issue, stale creative digest, or modified generated artifact.
-2. Read `tmp/creative/narrative-map.json`; confirm every beat changes audience understanding, each bridge motivates the next question, the turning point is real, and the resolution fulfills the communication job.
-3. Read `tmp/creative/storyboard.json`; confirm silhouette and density variation, intentional visual peaks, and a recurring continuity cue without template repetition.
-4. Read `tmp/creative/asset-plan.json`; confirm each asset has a necessary role, supported production method, acyclic dependencies, continuity family, reuse policy, and concrete acceptance checks.
-5. Confirm every provider used its current compiled brief. For final variant assets, inspect the candidate set, rationale, canonical output, and candidate/provider hashes.
-6. Confirm the approved representative samples include the opening, cover distinct slide roles, and include a specialist-rendered page when one is planned.
-7. Confirm the current design lock matches both the creative digest and `DESIGN.md`, selected references, taste profile, deck identity, and motion budget.
-8. Run `prepare-build.mjs` after the last content, source, renderer, capability, or selected-asset change. Reject a stale manifest digest.
-9. Confirm workers wrote only their declared paths and the Director alone recorded completed builds and assembled the deck.
-10. Review every dirty slide and every medium/high-risk cached slide during iteration.
-11. Before delivery, review every slide at full size and open-check the final PPTX; risk-based iteration never replaces the full final pass.
-12. Record slide results and the final pass with `record-qa.mjs` before workspace validation.
+1. Run `prepare-creative.mjs --strict` after the last acceptance-criteria, source, narrative, claim, page-design, visual-plan, asset-brief, motion, or 3D change. Reject any issue, stale creative digest, or modified generated artifact.
+2. Read `tmp/evidence/evidence-bundle.json` and `content-alignment.json`; confirm stable claim/source IDs, current local source hashes, and complete claim-to-source/asset/motion mapping.
+3. Read `tmp/design/page-design/index.json` and the per-slide contracts; confirm each render implements its declared focal point, regions, reading path, and negative-space target.
+4. Read `tmp/qa/deck-rubric.json`; confirm its blocking binary checks describe this deck's communication job, evidence, and visible design intent rather than generic aesthetics.
+5. Read `tmp/creative/narrative-map.json`; confirm every beat changes audience understanding, each bridge motivates the next question, the turning point is real, and the resolution fulfills the communication job.
+6. Read `tmp/creative/storyboard.json` and asset plan; confirm rhythm, intentional peaks, necessary assets, safe dependencies, continuity, and concrete acceptance checks.
+7. Confirm every provider used its current compiled brief. For final variant assets, inspect the candidate set, rationale, canonical output, and candidate/provider hashes.
+8. Confirm representative samples cover the opening, distinct roles, and a specialist renderer; confirm the design lock matches the creative digest and design contract.
+9. Run `prepare-build.mjs` after the last content, source, renderer, capability, or selected-asset change. Reject a stale manifest digest.
+10. Confirm workers wrote only declared paths and the Director alone recorded builds and assembled the deck.
+11. Observe every dirty slide and every medium/high-risk cached slide during iteration. Record each exact artifact with `record-render-observation.mjs`, require concrete rubric evidence, and permit only bounded minimal repairs.
+12. Before delivery, observe every slide at full size and open-check the final PPTX. Bind the passing current observations to slide and final results with `record-qa.mjs` before workspace validation.
+
+For Manifest 1.7 delivery and editability gates:
+
+1. Confirm `contentPreference` is grounded, locked, and reflected in compression, evidence order, examples, and speaker-note depth.
+2. Confirm deck and slide delivery budgets sum exactly, every attention cue targets a semantic page region, and each spoken layer adds rather than reads visible copy.
+3. Confirm every schema 1.1 build receipt declares native capabilities and concrete conversion losses.
+4. Open the final PPTX in the target application and audit every slide into the user-authored input `tmp/delivery/native-capability-audit-input.json`. Run the native capability compiler, which records the normalized audit at `tmp/delivery/native-capability-audit.json`, writes `output/native-capability-report.json`, and binds both generated artifacts to the final file hash.
+5. Rehearse the same observed PPTX, record all delivery checks and exact timing, and confirm the rehearsal remains bound to the final observation and file hash.
+6. Compile the scorecard and require `artifactScore: 100`, `deliveryScore: 100`, plus complete per-dimension counts.
 
 Do not treat a cache hit as visual approval. It only proves that recorded inputs and outputs have not changed.
 

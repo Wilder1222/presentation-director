@@ -1,4 +1,4 @@
 interface:
   display_name: "Presentation Director"
-  short_description: "Create ready-to-use, editable narrative PPTX"
-  default_prompt: "Use $presentation-director to keep all project artifacts under ./presentation-director and turn my brief into a complete, ready-to-present PPTX with a clear narrative, high visual impact, high-fidelity execution, and native-first editability."
+  short_description: "Create rehearsed, editable narrative PPTX"
+  default_prompt: "Use $presentation-director to keep all project artifacts under ./presentation-director and turn my brief into a complete, ready-to-present PPTX with a clear narrative, high visual impact, native-first editability, a timed delivery plan, and transparent artifact and delivery scores."

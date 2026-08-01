@@ -12,8 +12,8 @@ flowchart LR
     B --> C["Communication job"]
     C --> S{"Style decision"}
     S --> R["Preset raw / custom web research"]
-    R --> D["Delivery contract + DESIGN.md + presentation.json"]
-    D --> C1["Creative compiler: narrative + storyboard + assets + briefs"]
+    R --> D["Design + content preference + delivery contract"]
+    D --> C1["Creative compiler: evidence + page IR + narrative + timing + rubric"]
     C1 --> Q["Representative sample lock"]
     Q --> P["Content hashes + task graph + QA risk plan"]
     P --> E{"Renderer router"}
@@ -22,19 +22,20 @@ flowchart LR
     E --> H["HyperFrames"]
     E --> I["Remotion"]
     I --> J["Optional Three.js"]
-    F --> K["Render + QA"]
+    F --> K["Render + observe + minimal repair"]
     G --> K
     H --> K
     I --> K
-    K --> M["Build cache + structured QA evidence"]
-    M --> L["Ready-to-present PPTX + supporting outputs"]
+    K --> M["Build cache + rubric-bound QA evidence"]
+    M --> N["Timed rehearsal + native capability report"]
+    N --> L["Ready-to-present PPTX + dual quality scorecard"]
 ```
 
 The workflow is source-first, but its primary outcome is a complete PPTX that can be presented and modified immediately. The manifest and renderer sources preserve reproducibility; they do not substitute for the finished deck.
 
 ## Workspace boundary
 
-Every project-owned persistent file lives under `<current-directory>/presentation-director/`: copied inputs, raw references, generated assets, diagrams, browser captures, HyperFrames and Remotion projects, temporary records, and final outputs. Manifest 1.5 preserves this fixed layout, compiles narrative and creative production records, validates design taste, locks representative samples, and records incremental build plus QA evidence; validation rejects workspace escape paths, stale hashes, modified provider briefs, unrecorded asset choices, and unresolved generic directions.
+Every project-owned persistent file lives under `<current-directory>/presentation-director/`: copied inputs, raw references, generated assets, diagrams, browser captures, HyperFrames and Remotion projects, temporary records, and final outputs. Manifest 1.7 adds content-preference DNA, delivery timing, rehearsal evidence, dual quality scores, and a per-slide native-capability report to the existing evidence, page-design, build, observation, and repair contracts.
 
 ## Operating principles
 
@@ -44,7 +45,7 @@ Every project-owned persistent file lives under `<current-directory>/presentatio
 4. **Optional style checkpoint.** Respect specified, automatic, and recommendation modes instead of forcing one interaction model.
 5. **References before design.** Load selected preset raw sources or research a custom direction before locking the visual identity.
 6. **Design before assets.** Lock the visual identity before images, UI, diagrams, or motion are produced.
-7. **Compile before generation.** Turn the story, visual rhythm, asset dependencies, continuity families, and acceptance criteria into immutable provider briefs.
+7. **Compile before generation.** Turn evidence, content preferences, story, delivery timing, page-design intent, visual rhythm, asset dependencies, continuity families, and acceptance criteria into immutable provider briefs and a binary rubric.
 8. **Samples before scale.** Approve representative static frames before parallel full-deck production.
 9. **Rebuild only what changed.** Content and output hashes may skip unchanged work, but never replace visual approval.
 10. **Parallelism with ownership.** Workers write only declared slide paths; the Director owns shared truth, cache state, QA, and final assembly.
@@ -52,7 +53,7 @@ Every project-owned persistent file lives under `<current-directory>/presentatio
 12. **One contract across providers.** Every provider reads the same design and presentation source files.
 13. **Native-first editability.** Keep text, data, tables, charts, and simple diagrams editable; disclose every flattened or replaceable-media exception.
 14. **Motion with a budget.** Animation is used for sequence, state change, product demonstration, or a meaningful reveal.
-15. **Validation before delivery.** Risk-based iteration and structural checks culminate in a full-size review plus target-application open check.
+15. **Validate artifact and delivery separately.** Exact render observations, bounded repairs, timed rehearsal, native-capability reporting, and a target-application open check culminate in independent artifact and delivery scores.
 
 ## Source-of-truth contracts
 
@@ -80,6 +81,7 @@ All visual providers must read this file. Provider defaults must not override it
 - The fixed delivery contract: ready-to-present PPTX, required narrative, high visual impact and fidelity, native-first editability, and exception-only rasterization.
 - Style-decision mode, candidates, selection rationale, and reference depth.
 - Locked taste profile, content-swap result, and authorship rationale.
+- Locked content preferences, deck timing envelope, per-slide speaking detail, attention cues, and transitions.
 - Preset raw loading or custom web-research status and source records.
 - Deck narrative and slide order.
 - Audience starting and ending states, stakes, turning point, and resolution.
@@ -96,6 +98,8 @@ All visual providers must read this file. Provider defaults must not override it
 - Incremental build plan, content-addressed cache state, and exclusive-write task graph.
 - Per-slide risk classifications and structured final QA evidence.
 - Compiled narrative map, storyboard, dependency-aware asset plan with parallel execution waves, immutable provider briefs, and recorded asset selections.
+- Stable claim/source IDs, source hashes, content alignment, renderer-neutral page-design contracts, a task-specific binary rubric, exact render observations, and bounded repair plans.
+- Timed rehearsal evidence, independent artifact/delivery scores, and actual native/replaceable/flattened capability by slide.
 
 See the complete contract in [`manifest.md`](../skills/presentation-director/references/manifest.md).
 
@@ -129,17 +133,17 @@ For Manifest 1.3+, every `image_slide` must include `rasterExceptionReason`. Ful
 
 ## Optimized production loop
 
-Manifest 1.5 adds a creative quality gate to the deterministic production loop:
+Manifest 1.7 adds delivery-quality and editability-transparency gates to the deterministic production loop:
 
-1. Compile the narrative map, visual storyboard, asset graph, and provider briefs.
+1. Compile content preferences, delivery timing, evidence, page-design IR, binary rubric, narrative map, visual storyboard, asset graph, and provider briefs.
 2. Render and approve up to four representative static samples.
 3. Hash the creative plan, design contract, manifest, slide inputs, and existing outputs.
 4. Mark matching slides cached and changed slides dirty.
 5. Generate an exclusive-write task graph for bounded parallel workers.
 6. Write each slide into an isolated build capsule and finish it with a current build receipt.
 7. Record inspected asset choices and successful slide builds only after declared outputs exist and hash correctly.
-8. Review dirty and medium/high-risk slides during iteration.
-9. Review every slide and open-check the final PPTX before delivery.
+8. Observe dirty and medium/high-risk renders against the binary rubric and issue only minimal repair actions.
+9. Bind passing observations to artifact QA, rehearse delivery checks, compile native capability and dual quality reports, then open-check the final PPTX.
 
 The cache accelerates revisions; it never certifies visual quality. See [`production-optimization.md`](../skills/presentation-director/references/production-optimization.md).
 

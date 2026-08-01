@@ -1,7 +1,7 @@
 {
   "name": "presentation-director",
-  "version": "0.9.0+codex.20260731034106",
-  "description": "Compile narrative, visual rhythm, and asset direction into ready-to-present, high-fidelity, native-first editable PowerPoint decks.",
+  "version": "0.11.0+codex.20260801220000",
+  "description": "Compile evidence, narrative, content preferences, delivery timing, page design, and asset direction into ready-to-present, high-fidelity, native-first editable PowerPoint decks.",
   "author": {
     "name": "Wilder1222",
     "url": "https://github.com/Wilder1222"
@@ -21,7 +21,7 @@
   "interface": {
     "displayName": "Presentation Director",
     "shortDescription": "Create ready-to-use, editable narrative PPTX",
-    "longDescription": "A lightweight presentation director that compiles the narrative, visual rhythm, asset plan, and provider briefs before producing a complete PPTX. It keeps project artifacts local, derives content-specific Design DNA, routes specialist capabilities, preserves high-impact asset choices, and validates a ready-to-present, high-fidelity, native-first editable deck.",
+    "longDescription": "A lightweight presentation director that compiles evidence, narrative, content preferences, delivery timing, renderer-neutral page design, visual rhythm, asset plans, provider briefs, and a deck-specific rubric before producing a complete PPTX. It keeps project artifacts local, routes specialist capabilities, validates exact renders through bounded repairs, rehearses the delivery, and reports actual editability plus independent artifact and delivery scores.",
     "developerName": "Wilder1222",
     "category": "Productivity",
     "capabilities": [
