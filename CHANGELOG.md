@@ -4,6 +4,26 @@ All notable changes to Presentation Director are recorded here. The format follo
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-08-03
+
+### Added
+
+- Content-directed native PowerPoint motion selection for Manifest 1.7 slides.
+- Automatic fade, morph, and wipe routing based on slide role, claim, content signals, continuity, and page-design regions.
+- Compiled `tmp/motion/native-motion-plan.json` handoff with effect rationale, semantic targets, timing, trigger order, and static fallback.
+- Build-receipt and final-PPTX audit evidence for native transition application, applied animation ids, plan hashes, and motion fallbacks.
+
+### Changed
+
+- Native PPTX providers now receive the native motion contract and must apply it after building the static frame.
+- Motion budgets separately cap native-animated slides and per-slide animation steps while preserving the existing video budget.
+- Native capability reports expose motion application and assembly-stage changes alongside editability losses.
+
+### Compatibility
+
+- Manifest 1.4–1.6 validation remains compatible for unchanged legacy projects. Manifest 1.7 projects must re-run creative preparation and rebuild receipts to adopt native motion.
+- No new runtime dependency is required; the selector and contracts use the existing local Node.js orchestration layer.
+
 ## [0.11.0] - 2026-08-01
 
 ### Added
@@ -127,6 +147,7 @@ All notable changes to Presentation Director are recorded here. The format follo
 - Capability profiles, provider preflight, and explicit fallback approvals.
 - MIT license.
 
+[0.12.0]: https://github.com/Wilder1222/presentation-director/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/Wilder1222/presentation-director/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/Wilder1222/presentation-director/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/Wilder1222/presentation-director/compare/v0.8.0...v0.9.0

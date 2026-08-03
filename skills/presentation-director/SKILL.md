@@ -29,11 +29,11 @@ Act as the presentation director. Deliver a PowerPoint file the user can present
 8. Read [references/design-taste.md](references/design-taste.md), derive a content-specific design thesis, motif, tensions, signature moves, and anti-defaults, then lock `tasteProfile`. A direction that fails the content-swap test is not ready.
 9. Create the final `DESIGN.md` only after style, reference, and taste resolution. Style-selection boards are temporary decision artifacts, not production assets.
 10. Create `presentation.json` before rendering slides and preserve its `deliveryContract`, `styleDecision`, and `tasteProfile` records.
-11. Follow the current manifest's creative contract. For Manifest 1.7, lock the narrative, content-preference DNA, and delivery envelope; then give every slide a stable claim, `narrativeBeat`, `visualPlan`, renderer-neutral `pageDesign`, delivery cues, sources, and acceptance criteria. Read [references/quality-contracts.md](references/quality-contracts.md) and [references/content-delivery.md](references/content-delivery.md), then run `prepare-creative.mjs --strict`. Treat compiled artifacts as production truth.
+11. Follow the current manifest's creative contract. For Manifest 1.7, lock the narrative, content-preference DNA, delivery envelope, and content-derived `nativeMotion` plan; then give every slide a stable claim, `narrativeBeat`, `visualPlan`, renderer-neutral `pageDesign`, delivery cues, sources, and acceptance criteria. Read [references/quality-contracts.md](references/quality-contracts.md), [references/content-delivery.md](references/content-delivery.md), and [references/native-motion.md](references/native-motion.md), then run `prepare-creative.mjs --strict`. Treat compiled artifacts as production truth.
 12. Render representative static samples, including the opening and a specialist-rendered page when planned. Lock them with `lock-design.mjs` before parallel production. Manifest 1.7 locks the creative digest, delivery intent, and visual samples.
 13. Run `prepare-build.mjs`, produce only dirty tasks, and enforce the generated task graph's dependencies and exclusive write paths. Each worker owns its slide build capsule and writes a matching receipt last. Only the Director may update shared truth or final assembly.
-14. Build the most-visible static frame before adding animation. For high-impact generative assets, produce the declared variants and record the selected candidate with `record-asset-selection.mjs`.
-15. Record completed slide builds and inspect exact renders against the current artifact rubric. Manifest 1.7 receipts also require truthful native-capability declarations; after final assembly, audit the opened PPTX, rehearse its delivery plan, and compile the dual artifact/delivery scorecard. Recheck hashes and do not stop at source files or intermediate renders.
+14. Build the most-visible static frame before adding animation. Apply the compiled native PowerPoint motion plan to the final PPTX object graph; use HyperFrames or Remotion only for motion that cannot remain native. For high-impact generative assets, produce the declared variants and record the selected candidate with `record-asset-selection.mjs`.
+15. Record completed slide builds and inspect exact renders against the current artifact rubric. Manifest 1.7 receipts also require truthful native-capability and native-motion declarations; after final assembly, audit the opened PPTX, rehearse its delivery plan, and compile the dual artifact/delivery scorecard. Recheck hashes and do not stop at source files or intermediate renders.
 
 Do not expose plans, renderer notes, prompts, timing scaffolds, or QA comments as audience-facing slide copy.
 
@@ -76,6 +76,7 @@ For a requested Three.js scene, add `--require three_d`. Rerun `check-capabiliti
 - Read [references/content-delivery.md](references/content-delivery.md) before inferring content preferences, allocating presentation time, writing speaker notes, rehearsing, or declaring editability.
 - Read [references/review.md](references/review.md) before final rendering and delivery.
 - Read [references/prompt-contracts.md](references/prompt-contracts.md) before handing work to imagegen, HyperFrames, Remotion, UI capture, or a diagram renderer.
+- Read [references/native-motion.md](references/native-motion.md) before applying or reviewing native PowerPoint animations and transitions.
 - Read [references/production-optimization.md](references/production-optimization.md) before representative samples, parallel production, incremental rebuilds, or risk-based QA.
 - Read [references/style-discovery.md](references/style-discovery.md) whenever the user has not supplied a usable template, or when the style is delegated, recommended, named, or custom researched.
 - Read [references/patterns/layouts.md](references/patterns/layouts.md) when selecting slide silhouettes.
@@ -107,6 +108,7 @@ For a requested Three.js scene, add `--require three_d`. Rerun `check-capabiliti
 
 - Invoke production providers from the generated brief at `tmp/provider-briefs/<slide-id>/<asset-id>.json`; do not replace it with an improvised prompt. The brief carries the narrative relationship, visual plan, continuity family, acceptance criteria, and shared Design DNA.
 - Use the presentation provider recorded by capability preflight for every local PPTX read/create/edit workflow. Follow its template route, source-note policy, rendering checks, and overflow checks.
+- Give the presentation provider `tmp/motion/native-motion-plan.json` and require it to apply native transitions and object effects before accepting the slide build receipt.
 - Use the detected image-generation provider for original product imagery, conceptual hero art, backgrounds, and illustrative assets. Do not use it for exact architecture, charts, tables, or text-heavy UI.
 - Use the detected short-motion provider for deterministic animated architecture builds, title cards, slide loops, and 3-15 second sequences. Give the composition the same `DESIGN.md`.
 - Use the detected video provider for 15-90 second multi-scene product demos, narration, captions, or parameterized video. Follow that provider's video-layout guidance before coding.
@@ -148,6 +150,7 @@ Default to native-first PowerPoint. Keep text, data, tables, charts, and simple 
 - Keep raw reference files outside the plugin but inside `<project-dir>/reference-library/raw`. Preserve canonical links in `sources.json` and load one source at a time with `--workspace <project-dir>`.
 - Use `*-inspired` labels. Do not copy logos, proprietary imagery, exact layouts, marketing copy, or unlicensed fonts. Do not imply endorsement.
 - Default to at most 3 video slides, 45 total video seconds, and 2 transition styles.
+- Default to at most 6 native-animated slides and 4 native animation steps per slide. Keep native animation inside the PPTX when it explains reading order, sequence, state change, product use, or a meaningful reveal.
 - Animate only to explain change, sequence, system behavior, product use, or a major reveal.
 - Prefer restrained state change over decorative fly-ins, bounce, constant motion, or random effects.
 

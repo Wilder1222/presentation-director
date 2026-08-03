@@ -120,6 +120,13 @@ Manifest 1.7 build receipts declare what remains editable after the actual rende
     "embeddedVideo": false,
     "flattened": false,
     "losses": ["The complex topology remains a replaceable SVG rather than native connectors."]
+  },
+  "nativeMotion": {
+    "status": "applied",
+    "planHash": "<sha256 of slide.nativeMotion>",
+    "transitionApplied": true,
+    "appliedAnimationIds": ["s03-takeaway-entrance-1"],
+    "losses": []
   }
 }
 ```
@@ -146,6 +153,13 @@ A final assembly audit contains the reviewed artifact and every slide:
         "replaceableImages": true,
         "embeddedVideo": false,
         "flattened": false,
+        "losses": []
+      },
+      "nativeMotion": {
+        "status": "applied",
+        "planHash": "<sha256 of slide.nativeMotion>",
+        "transitionApplied": true,
+        "appliedAnimationIds": ["s01-takeaway-entrance-1"],
         "losses": []
       }
     }
@@ -231,7 +245,7 @@ The rehearsal input records actual total and per-slide seconds plus concrete res
 
 Final outputs include:
 
-- `output/native-capability-report.json`: native text, shapes, charts, replaceable media, embedded video, flattened exceptions, and conversion losses by slide.
+- `output/native-capability-report.json`: native text, shapes, charts, replaceable media, embedded video, native motion application, flattened exceptions, and conversion losses by slide.
 - `output/quality-scorecard.json`: independent `artifactScore` and `deliveryScore` derived from current rubric evidence.
 
 Each score is `round(100 × passed current checks / total current checks)` within its dimension. Deck and slide checks have equal weight. Missing checks stop compilation; blocking checks cannot be marked not-applicable. The scorecard reports passed and total counts so the result is auditable.
@@ -245,5 +259,5 @@ Legacy validation remains available and the Skill must not silently rewrite an e
 1. Change `version` to `1.7`; add locked `contentPreference`, top-level `delivery`, per-slide `delivery`, and the template's `production.delivery` paths.
 2. Rerun `prepare-creative.mjs --strict`; creative contract 1.2 invalidates the previous representative design lock.
 3. Re-render and lock representative samples, then run `prepare-build.mjs` again.
-4. Rebuild receipts as schema 1.1 with complete `nativeCapabilities`; record builds and repeat artifact observations plus QA.
+4. Rebuild receipts as schema 1.1 with complete `nativeCapabilities` and `nativeMotion`; record builds and repeat artifact observations plus QA.
 5. Assemble and open-check the final PPTX, complete the final native-capability audit, rehearse, compile both reports, and validate.

@@ -198,10 +198,11 @@ Provide the detected presentation provider with:
 - `presentation.json`;
 - source deck or template, if present;
 - finalized assets and poster frames;
+- `tmp/motion/native-motion-plan.json` and each slide's compiled `nativeMotion` contract;
 - output path;
 - source notes path;
 - explicit editability expectations.
 
-The handoff must require a complete, ready-to-present PPTX rather than a code sample or partial deck. Keep audience-facing text, data, tables, charts, and simple diagrams native whenever feasible; preserve SVG, image, UI, and video assets as replaceable media with their source projects. Render every slide, run overflow checks, and open the completed PPTX in the target presentation application before delivery.
+The handoff must require a complete, ready-to-present PPTX rather than a code sample or partial deck. Build the static slide first, then apply the declared native transition and object animations by mapping semantic targets to native PowerPoint objects. Keep audience-facing text, data, tables, charts, and simple diagrams native whenever feasible; preserve SVG, image, UI, and video assets as replaceable media with their source projects. Render every slide, run overflow checks, and open the completed PPTX in the target presentation application before delivery. The build receipt must report the exact native-motion plan hash, applied animation ids, transition application, and any fallback loss.
 
 Follow the detected provider's visual route and implementation engine. Do not substitute PptxGenJS, python-pptx, or direct XML manipulation when the installed provider requires another engine.

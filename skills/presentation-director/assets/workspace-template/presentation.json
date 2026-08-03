@@ -115,6 +115,7 @@
       "deckRubric": "tmp/qa/deck-rubric.json",
       "contentPreference": "tmp/preferences/content-preference.json",
       "deliveryPlan": "tmp/delivery/delivery-plan.json",
+      "nativeMotionPlan": "tmp/motion/native-motion-plan.json",
       "report": "tmp/creative/report.json",
       "providerBriefsRoot": "tmp/provider-briefs",
       "providerIndex": "tmp/provider-briefs/index.json",
@@ -172,7 +173,9 @@
   "motionBudget": {
     "maxVideoSlides": 3,
     "maxTotalVideoSeconds": 45,
-    "maxTransitionStyles": 2
+    "maxTransitionStyles": 2,
+    "maxNativeAnimatedSlides": 6,
+    "maxNativeAnimationStepsPerSlide": 4
   },
   "slides": []
 }

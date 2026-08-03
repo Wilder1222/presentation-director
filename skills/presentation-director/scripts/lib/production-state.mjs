@@ -147,6 +147,7 @@ export function creativeSourceSnapshot(manifest) {
     },
     contentPreference: manifest.contentPreference || null,
     delivery: manifest.delivery || null,
+    motionBudget: manifest.motionBudget || null,
     narrative: manifest.narrative || null,
     slides: (manifest.slides || []).map((slide) => ({
       id: slide.id,
@@ -173,6 +174,7 @@ export function creativeSourceSnapshot(manifest) {
         durationSeconds: slide.motion.durationSeconds,
         purpose: slide.motion.purpose,
       } : null,
+      nativeMotion: slide.nativeMotion || null,
       threeD: slide.threeD ? {
         runtime: slide.threeD.runtime,
         purpose: slide.threeD.purpose,
@@ -259,6 +261,7 @@ export function productionDefaults() {
       deckRubric: "tmp/qa/deck-rubric.json",
       contentPreference: "tmp/preferences/content-preference.json",
       deliveryPlan: "tmp/delivery/delivery-plan.json",
+      nativeMotionPlan: "tmp/motion/native-motion-plan.json",
       report: "tmp/creative/report.json",
       providerBriefsRoot: "tmp/provider-briefs",
       providerIndex: "tmp/provider-briefs/index.json",

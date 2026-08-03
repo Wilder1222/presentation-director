@@ -8,7 +8,7 @@
 
 Turn a brief, document, or reference deck into a ready-to-present PPTX with a clear narrative, high visual impact, high-fidelity execution, and native-first editability.
 
-![Version](https://img.shields.io/badge/version-0.11.0-4F46E5)
+![Version](https://img.shields.io/badge/version-0.12.0-4F46E5)
 ![Codex Plugin](https://img.shields.io/badge/Codex-standard_plugin-111111)
 ![Agent Skills](https://img.shields.io/badge/agents-Codex%20%7C%20Claude%20Code%20%7C%20Copilot%20%7C%20Gemini%20%7C%20Cursor-2563EB)
 ![Presentation](https://img.shields.io/badge/output-PPTX%20%7C%20PDF%20%7C%20HTML%20%7C%20MP4-0A7D55)
@@ -52,6 +52,7 @@ AI can generate slides. Presentation Director coordinates the decisions that mak
 | **The right tool per slide** | Native PowerPoint, image generation, SVG, browser UI, HyperFrames, Remotion, and optional Three.js are selected by purpose rather than novelty. |
 | **Reusable design intelligence** | The built-in Design Atlas abstracts proven patterns from product launches, editorial technology stories, technical platforms, developer ecosystems, and enterprise communication. |
 | **Native-first editability** | Text, data, tables, charts, and simple diagrams stay editable; images and motion remain replaceable; full-page raster slides require an explicit exception. |
+| **Content-directed native motion** | Every slide receives a traceable PowerPoint animation plan: fade for reveals, morph for meaningful comparisons, and wipe for ordered evidence—bounded by a motion budget and verified in the final PPTX receipt. |
 | **Designed for the room, not only the file** | A timed delivery plan gives every slide a speaking budget, complementary presenter detail, attention cues, and a purposeful transition. |
 | **Quality before delivery** | Exact renders and timed rehearsal are scored separately; delivery includes a transparent per-slide report of native, replaceable, embedded, flattened, and conversion-loss behavior. |
 | **Faster iteration without blind reuse** | Representative samples lock the direction first; content-addressed caching rebuilds only changed slides; an exclusive-write task graph enables safe parallel production. |
@@ -68,6 +69,7 @@ AI can generate slides. Presentation Director coordinates the decisions that mak
 - Generate hero visuals, product concepts, realistic UI, precise technical diagrams, and data-led slides within one system.
 - Decompose assets by role, continuity family, dependencies, reuse policy, and acceptance criteria; compare high-impact visual variants and preserve the selected candidate with traceable hashes.
 - Create short progressive animations with HyperFrames and multi-scene product demos with Remotion.
+- Automatically select and apply native PowerPoint transitions and object animations from slide semantics, with explicit static fallbacks and final-PPTX audit evidence.
 - Add Three.js only when depth communicates product structure or spatial relationships.
 - Produce a high-fidelity, native-first PPTX as the primary artifact, with PDF, HTML, MP4, slide previews, and replaceable media assets as optional supporting outputs.
 - Keep source provenance and usage boundaries attached to external references and generated assets.

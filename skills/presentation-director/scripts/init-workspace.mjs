@@ -30,6 +30,7 @@ const PROJECT_DIRS = [
   "tmp/evidence",
   "tmp/preferences",
   "tmp/delivery",
+  "tmp/motion",
   "tmp/design/page-design",
   "tmp/design-lock",
   "tmp/provider-briefs",

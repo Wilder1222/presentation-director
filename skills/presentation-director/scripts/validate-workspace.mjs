@@ -15,6 +15,7 @@ import {
   stableStringify,
   workspacePath,
 } from "./lib/production-state.mjs";
+import { validateNativeMotionPlan } from "./lib/native-motion.mjs";
 
 const SKILL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const DEPENDENCY_PATH = path.join(SKILL_DIR, "references", "dependencies.json");
@@ -451,7 +452,7 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
   if (["1.6", "1.7"].includes(manifest.version)) {
     artifactKeys.push("evidenceBundle", "contentAlignment", "pageDesignIndex", "deckRubric");
   }
-  if (manifest.version === "1.7") artifactKeys.push("contentPreference", "deliveryPlan");
+  if (manifest.version === "1.7") artifactKeys.push("contentPreference", "deliveryPlan", "nativeMotionPlan");
   for (const key of artifactKeys) {
     if (!creative[key] || !/^tmp[\\/]/i.test(creative[key])) {
       addIssue(issues, "error", `production.creativePlan.${key}`, `${key} must be a workspace-relative path under tmp/.`);
@@ -538,6 +539,19 @@ async function validateCreativeContract(root, manifest, design, slides, draft, i
         if (artifact.totalSeconds !== manifest.delivery.totalSeconds || artifact.reserveSeconds !== manifest.delivery.reserveSeconds || plannedSeconds !== artifact.plannedSpeakingSeconds) {
           addIssue(issues, "error", "production.creativePlan.delivery_budget", "Compiled delivery timing does not match the manifest.");
         }
+      }
+      if (key === "nativeMotionPlan") {
+        const planned = new Map((artifact.slides || []).map((slide) => [slide.slideId, slide.plan]));
+        if (planned.size !== slides.length || slides.some((slide) => !planned.has(slide.id))) {
+          addIssue(issues, "error", "production.creativePlan.native_motion_slide_set", "Native motion plan must cover every slide.");
+        }
+        for (const slide of slides) {
+          const plan = planned.get(slide.id);
+          if (stableStringify(plan) !== stableStringify(slide.nativeMotion)) {
+            addIssue(issues, "error", "production.creativePlan.native_motion", `Native motion plan is stale for ${slide.id}.`);
+          }
+        }
+        if (artifact.schemaVersion !== "1.0") addIssue(issues, "error", "production.creativePlan.native_motion_contract", "Unsupported native motion plan contract version.");
       }
     } catch (error) {
       addIssue(issues, "error", "production.creativePlan.files", `Cannot validate ${key}: ${error.message}`);
@@ -922,6 +936,8 @@ export async function validateWorkspace(projectDir, options = {}) {
   let videoSlides = 0;
   let videoSeconds = 0;
   let threeDSlides = 0;
+  let nativeAnimatedSlides = 0;
+  let nativeAnimationSteps = 0;
   const availableCapabilities = new Set(Array.isArray(capabilityProfile?.available) ? capabilityProfile.available : []);
   const rendererCapabilities = dependencyConfig.rendererCapabilities || {};
 
@@ -979,6 +995,18 @@ export async function validateWorkspace(projectDir, options = {}) {
     }
     if (!slide.content || typeof slide.content !== "object" || Array.isArray(slide.content)) {
       addIssue(issues, "error", "slide.content", "content must be an object, even when empty.", location);
+    }
+    if (manifest.version === "1.7") {
+      if (slide.nativeMotion) {
+        for (const message of validateNativeMotionPlan(slide, slide.nativeMotion, {
+          maxSteps: Number(manifest.motionBudget?.maxNativeAnimationStepsPerSlide ?? 4),
+          location: `${location}.nativeMotion`,
+        })) addIssue(issues, "error", "nativeMotion.contract", message, `${location}.nativeMotion`);
+        if ((slide.nativeMotion.animations || []).length) nativeAnimatedSlides += 1;
+        nativeAnimationSteps += (slide.nativeMotion.animations || []).length;
+      } else if (!draft) {
+        addIssue(issues, "error", "nativeMotion.missing", "Final Manifest 1.7 slides require a compiled nativeMotion plan.", location);
+      }
     }
     if (/architecture|diagram|data|chart/i.test(slide.role || "") && slide.renderer === "image_slide") {
       addIssue(issues, "error", "slide.raster_facts", "Architecture and data slides must not use image_slide.", location);
@@ -1097,6 +1125,9 @@ export async function validateWorkspace(projectDir, options = {}) {
       await validateLocalPath(root, slide.posterFrame, issues, location, draft);
     }
     if (slide.motion?.transition) transitions.add(slide.motion.transition);
+    if (slide.nativeMotion?.transition?.effect && slide.nativeMotion.transition.effect !== "none") {
+      transitions.add(slide.nativeMotion.transition.effect);
+    }
   }
 
   for (let index = 2; index < patterns.length; index += 1) {
@@ -1106,7 +1137,9 @@ export async function validateWorkspace(projectDir, options = {}) {
   }
 
   const budget = manifest.motionBudget || {};
-  for (const key of ["maxVideoSlides", "maxTotalVideoSeconds", "maxTransitionStyles"]) {
+  const motionBudgetKeys = ["maxVideoSlides", "maxTotalVideoSeconds", "maxTransitionStyles"];
+  if (manifest.version === "1.7") motionBudgetKeys.push("maxNativeAnimatedSlides", "maxNativeAnimationStepsPerSlide");
+  for (const key of motionBudgetKeys) {
     if (!Number.isFinite(Number(budget[key]))) addIssue(issues, "error", `motionBudget.${key}`, `${key} must be numeric.`);
   }
   if (videoSlides > Number(budget.maxVideoSlides)) {
@@ -1117,6 +1150,12 @@ export async function validateWorkspace(projectDir, options = {}) {
   }
   if (transitions.size > Number(budget.maxTransitionStyles)) {
     addIssue(issues, "error", "motionBudget.transitions", `${transitions.size} transition styles exceed the budget of ${budget.maxTransitionStyles}.`);
+  }
+  if (nativeAnimatedSlides > Number(budget.maxNativeAnimatedSlides)) {
+    addIssue(issues, "error", "motionBudget.nativeAnimatedSlides", `${nativeAnimatedSlides} slides contain native animations, above the budget of ${budget.maxNativeAnimatedSlides}.`);
+  }
+  if (nativeAnimationSteps > slides.length * Number(budget.maxNativeAnimationStepsPerSlide)) {
+    addIssue(issues, "error", "motionBudget.nativeAnimationSteps", `${nativeAnimationSteps} native animation steps exceed the per-slide budget.`);
   }
 
   if (["1.5", "1.6", "1.7"].includes(manifest.version)) {
@@ -1432,6 +1471,8 @@ export async function validateWorkspace(projectDir, options = {}) {
       videoSlides,
       videoSeconds,
       threeDSlides,
+      nativeAnimatedSlides,
+      nativeAnimationSteps,
       transitionStyles: transitions.size,
       capabilityMode: capabilityProfile?.resolvedMode || "unresolved",
       errors,

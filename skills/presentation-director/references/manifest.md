@@ -212,7 +212,7 @@ Read `design-taste.md` before authoring this object.
 
 Manifest 1.7 adds a non-visual preference profile and a rehearsable time contract. `contentPreference` records compression, evidence order, preferred and rejected content moves, and speaker-note detail. Top-level `delivery` records mode, total seconds, reserve, presenter goal, and timing tolerance; each slide records `timeBudgetSeconds`, complementary `spokenDetail`, semantic `attentionCues`, and a non-closing `transitionLine`.
 
-Slide time budgets plus reserve must equal the deck total. Attention targets must reference `pageDesign.regions[].id`. Run `prepare-creative.mjs --strict` to compile `tmp/preferences/content-preference.json` and `tmp/delivery/delivery-plan.json`. See `content-delivery.md` for the full schema, rehearsal input, native-capability receipt, and scorecard contract.
+Slide time budgets plus reserve must equal the deck total. Attention targets must reference `pageDesign.regions[].id`. Run `prepare-creative.mjs --strict` to compile `tmp/preferences/content-preference.json`, `tmp/delivery/delivery-plan.json`, and `tmp/motion/native-motion-plan.json`. See `content-delivery.md` for the full schema, rehearsal input, native-capability receipt, and scorecard contract; see `native-motion.md` for automatic native animation selection and provider receipts.
 
 ## Creative and quality contracts
 
@@ -248,6 +248,7 @@ Manifest 1.7 locks the causal story, content preferences, and delivery timing, t
       "deckRubric": "tmp/qa/deck-rubric.json",
       "contentPreference": "tmp/preferences/content-preference.json",
       "deliveryPlan": "tmp/delivery/delivery-plan.json",
+      "nativeMotionPlan": "tmp/motion/native-motion-plan.json",
       "artifactHashes": {},
       "warnings": 0
     }
@@ -504,6 +505,31 @@ After inspecting the declared candidates, use `record-asset-selection.mjs` to po
 A final Manifest 1.6+ requires a current selection record for every asset using `selectionMode: variants`. The canonical asset, candidates, and provider brief must still match their recorded hashes. Recording a reviewed `single` or `deterministic` asset is optional.
 
 Use project-relative paths. Never use paths outside the presentation workspace.
+
+## Motion and native PowerPoint animation
+
+Use `motion` for HyperFrames or Remotion media and `nativeMotion` for effects that remain inside the PPTX. Manifest 1.7 compiles `nativeMotion` automatically from slide semantics unless a slide explicitly sets `mode` to `specified` or `off`:
+
+```json
+{
+  "motionBudget": {
+    "maxVideoSlides": 3,
+    "maxTotalVideoSeconds": 45,
+    "maxTransitionStyles": 2,
+    "maxNativeAnimatedSlides": 6,
+    "maxNativeAnimationStepsPerSlide": 4
+  },
+  "nativeMotion": {
+    "mode": "auto",
+    "transition": { "effect": "fade", "durationSeconds": 0.55, "advance": "on-click" },
+    "animations": [
+      { "target": "takeaway", "effect": "fade", "phase": "entrance", "trigger": "with-previous" }
+    ]
+  }
+}
+```
+
+The compiled plan records selection rationale, target semantic regions, effect timing, and a static fallback. The presentation provider must apply it after building the static frame and record the plan hash plus actual applied IDs in `receipt.json`. Read `native-motion.md` for supported effects and the final opened-PPTX audit contract.
 
 ## Motion
 

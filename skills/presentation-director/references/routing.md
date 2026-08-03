@@ -97,7 +97,7 @@ Keep required text and factual labels native in the deck.
 
 ### Native or progressive static build
 
-Use for a simple appear/dissolve/build when PowerPoint support is available. If the renderer cannot produce a reliable native animation, use progressive duplicate slides or a short embedded video. Do not edit OOXML animation internals inside this skill.
+Use for a simple appear/dissolve/build when PowerPoint support is available. Manifest 1.7 selects the effect from slide semantics and sends the renderer a `nativeMotion` plan. Apply the plan to native objects after the static frame is complete; if the renderer cannot produce a reliable effect, preserve the final state and record a fallback loss. Do not edit OOXML animation internals inside this skill.
 
 ### HyperFrames
 
@@ -144,7 +144,9 @@ Do not describe a deck as fully editable if any slide is `replaceable-media` or 
 {
   "maxVideoSlides": 3,
   "maxTotalVideoSeconds": 45,
-  "maxTransitionStyles": 2
+  "maxTransitionStyles": 2,
+  "maxNativeAnimatedSlides": 6,
+  "maxNativeAnimationStepsPerSlide": 4
 }
 ```
 

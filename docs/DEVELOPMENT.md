@@ -200,7 +200,9 @@ tmp/slide-builds/<slide-id>/
   "motionBudget": {
     "maxVideoSlides": 3,
     "maxTotalVideoSeconds": 45,
-    "maxTransitionStyles": 2
+    "maxTransitionStyles": 2,
+    "maxNativeAnimatedSlides": 6,
+    "maxNativeAnimationStepsPerSlide": 4
   },
   "slides": []
 }
@@ -216,7 +218,7 @@ After sources, narrative, content preferences, deck timing, slide visual and del
 node .\skills\presentation-director\scripts\prepare-creative.mjs <project-directory> --strict
 ```
 
-Inspect `tmp/evidence/`, `tmp/preferences/`, `tmp/delivery/delivery-plan.json`, `tmp/design/page-design/`, `tmp/qa/deck-rubric.json`, and `tmp/creative/`; use generated JSON in `tmp/provider-briefs/` for specialist calls. After representative samples are rendered, lock the design and prepare incremental work:
+Inspect `tmp/evidence/`, `tmp/preferences/`, `tmp/delivery/delivery-plan.json`, `tmp/motion/native-motion-plan.json`, `tmp/design/page-design/`, `tmp/qa/deck-rubric.json`, and `tmp/creative/`; use generated JSON in `tmp/provider-briefs/` for specialist calls. Native PPTX providers must apply the compiled native motion plan after building each static frame and record its plan hash and applied animation ids in the build receipt. After representative samples are rendered, lock the design and prepare incremental work:
 
 ```powershell
 node .\skills\presentation-director\scripts\lock-design.mjs <project-directory> `

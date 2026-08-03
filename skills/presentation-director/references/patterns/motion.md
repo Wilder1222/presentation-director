@@ -4,19 +4,32 @@ Use motion as explanation, state change, demonstration, or reveal. Every motion 
 
 ## Contents
 
-1. Dissolve reveal
-2. Progressive build
-3. Masked product reveal
-4. Camera push
-5. Architecture build
-6. Data flow
-7. Product state change
-8. Compare morph
-9. Section transition
-10. Product orbit reveal
-11. Exploded assembly
-12. Spatial layer build
-13. Motion anti-patterns
+1. Native PowerPoint motion
+2. Dissolve reveal
+3. Progressive build
+4. Masked product reveal
+5. Camera push
+6. Architecture build
+7. Data flow
+8. Product state change
+9. Compare morph
+10. Section transition
+11. Product orbit reveal
+12. Exploded assembly
+13. Spatial layer build
+14. Motion anti-patterns
+
+## native-powerpoint-motion
+
+Manifest 1.7 uses the slide's role, claim, content signals, continuity, and semantic page regions to choose native PowerPoint effects automatically. The selector favors a small, legible vocabulary:
+
+- `fade` transition for openings, section resets, reveals, and ordinary claim changes;
+- `morph` transition for meaningful before/after or option changes with shared anchors;
+- `fade` entrance for the takeaway region;
+- `wipe` from the left for ordered diagrams, workflows, roadmaps, data, and metrics;
+- a second `fade` for a product reveal, comparison difference, or declared visual peak.
+
+The compiled plan is applied after the static frame is complete. Keep at most six native-animated slides and four steps per slide by default. Every effect needs a semantic target, a reading-order purpose, and a static fallback. If the target PowerPoint version cannot preserve the effect, record the loss rather than silently claiming that the animation exists.
 
 ## dissolve-reveal
 

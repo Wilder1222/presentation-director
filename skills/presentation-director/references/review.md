@@ -53,7 +53,7 @@ For Manifest 1.7 delivery and editability gates:
 
 1. Confirm `contentPreference` is grounded, locked, and reflected in compression, evidence order, examples, and speaker-note depth.
 2. Confirm deck and slide delivery budgets sum exactly, every attention cue targets a semantic page region, and each spoken layer adds rather than reads visible copy.
-3. Confirm every schema 1.1 build receipt declares native capabilities and concrete conversion losses.
+3. Confirm every schema 1.1 build receipt declares native capabilities, concrete conversion losses, and the native-motion plan hash plus applied animation ids.
 4. Open the final PPTX in the target application and audit every slide into the user-authored input `tmp/delivery/native-capability-audit-input.json`. Run the native capability compiler, which records the normalized audit at `tmp/delivery/native-capability-audit.json`, writes `output/native-capability-report.json`, and binds both generated artifacts to the final file hash.
 5. Rehearse the same observed PPTX, record all delivery checks and exact timing, and confirm the rehearsal remains bound to the final observation and file hash.
 6. Compile the scorecard and require `artifactScore: 100`, `deliveryScore: 100`, plus complete per-dimension counts.
@@ -103,6 +103,7 @@ Do not treat a cache hit as visual approval. It only proves that recorded inputs
 - Full-size inspection confirms intentional line breaks, optical centering, crops, edge joins, label offsets, and negative space.
 - A typical 10-15 slide deck has two to four visual peaks, with quieter slides creating pacing and contrast.
 - Visual impact comes from hierarchy, scale, composition, evidence, and reveal—not from applying maximum decoration to every page.
+- Native animation has a semantic purpose, follows the compiled target order, stays within the native motion budget, and does not replace a clearer static frame.
 - Asset continuity keys result in a recognizable material or image family, while derived variants avoid literal image reuse.
 - Selected generative candidates still work at the final crop and slide size; choices are not based only on standalone image attractiveness.
 
@@ -120,6 +121,7 @@ Follow the presentation provider recorded by capability preflight. At minimum:
 8. Open the final PPTX in the target presentation application and verify fonts, media, masters, charts, notes, and editing behavior.
 9. Confirm all slides are complete, no placeholders remain, and the deck can be presented without repair.
 10. Verify native editability for text, data, tables, charts, and simple diagrams. For every `image_slide`, inspect its `rasterExceptionReason` and confirm a replaceable source asset remains in the workspace.
+11. Verify native transition and object-animation behavior in the target PowerPoint version; confirm any fallback is recorded in `output/native-capability-report.json`.
 
 ## 7. HyperFrames checks
 

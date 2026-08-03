@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "presentation-director",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Compile evidence, narrative, content preferences, delivery timing, page design, and asset direction into ready-to-present, high-fidelity, native-first editable PowerPoint decks.",
   "author": {
     "name": "Wilder1222",

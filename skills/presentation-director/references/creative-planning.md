@@ -9,7 +9,7 @@
 
 ## Purpose
 
-Manifest 1.7 compiles evidence, content preferences, delivery timing, story, page-design intent, visual rhythm, asset decomposition, binary acceptance criteria, and specialist handoffs before production begins. This gate improves narrative continuity and material quality without adding a heavy rendering dependency.
+Manifest 1.7 compiles evidence, content preferences, delivery timing, story, page-design intent, content-directed native motion, visual rhythm, asset decomposition, binary acceptance criteria, and specialist handoffs before production begins. This gate improves narrative continuity and material quality without adding a heavy rendering dependency.
 
 ## Author the source fields
 
@@ -76,12 +76,13 @@ Resolve all issues. The compiler writes:
 - `tmp/evidence/evidence-bundle.json` and `content-alignment.json` for traceable claims, sources, assets, and motion segments;
 - `tmp/preferences/content-preference.json` for locked compression, evidence-order, example, avoidance, and notes preferences;
 - `tmp/delivery/delivery-plan.json` for deck duration, reserve, per-slide timing, spoken detail, attention cues, and transitions;
+- `tmp/motion/native-motion-plan.json` for content-selected PowerPoint transitions, semantic animation targets, timing, rationale, and static fallbacks;
 - `tmp/design/page-design/<slide-id>.json` and its index for renderer-neutral composition intent;
 - `tmp/qa/deck-rubric.json` for task-specific binary deck and slide acceptance checks;
 - `tmp/creative/narrative-map.json` for the causal title and beat sequence;
 - `tmp/creative/storyboard.json` for silhouette, density, focal mode, and visual peaks;
 - `tmp/creative/asset-plan.json` for methods, dependencies, continuity families, outputs, and safe execution waves;
-- `tmp/provider-briefs/<slide-id>/<asset-id>.json` for immutable provider handoffs;
+- `tmp/provider-briefs/<slide-id>/<asset-id>.json` for immutable provider handoffs, including the native-motion plan path and per-slide motion contract;
 - `tmp/creative/report.json` and `tmp/provider-briefs/index.json` for validation.
 
 Any later change to acceptance criteria, content preferences, deck or slide delivery, speaker-note intent, sources, narrative, slide title, claim or content, renderer, visual or page-design plan, asset brief, motion intent, or 3D intent makes the creative plan stale. Recompile, re-lock representative design, and prepare a new build before production continues.

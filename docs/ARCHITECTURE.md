@@ -90,6 +90,7 @@ All visual providers must read this file. Provider defaults must not override it
 - Renderer selection.
 - Asset inputs and outputs.
 - Motion and poster requirements.
+- Content-directed native PowerPoint motion plans and application receipts.
 - Editability classification.
 - Source provenance.
 - Capability profile and fallback approvals.
@@ -151,7 +152,7 @@ The cache accelerates revisions; it never certifies visual quality. See [`produc
 
 ### Native presentation motion
 
-Use for simple, maintainable builds and transitions when the target presentation engine supports them reliably.
+Use for simple, maintainable builds and transitions when the target presentation engine supports them reliably. Manifest 1.7 compiles `nativeMotion` automatically from slide semantics: fade for attention resets and reveals, morph for continuous comparisons, and wipe for ordered diagrams or data. The provider applies the plan to native PowerPoint objects, records the exact plan hash and applied animation ids, and preserves a static final state as fallback. See [`native-motion.md`](../skills/presentation-director/references/native-motion.md).
 
 ### HyperFrames
 
@@ -218,6 +219,7 @@ Final output should pass:
 - Diagram-label and connector review.
 - Image, source, and rights review.
 - Motion-budget and poster checks.
+- Native-motion plan, application, fallback, and transition-family checks.
 - Rendered-slide visual QA.
 - Target-application open and editability verification.
 

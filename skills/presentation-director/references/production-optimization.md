@@ -104,11 +104,19 @@ Write `receipt.json` last, using the task's current input hash:
     "embeddedVideo": false,
     "flattened": false,
     "losses": ["The complex topology remains a replaceable SVG rather than native connectors."]
+  },
+  "nativeMotion": {
+    "status": "applied",
+    "planHash": "<sha256 of slide.nativeMotion>",
+    "transitionApplied": true,
+    "appliedAnimationIds": ["s03-takeaway-entrance-1"],
+    "losses": []
   }
 }
 ```
 
 Manifest 1.7 requires all seven booleans and a concrete `losses` array in every receipt. These fields describe the slide before final assembly; the final native-capability audit described in `content-delivery.md` rechecks the assembled PPTX and reports any assembly-stage change.
+The same receipt must report the compiled `nativeMotion` plan hash and the exact animation ids that the provider applied. A fallback is allowed only when it records a concrete loss; the final opened-PPTX audit repeats this motion check.
 
 ## Build recording
 

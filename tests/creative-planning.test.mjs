@@ -4,7 +4,7 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
-import { computeCreativeDigest } from "../skills/presentation-director/scripts/lib/production-state.mjs";
+import { computeCreativeDigest, sha256, stableStringify } from "../skills/presentation-director/scripts/lib/production-state.mjs";
 import { compileNativeCapabilityReport } from "../skills/presentation-director/scripts/compile-native-capability-report.mjs";
 import { compileQualityScorecard } from "../skills/presentation-director/scripts/compile-quality-scorecard.mjs";
 import { initWorkspace } from "../skills/presentation-director/scripts/init-workspace.mjs";
@@ -93,6 +93,17 @@ function nativeCapabilities(renderer) {
     embeddedVideo: renderer === "hyperframes_video" || renderer === "remotion_video",
     flattened: renderer === "image_slide",
     losses: renderer === "image_slide" ? ["The full-field generated composition is not editable as native slide objects."] : [],
+  };
+}
+
+function nativeMotionReceipt(slide) {
+  const plan = slide.nativeMotion;
+  return {
+    status: plan.mode === "off" ? "not-applicable" : "applied",
+    planHash: sha256(stableStringify(plan)),
+    transitionApplied: plan.transition.effect !== "none",
+    appliedAnimationIds: (plan.animations || []).map((animation) => animation.id),
+    losses: [],
   };
 }
 
@@ -333,6 +344,7 @@ test("A new workspace is a valid Manifest 1.7 draft with local delivery-contract
     "tmp/evidence",
     "tmp/preferences",
     "tmp/delivery",
+    "tmp/motion",
     "tmp/design/page-design",
     "tmp/qa/observations",
     "tmp/qa/repairs",
@@ -360,6 +372,13 @@ test("Manifest 1.7 compiles evidence, content preferences, delivery timing, page
   assert.equal(prepared.report.metrics.deliveryChecks, 17);
   assert.equal(prepared.deliveryPlan.totalSeconds, 330);
   assert.equal(prepared.contentPreference.compression, "high");
+  assert.equal(prepared.nativeMotionPlan.slides.length, 5);
+  assert.equal(prepared.nativeMotionPlan.policy.mode, "content-heuristic");
+  const compiledMotionManifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  assert.equal(compiledMotionManifest.slides[0].nativeMotion.mode, "auto");
+  assert.equal(compiledMotionManifest.slides[0].nativeMotion.transition.effect, "fade");
+  assert.ok(compiledMotionManifest.slides[0].nativeMotion.animations.length >= 1);
+  assert.equal(compiledMotionManifest.slides[3].nativeMotion.transition.effect, "morph");
   assert.deepEqual(prepared.assetPlan.executionWaves.map((wave) => wave.assets.map((asset) => asset.key)), [
     ["s03:runtime-hero"],
     ["s04:runtime-architecture"],
@@ -499,6 +518,7 @@ test("Manifest 1.7 binds artifact QA, delivery rehearsal, native capability repo
     sourceFiles: ["slide-source.json"],
     preview: "preview.png",
     nativeCapabilities: nativeCapabilities(s01.renderer),
+    nativeMotion: nativeMotionReceipt(manifest.slides.find((slide) => slide.id === "s01")),
   }));
   await recordBuild(projectDir, { all: false, slides: ["s01"] });
 
@@ -591,6 +611,7 @@ test("Manifest 1.7 binds artifact QA, delivery rehearsal, native capability repo
       sourceFiles: ["slide-source.json"],
       preview: "preview.png",
       nativeCapabilities: nativeCapabilities(slidePlan.renderer),
+      nativeMotion: nativeMotionReceipt(manifest.slides.find((slide) => slide.id === slidePlan.slideId)),
     }));
   }
   await recordBuild(projectDir, { all: true, slides: [] });
@@ -657,6 +678,7 @@ test("Manifest 1.7 binds artifact QA, delivery rehearsal, native capability repo
         nativeCapabilities: slidePlan.slideId === "s04"
           ? { ...capability, losses: ["One SVG filter was rasterized during final PPTX assembly."] }
           : capability,
+        nativeMotion: nativeMotionReceipt(manifest.slides.find((slide) => slide.id === slidePlan.slideId)),
       };
     }),
   });
@@ -664,6 +686,8 @@ test("Manifest 1.7 binds artifact QA, delivery rehearsal, native capability repo
   assert.equal(nativeReport.summary.mixed, 1);
   assert.equal(nativeReport.summary.flattened, 1);
   assert.equal(nativeReport.summary.changedDuringAssembly, 1);
+  assert.equal(nativeReport.summary.nativeMotionApplied, 5);
+  assert.equal(nativeReport.summary.motionChangedDuringAssembly, 0);
   assert.equal(nativeReport.slides.find((slide) => slide.slideId === "s04").assemblyChanges[0].field, "losses");
   const deliveryChecks = prepared.deckRubric.checks.filter((check) => check.dimension === "delivery");
   const rehearsal = await recordDeliveryRehearsal(projectDir, {

@@ -16,6 +16,13 @@ import {
   workspacePath,
   writeJson,
 } from "./lib/production-state.mjs";
+import {
+  NATIVE_MOTION_CONTRACT_VERSION,
+  NATIVE_TRANSITIONS,
+  applyNativeMotion,
+  buildNativeMotionPlan,
+  validateNativeMotionPlan,
+} from "./lib/native-motion.mjs";
 
 const DENSITIES = new Set(["low", "medium", "high"]);
 const FOCAL_MODES = new Set(["type", "image", "diagram", "data", "ui", "motion", "mixed"]);
@@ -40,6 +47,7 @@ const CONTENT_COMPRESSION = new Set(["low", "medium", "high"]);
 const EVIDENCE_ORDERS = new Set(["before-claim", "after-claim", "contextual"]);
 const NOTES_DETAIL = new Set(["low", "medium", "high"]);
 const DELIVERY_MODES = new Set(["live", "async", "self-guided"]);
+const NATIVE_MOTION_MODES = new Set(["auto", "specified", "off"]);
 const REQUIRED_NARRATIVE_FIELDS = [
   "communicationJob",
   "audienceStartingPoint",
@@ -560,6 +568,8 @@ function buildEvidenceArtifacts(manifest, slides, sources, generatedAt, digest) 
       motionSegmentIds: (slide.motion?.segments || []).map((segment, index) =>
         safeStableId("segment", segment?.id || `${slide.id}-segment-${index + 1}`, { slideId: slide.id, index }),
       ),
+      nativeAnimationIds: (slide.nativeMotion?.animations || []).map((animation) => animation.id),
+      nativeTransition: slide.nativeMotion?.transition?.effect || "none",
     })),
   };
   return { evidenceBundle, contentAlignment };
@@ -626,6 +636,51 @@ function buildDeliveryPlan(manifest, slides, generatedAt, digest) {
       acceptanceCriteria: slide.delivery.acceptanceCriteria || [],
     })),
   };
+}
+
+function prepareNativeMotion(manifest, slides, issues) {
+  const motionBudget = {
+    maxNativeAnimatedSlides: 6,
+    maxNativeAnimationStepsPerSlide: 4,
+    ...manifest.motionBudget,
+  };
+  manifest.motionBudget = motionBudget;
+  for (const [key, minimum, maximum] of [
+    ["maxNativeAnimatedSlides", 0, 24],
+    ["maxNativeAnimationStepsPerSlide", 1, 6],
+  ]) {
+    const value = Number(motionBudget[key]);
+    if (!Number.isInteger(value) || value < minimum || value > maximum) {
+      addIssue(issues, "error", `motionBudget.${key}`, `${key} must be an integer from ${minimum} to ${maximum}.`, "motionBudget");
+    }
+  }
+  if (!Number.isInteger(Number(motionBudget.maxTransitionStyles)) || Number(motionBudget.maxTransitionStyles) < 1) {
+    addIssue(issues, "error", "motionBudget.maxTransitionStyles", "maxTransitionStyles must be a positive integer.", "motionBudget");
+  }
+  const plans = applyNativeMotion(manifest, slides);
+  const transitions = new Set();
+  for (let index = 0; index < plans.length; index += 1) {
+    const slide = slides[index];
+    const plan = plans[index];
+    if (!NATIVE_MOTION_MODES.has(plan.mode)) {
+      addIssue(issues, "error", "nativeMotion.mode", "mode must be auto, specified, or off.", `slides[${index}].nativeMotion`);
+    }
+    for (const message of validateNativeMotionPlan(slide, plan, {
+      maxSteps: Number(motionBudget.maxNativeAnimationStepsPerSlide),
+      location: `slides[${index}].nativeMotion`,
+    })) addIssue(issues, "error", "nativeMotion.contract", message, `slides[${index}].nativeMotion`);
+    if (plan.transition?.effect && NATIVE_TRANSITIONS.has(plan.transition.effect) && plan.transition.effect !== "none") {
+      transitions.add(plan.transition.effect);
+    }
+  }
+  if (transitions.size > Number(motionBudget.maxTransitionStyles)) {
+    addIssue(issues, "error", "motionBudget.transitions", `Native and video transitions use ${transitions.size} styles, above the budget of ${motionBudget.maxTransitionStyles}.`, "motionBudget");
+  }
+  return plans;
+}
+
+function buildNativeMotionArtifact(manifest, slides, generatedAt, digest) {
+  return buildNativeMotionPlan(manifest, slides, generatedAt, digest);
 }
 
 function buildDeckRubric(manifest, slides, generatedAt, digest) {
@@ -793,6 +848,7 @@ function buildProviderBrief(manifest, slide, asset, generatedAt, digest) {
     tasteProfile: manifest.tasteProfile,
     contentPreference: manifest.contentPreference,
     deliveryPlanPath: "tmp/delivery/delivery-plan.json",
+    nativeMotionPlanPath: "tmp/motion/native-motion-plan.json",
     narrative: {
       communicationJob: manifest.narrative.communicationJob,
       audienceStartingPoint: manifest.narrative.audienceStartingPoint,
@@ -812,6 +868,7 @@ function buildProviderBrief(manifest, slide, asset, generatedAt, digest) {
       visualPlan: slide.visualPlan,
       pageDesign: slide.pageDesign,
       pageDesignPath: `tmp/design/page-design/${slide.id}.json`,
+      nativeMotion: slide.nativeMotion,
       delivery: slide.delivery,
       claimId: slide.claimId,
       sourceIds: (slide.sources || []).map((source) => source.id),
@@ -848,6 +905,7 @@ export async function prepareCreative(projectDir, options = {}) {
   validateNarrative(manifest, slides, issues);
   validateContentPreferenceAndDelivery(manifest, slides, issues);
   validateSlides(slides, issues);
+  prepareNativeMotion(manifest, slides, issues);
   const assets = compileAssets(slides, issues);
   const errors = issues.filter((issue) => issue.severity === "error");
   const warnings = issues.filter((issue) => issue.severity === "warning");
@@ -869,6 +927,7 @@ export async function prepareCreative(projectDir, options = {}) {
   const pageDesignArtifacts = buildPageDesignArtifacts(slides, generatedAt, digest);
   const contentPreference = buildContentPreferenceArtifact(manifest, generatedAt, digest);
   const deliveryPlan = buildDeliveryPlan(manifest, slides, generatedAt, digest);
+  const nativeMotionPlan = buildNativeMotionArtifact(manifest, slides, generatedAt, digest);
   const deckRubric = buildDeckRubric(manifest, slides, generatedAt, digest);
   const assetPlan = {
     schemaVersion: CREATIVE_CONTRACT_VERSION,
@@ -919,6 +978,9 @@ export async function prepareCreative(projectDir, options = {}) {
       deliverySeconds: deliveryPlan.totalSeconds,
       deliveryReserveSeconds: deliveryPlan.reserveSeconds,
       deliveryChecks: deckRubric.checks.filter((check) => check.dimension === "delivery").length,
+      nativeAnimatedSlides: slides.filter((slide) => (slide.nativeMotion?.animations || []).length > 0).length,
+      nativeAnimationSteps: slides.reduce((total, slide) => total + (slide.nativeMotion?.animations || []).length, 0),
+      nativeTransitionStyles: [...new Set(slides.map((slide) => slide.nativeMotion?.transition?.effect).filter((effect) => effect && effect !== "none"))].length,
       visualPeaks: slides.filter((slide) => slide.visualPlan.visualPeak).length,
       continuityFamilies: new Set(assets.map((asset) => asset.continuityKey)).size,
     },
@@ -938,6 +1000,7 @@ export async function prepareCreative(projectDir, options = {}) {
     deckRubric: "tmp/qa/deck-rubric.json",
     contentPreference: "tmp/preferences/content-preference.json",
     deliveryPlan: "tmp/delivery/delivery-plan.json",
+    nativeMotionPlan: "tmp/motion/native-motion-plan.json",
     report: "tmp/creative/report.json",
     providerBriefsRoot: "tmp/provider-briefs",
     providerIndex: providerIndexPath,
@@ -951,6 +1014,7 @@ export async function prepareCreative(projectDir, options = {}) {
       deckRubric: sha256(stableStringify(deckRubric)),
       contentPreference: sha256(stableStringify(contentPreference)),
       deliveryPlan: sha256(stableStringify(deliveryPlan)),
+      nativeMotionPlan: sha256(stableStringify(nativeMotionPlan)),
       report: sha256(stableStringify(report)),
       providerIndex: sha256(stableStringify(providerIndex)),
     },
@@ -989,6 +1053,7 @@ export async function prepareCreative(projectDir, options = {}) {
     writeJson(workspacePath(root, production.creativePlan.deckRubric, "deck rubric"), deckRubric),
     writeJson(workspacePath(root, production.creativePlan.contentPreference, "content preference"), contentPreference),
     writeJson(workspacePath(root, production.creativePlan.deliveryPlan, "delivery plan"), deliveryPlan),
+    writeJson(workspacePath(root, production.creativePlan.nativeMotionPlan, "native motion plan"), nativeMotionPlan),
     writeJson(workspacePath(root, production.creativePlan.report, "creative report"), report),
     writeJson(manifestPath, manifest),
   ]);
@@ -1002,6 +1067,7 @@ export async function prepareCreative(projectDir, options = {}) {
     pageDesignIndex: pageDesignArtifacts.index,
     contentPreference,
     deliveryPlan,
+    nativeMotionPlan,
     deckRubric,
     assetPlan,
     providerBriefs,

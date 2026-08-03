@@ -10,6 +10,8 @@ import {
   hashPath,
   readJson,
   resolveProjectDir,
+  sha256,
+  stableStringify,
   slideBuildCapsule,
   workspacePath,
   writeJson,
@@ -68,6 +70,43 @@ function validateNativeCapabilities(receipt, slideId) {
   return capability;
 }
 
+function validateNativeMotionReceipt(receipt, slide, slideId) {
+  const motion = receipt.nativeMotion;
+  const plan = slide.nativeMotion;
+  if (!motion || typeof motion !== "object" || Array.isArray(motion)) {
+    throw new Error(`Cannot record ${slideId}; Manifest 1.7 receipts require nativeMotion.`);
+  }
+  if (!new Set(["applied", "fallback", "not-applicable"]).has(motion.status)) {
+    throw new Error(`Cannot record ${slideId}; nativeMotion.status must be applied, fallback, or not-applicable.`);
+  }
+  if (motion.planHash !== sha256(stableStringify(plan))) {
+    throw new Error(`Cannot record ${slideId}; nativeMotion.planHash does not match the current compiled plan.`);
+  }
+  if (typeof motion.transitionApplied !== "boolean") {
+    throw new Error(`Cannot record ${slideId}; nativeMotion.transitionApplied must be boolean.`);
+  }
+  if (!Array.isArray(motion.appliedAnimationIds) || motion.appliedAnimationIds.some((item) => typeof item !== "string" || !item.trim())) {
+    throw new Error(`Cannot record ${slideId}; nativeMotion.appliedAnimationIds must be an array of ids.`);
+  }
+  if (!Array.isArray(motion.losses) || motion.losses.some((item) => typeof item !== "string" || !item.trim())) {
+    throw new Error(`Cannot record ${slideId}; nativeMotion.losses must be an array of concrete strings.`);
+  }
+  const plannedIds = new Set((plan?.animations || []).map((animation) => animation.id));
+  if (motion.appliedAnimationIds.some((id) => !plannedIds.has(id))) {
+    throw new Error(`Cannot record ${slideId}; nativeMotion.appliedAnimationIds contains an id outside the current plan.`);
+  }
+  if (motion.status === "applied" && motion.appliedAnimationIds.length !== plannedIds.size) {
+    throw new Error(`Cannot record ${slideId}; applied native motion must cover every planned animation.`);
+  }
+  if (motion.status === "fallback" && !motion.losses.length) {
+    throw new Error(`Cannot record ${slideId}; a native motion fallback must explain the loss.`);
+  }
+  if (motion.status === "not-applicable" && (plannedIds.size || plan?.transition?.effect !== "none")) {
+    throw new Error(`Cannot record ${slideId}; native motion is planned for this slide and cannot be marked not-applicable.`);
+  }
+  return motion;
+}
+
 export async function recordBuild(projectDir, options = {}) {
   const root = resolveProjectDir(projectDir);
   const manifestPath = path.join(root, "presentation.json");
@@ -114,6 +153,9 @@ export async function recordBuild(projectDir, options = {}) {
     const nativeCapabilities = manifest.version === "1.7"
       ? validateNativeCapabilities(receipt, slidePlan.slideId)
       : receipt.nativeCapabilities || null;
+    const nativeMotion = manifest.version === "1.7"
+      ? validateNativeMotionReceipt(receipt, slide, slidePlan.slideId)
+      : receipt.nativeMotion || null;
     const outputs = [];
     for (const output of slidePlan.outputs || []) {
       const target = workspacePath(root, output.path, `slide ${slidePlan.slideId} output`);
@@ -127,6 +169,7 @@ export async function recordBuild(projectDir, options = {}) {
       inputHash: slidePlan.inputHash,
       outputs,
       nativeCapabilities,
+      nativeMotion,
       sourceFiles: Array.isArray(receipt.sourceFiles) ? receipt.sourceFiles : [],
       preview: receipt.preview || null,
       completedAt: new Date().toISOString(),

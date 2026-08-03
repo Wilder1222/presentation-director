@@ -59,6 +59,21 @@ function validateCapabilities(capability, label) {
   return capability;
 }
 
+function validateNativeMotion(motion, plan, label) {
+  if (!motion || typeof motion !== "object" || Array.isArray(motion)) throw new Error(`${label} needs nativeMotion.`);
+  if (!new Set(["applied", "fallback", "not-applicable"]).has(motion.status)) throw new Error(`${label} nativeMotion.status is unsupported.`);
+  if (motion.planHash !== sha256(stableStringify(plan))) throw new Error(`${label} nativeMotion.planHash does not match the compiled plan.`);
+  if (typeof motion.transitionApplied !== "boolean") throw new Error(`${label} nativeMotion.transitionApplied must be boolean.`);
+  if (!Array.isArray(motion.appliedAnimationIds) || motion.appliedAnimationIds.some((item) => !nonEmpty(item))) throw new Error(`${label} nativeMotion.appliedAnimationIds must be an array of ids.`);
+  if (!Array.isArray(motion.losses) || motion.losses.some((item) => !nonEmpty(item))) throw new Error(`${label} nativeMotion.losses must be an array of concrete strings.`);
+  const plannedIds = new Set((plan?.animations || []).map((animation) => animation.id));
+  if (motion.appliedAnimationIds.some((id) => !plannedIds.has(id))) throw new Error(`${label} nativeMotion.appliedAnimationIds contains an id outside the plan.`);
+  if (motion.status === "applied" && motion.appliedAnimationIds.length !== plannedIds.size) throw new Error(`${label} applied native motion must cover every planned animation.`);
+  if (motion.status === "fallback" && !motion.losses.length) throw new Error(`${label} native motion fallback needs a concrete loss.`);
+  if (motion.status === "not-applicable" && (plannedIds.size || plan?.transition?.effect !== "none")) throw new Error(`${label} native motion cannot be not-applicable when the plan contains motion.`);
+  return motion;
+}
+
 function classify(capability) {
   if (capability.flattened) return "flattened";
   if (capability.replaceableSvg || capability.replaceableImages || capability.embeddedVideo || capability.losses.length) return "mixed";
@@ -72,6 +87,20 @@ function assemblyChanges(buildCapability, finalCapability) {
   const buildLosses = new Set(buildCapability.losses);
   for (const loss of finalCapability.losses) {
     if (!buildLosses.has(loss)) changes.push({ field: "losses", build: null, final: loss });
+  }
+  return changes;
+}
+
+function motionAssemblyChanges(buildMotion, finalMotion) {
+  const changes = [];
+  for (const key of ["status", "transitionApplied"]) {
+    if (buildMotion?.[key] !== finalMotion?.[key]) changes.push({ field: key, build: buildMotion?.[key] ?? null, final: finalMotion?.[key] ?? null });
+  }
+  if (stableStringify(buildMotion?.appliedAnimationIds || []) !== stableStringify(finalMotion?.appliedAnimationIds || [])) {
+    changes.push({ field: "appliedAnimationIds", build: buildMotion?.appliedAnimationIds || [], final: finalMotion?.appliedAnimationIds || [] });
+  }
+  for (const loss of finalMotion?.losses || []) {
+    if (!(buildMotion?.losses || []).includes(loss)) changes.push({ field: "motion-losses", build: null, final: loss });
   }
   return changes;
 }
@@ -95,9 +124,15 @@ export async function compileNativeCapabilityReport(projectDir, auditInput = nul
   if (!(await exists(artifactPath))) throw new Error(`Audited final presentation is missing: ${input.artifact}.`);
 
   const auditedById = new Map();
+  const manifestSlides = new Map((manifest.slides || []).map((slide) => [slide.id, slide]));
   for (const slide of Array.isArray(input.slides) ? input.slides : []) {
     if (!nonEmpty(slide?.slideId) || auditedById.has(slide.slideId)) throw new Error("Final assembly audit slide ids must be unique and non-empty.");
-    auditedById.set(slide.slideId, validateCapabilities(slide.nativeCapabilities, `Audit slide ${slide.slideId}`));
+    const manifestSlide = manifestSlides.get(slide.slideId);
+    if (!manifestSlide) throw new Error(`Final assembly audit references an unknown slide: ${slide.slideId}.`);
+    auditedById.set(slide.slideId, {
+      nativeCapabilities: validateCapabilities(slide.nativeCapabilities, `Audit slide ${slide.slideId}`),
+      nativeMotion: validateNativeMotion(slide.nativeMotion, manifestSlide.nativeMotion, `Audit slide ${slide.slideId}`),
+    });
   }
   if (auditedById.size !== buildPlan.slides.length || buildPlan.slides.some((slide) => !auditedById.has(slide.slideId))) {
     throw new Error("Final assembly audit must cover every current slide exactly once.");
@@ -115,7 +150,8 @@ export async function compileNativeCapabilityReport(projectDir, auditInput = nul
     manifestDigest: buildPlan.manifestDigest,
     slides: buildPlan.slides.map((planned) => ({
       slideId: planned.slideId,
-      nativeCapabilities: auditedById.get(planned.slideId),
+      nativeCapabilities: auditedById.get(planned.slideId).nativeCapabilities,
+      nativeMotion: auditedById.get(planned.slideId).nativeMotion,
     })),
   };
   await writeJson(workspacePath(root, production.delivery.nativeCapabilityAudit, "native capability audit"), audit);
@@ -126,7 +162,9 @@ export async function compileNativeCapabilityReport(projectDir, auditInput = nul
     const inspection = await inspectBuildRecord(root, planned, record);
     if (!inspection.valid) throw new Error(`Cannot report ${planned.slideId}: ${inspection.problems.join("; ")}.`);
     const buildCapability = validateCapabilities(record.nativeCapabilities, `Build record ${planned.slideId}`);
-    const finalCapability = auditedById.get(planned.slideId);
+    const buildMotion = validateNativeMotion(record.nativeMotion, manifestSlides.get(planned.slideId).nativeMotion, `Build record ${planned.slideId}`);
+    const finalCapability = auditedById.get(planned.slideId).nativeCapabilities;
+    const finalMotion = auditedById.get(planned.slideId).nativeMotion;
     slides.push({
       slideId: planned.slideId,
       renderer: planned.renderer,
@@ -141,6 +179,8 @@ export async function compileNativeCapabilityReport(projectDir, auditInput = nul
       flattened: finalCapability.flattened,
       conversionLosses: finalCapability.losses,
       assemblyChanges: assemblyChanges(buildCapability, finalCapability),
+      nativeMotion: finalMotion,
+      motionAssemblyChanges: motionAssemblyChanges(buildMotion, finalMotion),
       buildCapabilities: buildCapability,
       sourceFiles: record.sourceFiles || [],
     });
@@ -162,6 +202,9 @@ export async function compileNativeCapabilityReport(projectDir, auditInput = nul
       flattened: slides.filter((slide) => slide.classification === "flattened").length,
       withConversionLoss: slides.filter((slide) => slide.conversionLosses.length).length,
       changedDuringAssembly: slides.filter((slide) => slide.assemblyChanges.length).length,
+      nativeMotionApplied: slides.filter((slide) => slide.nativeMotion.status === "applied").length,
+      nativeMotionFallbacks: slides.filter((slide) => slide.nativeMotion.status === "fallback").length,
+      motionChangedDuringAssembly: slides.filter((slide) => slide.motionAssemblyChanges.length).length,
     },
     slides,
   };
